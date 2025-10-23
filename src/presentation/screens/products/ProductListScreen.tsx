@@ -11,37 +11,66 @@ import { Card } from '@presentation/components/common/Card';
 import { colors } from '@presentation/theme/colors';
 import { spacing } from '@presentation/theme/spacing';
 import { typography } from '@presentation/theme/typography';
-import { container } from '@infrastructure/di/container';
-import { TYPES } from '@infrastructure/di/types';
-import { GetProductsUseCase } from '@core/usecases/products/GetProductsUseCase';
-import { Product } from '@core/entities/Product';
+import { ref, onValue, off } from 'firebase/database';
+import { database } from '@data/config/firebase.config';
+
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl?: string;
+  category: string;
+  stock: number;
+}
 
 export const ProductListScreen: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const getProductsUseCase = container.get<GetProductsUseCase>(TYPES.GetProductsUseCase);
-
   useEffect(() => {
-    loadProducts();
-  }, []);
+    const productsRef = ref(database, 'products');
+    
+    const unsubscribe = onValue(productsRef, (snapshot) => {
+      const data = snapshot.val();
+      
+      if (!data) {
+        setProducts([]);
+        setLoading(false);
+        return;
+      }
 
-  const loadProducts = async () => {
-    try {
-      const data = await getProductsUseCase.execute();
-      setProducts(data);
-    } catch (error) {
-      console.error('Error loading products:', error);
-    } finally {
+      const productsList = Object.entries(data).map(([id, productData]: [string, any]) => ({
+        id,
+        ...productData,
+      }));
+
+      setProducts(productsList);
       setLoading(false);
-    }
-  };
+    });
+
+    return () => off(productsRef);
+  }, []);
 
   if (loading) {
     return (
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.title}>Productos</Text>
+        <View style={styles.centerContainer}>
+          <Text style={styles.emptyText}>No hay productos disponibles</Text>
+          <Text style={styles.emptySubtext}>
+            Los productos aparecerán aquí cuando se agreguen a la base de datos
+          </Text>
+        </View>
+      </SafeAreaView>
     );
   }
 
@@ -102,5 +131,18 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.bold,
     color: colors.primary,
+  },
+  emptyText: {
+    fontSize: typography.fontSize.lg,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.textPrimary,
+    textAlign: 'center',
+    marginBottom: spacing.sm,
+  },
+  emptySubtext: {
+    fontSize: typography.fontSize.sm,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    paddingHorizontal: spacing.xl,
   },
 });

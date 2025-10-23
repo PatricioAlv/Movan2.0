@@ -7,30 +7,47 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import { Button } from '@presentation/components/common/Button';
 import { Input } from '@presentation/components/common/Input';
 import { colors } from '@presentation/theme/colors';
 import { spacing } from '@presentation/theme/spacing';
 import { typography } from '@presentation/theme/typography';
-import { container } from '@infrastructure/di/container';
-import { TYPES } from '@infrastructure/di/types';
-import { LoginUseCase } from '@core/usecases/auth/LoginUseCase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@data/config/firebase.config';
+import { SCREEN_NAMES } from '@infrastructure/utils/constants';
 
-export const LoginScreen: React.FC = () => {
+export const LoginScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const loginUseCase = container.get<LoginUseCase>(TYPES.LoginUseCase);
-
   const handleLogin = async () => {
     try {
+      if (!email || !password) {
+        Alert.alert('Error', 'Por favor ingresa email y contraseña');
+        return;
+      }
+
       setLoading(true);
-      await loginUseCase.execute({ email, password });
+      await signInWithEmailAndPassword(auth, email, password);
       // Navigation will be handled by auth state listener
-    } catch (error) {
-      Alert.alert('Error', error instanceof Error ? error.message : 'Error al iniciar sesión');
+    } catch (error: any) {
+      console.error('Login error:', error);
+      let errorMessage = 'Error al iniciar sesión';
+      
+      if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Email inválido';
+      } else if (error.code === 'auth/user-not-found') {
+        errorMessage = 'Usuario no encontrado';
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = 'Contraseña incorrecta';
+      } else if (error.code === 'auth/invalid-credential') {
+        errorMessage = 'Credenciales inválidas';
+      }
+      
+      Alert.alert('Error', errorMessage);
     } finally {
       setLoading(false);
     }
@@ -70,6 +87,15 @@ export const LoginScreen: React.FC = () => {
               loading={loading}
               fullWidth
             />
+
+            <TouchableOpacity
+              onPress={() => navigation?.navigate(SCREEN_NAMES.REGISTER)}
+              style={styles.registerButton}
+            >
+              <Text style={styles.registerText}>
+                ¿No tienes cuenta? <Text style={styles.registerTextBold}>Regístrate</Text>
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -103,5 +129,17 @@ const styles = StyleSheet.create({
   },
   form: {
     marginTop: spacing.lg,
+  },
+  registerButton: {
+    marginTop: spacing.lg,
+    alignItems: 'center',
+  },
+  registerText: {
+    fontSize: typography.fontSize.sm,
+    color: colors.textSecondary,
+  },
+  registerTextBold: {
+    color: colors.primary,
+    fontWeight: typography.fontWeight.semibold,
   },
 });
