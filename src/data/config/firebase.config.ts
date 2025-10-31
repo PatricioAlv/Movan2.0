@@ -1,8 +1,11 @@
+// Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
+import { getAnalytics, Analytics } from 'firebase/analytics';
 
-// Firebase configuration - Proyecto Movan
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyASHt-0Q9eeRC6MrQ5BcD69Vq4cY7xFxf4",
   authDomain: "movan-857e9.firebaseapp.com",
@@ -23,5 +26,16 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-export { auth, database };
+// Analytics is optional and only works in web/production builds
+// It may not work in Expo Go, but is available for web deployment
+let analytics: Analytics | null = null;
+try {
+  // Analytics may not be available in React Native environment
+  analytics = getAnalytics(app);
+} catch (error) {
+  // Analytics not supported in this environment (e.g., React Native/Expo Go)
+  console.warn('Firebase Analytics not available in this environment');
+}
+
+export { auth, database, analytics };
 export default app;
