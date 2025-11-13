@@ -13,9 +13,10 @@ const firebaseConfig = {
   projectId: "movan-857e9",
   storageBucket: "movan-857e9.firebasestorage.app",
   messagingSenderId: "719398366977",
-  appId: "1:719398366977:web:3b77813a5a10dd20fb3500",
-  measurementId: "G-KFN6ETSRTH"
+  appId: "1:719398366977:web:2598c8ad4f199dbffb3500",
+  measurementId: "G-0G0MSDHHFV"
 };
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
