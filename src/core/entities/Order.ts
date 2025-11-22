@@ -1,22 +1,52 @@
-export enum OrderStatus {
+export enum ShipmentStatus {
   PENDING = 'PENDING',
-  PROCESSING = 'PROCESSING',
-  COMPLETED = 'COMPLETED',
+  ACCEPTED = 'ACCEPTED',
+  IN_TRANSIT = 'IN_TRANSIT',
+  DELIVERED = 'DELIVERED',
   CANCELLED = 'CANCELLED',
 }
 
-export interface OrderItem {
-  productId: string;
-  quantity: number;
-  price: number;
+export enum CargoType {
+  GENERAL = 'GENERAL',
+  FRAGILE = 'FRAGILE',
+  PERISHABLE = 'PERISHABLE',
+  HAZARDOUS = 'HAZARDOUS',
+  HEAVY = 'HEAVY',
 }
 
-export interface Order {
+export interface Location {
+  address: string;
+  latitude: number;
+  longitude: number;
+  contactName?: string;
+  contactPhone?: string;
+}
+
+export interface Shipment {
   id: string;
-  userId: string;
-  items: OrderItem[];
-  total: number;
-  status: OrderStatus;
+  clientId: string;
+  driverId?: string;
+  origin: Location;
+  destination: Location;
+  cargoType: CargoType;
+  cargoDescription: string;
+  weight: number;
+  price: number;
+  status: ShipmentStatus;
+  pickupDate: Date;
+  deliveryDate?: Date;
   createdAt: Date;
   updatedAt: Date;
+  notes?: string;
+}
+
+export interface CreateShipmentData {
+  origin: Location;
+  destination: Location;
+  cargoType: CargoType;
+  cargoDescription: string;
+  weight: number;
+  price: number;
+  pickupDate: Date;
+  notes?: string;
 }
