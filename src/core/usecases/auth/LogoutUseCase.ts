@@ -1,4 +1,4 @@
-import { IAuthRepository } from '@core/repositories/IAuthRepository';
+import type { IAuthRepository } from '@core/repositories/IAuthRepository';
 import { injectable, inject } from 'inversify';
 import { TYPES } from '@infrastructure/di/types';
 
