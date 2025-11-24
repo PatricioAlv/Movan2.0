@@ -16,8 +16,22 @@
       "package": "com.movan.app",
       "permissions": [
         "INTERNET",
-        "ACCESS_NETWORK_STATE"
-      ]
+        "ACCESS_NETWORK_STATE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCW39d9V4_n71WXVtj_GUNStURgFf3d008"
+        }
+      }
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.movan.app",
+      "config": {
+        "googleMapsApiKey": "AIzaSyCW39d9V4_n71WXVtj_GUNStURgFf3d008"
+      }
     },
     "plugins": [
       "expo-secure-store"

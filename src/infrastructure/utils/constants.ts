@@ -26,6 +26,10 @@ export const SCREEN_NAMES = {
   PRODUCT_LIST: 'ProductList',
   PRODUCT_DETAIL: 'ProductDetail',
   
+  // Client
+  CLIENT_HOME: 'ClientHome',
+  CREATE_SHIPMENT: 'CreateShipment',
+  
   // Main
   HOME: 'Home',
   PROFILE: 'Profile',

@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { ProductListScreen } from '@presentation/screens/products/ProductListScreen';
+import { ClientHomeScreen } from '@presentation/screens/client/ClientHomeScreen';
+import { CreateShipmentScreen } from '@presentation/screens/client/CreateShipmentScreen';
 import { SCREEN_NAMES } from '@infrastructure/utils/constants';
 
 const Stack = createStackNavigator();
@@ -9,9 +10,14 @@ export const MainNavigator: React.FC = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen 
-        name={SCREEN_NAMES.PRODUCT_LIST} 
-        component={ProductListScreen}
-        options={{ title: 'Productos' }}
+        name={SCREEN_NAMES.CLIENT_HOME} 
+        component={ClientHomeScreen}
+        options={{ title: 'Mis Envíos', headerShown: false }}
+      />
+      <Stack.Screen 
+        name={SCREEN_NAMES.CREATE_SHIPMENT} 
+        component={CreateShipmentScreen}
+        options={{ title: 'Crear Envío' }}
       />
     </Stack.Navigator>
   );
