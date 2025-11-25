@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
   shipmentId: {
     fontSize: typography.fontSize.base,
     fontWeight: typography.fontWeight.semibold,
-    color: colors.textPrimary,
+    color: colors.textTextArea,
   },
   statusBadge: {
     paddingHorizontal: spacing.sm,
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   },
   locationAddress: {
     fontSize: typography.fontSize.base,
-    color: colors.textPrimary,
+    color: colors.textSecondary,
     fontWeight: typography.fontWeight.medium,
   },
   contactInfo: {
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
   },
   detailValue: {
     fontSize: typography.fontSize.sm,
-    color: colors.textPrimary,
+    color: colors.textSecondary,
     fontWeight: typography.fontWeight.medium,
   },
   priceValue: {
