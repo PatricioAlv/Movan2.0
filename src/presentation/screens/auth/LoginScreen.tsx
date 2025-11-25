@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
   },
   registerButton: {
-    marginTop: spacing.xl,
+    marginTop: spacing['3xl'],
     alignItems: 'center',
   },
   registerText: {
