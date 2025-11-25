@@ -4,10 +4,8 @@ import { TYPES } from './types';
 
 // Repositories
 import { IAuthRepository } from '@core/repositories/IAuthRepository';
-import { IProductRepository } from '@core/repositories/IProductRepository';
 import { IShipmentRepository } from '@core/repositories/IShipmentRepository';
 import { FirebaseAuthRepository } from '@data/repositories/FirebaseAuthRepository';
-import { FirebaseProductRepository } from '@data/repositories/FirebaseProductRepository';
 import { FirebaseShipmentRepository } from '@data/repositories/FirebaseShipmentRepository';
 
 // DataSources
@@ -21,8 +19,6 @@ import { SecureStorageDataSource } from '@data/datasources/local/SecureStorageDa
 import { LoginUseCase } from '@core/usecases/auth/LoginUseCase';
 import { RegisterUseCase } from '@core/usecases/auth/RegisterUseCase';
 import { LogoutUseCase } from '@core/usecases/auth/LogoutUseCase';
-import { GetProductsUseCase } from '@core/usecases/products/GetProductsUseCase';
-import { CreateProductUseCase } from '@core/usecases/products/CreateProductUseCase';
 import { CreateShipmentUseCase } from '@core/usecases/shipments/CreateShipmentUseCase';
 import { GetClientShipmentsUseCase } from '@core/usecases/shipments/GetClientShipmentsUseCase';
 import { GetShipmentByIdUseCase } from '@core/usecases/shipments/GetShipmentByIdUseCase';
@@ -60,15 +56,12 @@ const firebaseShipmentRepository = new FirebaseShipmentRepository(firebaseShipme
 console.log('Creating FirebaseAuthRepository instance...');
 const firebaseAuthRepository = new FirebaseAuthRepository(firebaseAuthDataSource, asyncStorageDataSource);
 console.log('Creating FirebaseProductRepository instance...');
-const firebaseProductRepository = new FirebaseProductRepository(firebaseRealtimeDataSource);
 
 // Bind Repositories como constantes
 console.log('Binding FirebaseShipmentRepository...');
 container.bind<IShipmentRepository>(TYPES.IShipmentRepository).toConstantValue(firebaseShipmentRepository);
 console.log('Binding FirebaseAuthRepository...');
 container.bind<IAuthRepository>(TYPES.IAuthRepository).toConstantValue(firebaseAuthRepository);
-console.log('Binding FirebaseProductRepository...');
-container.bind<IProductRepository>(TYPES.IProductRepository).toConstantValue(firebaseProductRepository);
 
 // Crear instancias de Use Cases manualmente
 console.log('Creating CreateShipmentUseCase instance...');
@@ -87,10 +80,6 @@ console.log('Binding RegisterUseCase...');
 container.bind<RegisterUseCase>(TYPES.RegisterUseCase).to(RegisterUseCase);
 console.log('Binding LogoutUseCase...');
 container.bind<LogoutUseCase>(TYPES.LogoutUseCase).to(LogoutUseCase);
-console.log('Binding GetProductsUseCase...');
-container.bind<GetProductsUseCase>(TYPES.GetProductsUseCase).to(GetProductsUseCase);
-console.log('Binding CreateProductUseCase...');
-container.bind<CreateProductUseCase>(TYPES.CreateProductUseCase).to(CreateProductUseCase);
 console.log('Binding CreateShipmentUseCase...');
 container.bind<CreateShipmentUseCase>(TYPES.CreateShipmentUseCase).toConstantValue(createShipmentUseCase);
 console.log('Binding GetClientShipmentsUseCase...');
