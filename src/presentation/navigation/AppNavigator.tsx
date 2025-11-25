@@ -1,19 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthNavigator } from './AuthNavigator';
-import { MainNavigator } from './MainNavigator';
+import { ClientNavigator } from './ClientNavigator';
+import { TransportistNavigator } from './TransportistNavigator';
 import { auth } from '@data/config/firebase.config';
 import { onAuthStateChanged } from 'firebase/auth';
 import { View, ActivityIndicator } from 'react-native';
 import { colors } from '@presentation/theme/colors';
+import { container } from '@infrastructure/di/container';
+import { IAuthRepository } from '@core/repositories/IAuthRepository';
+import { TYPES } from '@infrastructure/di/types';
 
 export const AppNavigator: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsAuthenticated(!!user);
+    const authRepository = container.get<IAuthRepository>(TYPES.IAuthRepository);
+
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (!firebaseUser) {
+        setUserRole(null);
+        setIsLoading(false);
+        return;
+      }
+
+      const user = await authRepository.getCurrentUser();
+      setUserRole(user?.role ?? null);
+
       setIsLoading(false);
     });
 
@@ -28,9 +42,16 @@ export const AppNavigator: React.FC = () => {
     );
   }
 
-  return (
-    <NavigationContainer>
-      {isAuthenticated ? <MainNavigator /> : <AuthNavigator />}
-    </NavigationContainer>
-  );
+  const renderNavigator = () => {
+    switch (userRole) {
+      case 'CLIENT':
+        return <ClientNavigator />;
+      case 'TRANSPORTIST':
+        return <TransportistNavigator />;
+      default:
+        return <AuthNavigator />;
+    }
+  };
+
+  return <NavigationContainer>{renderNavigator()}</NavigationContainer>;
 };

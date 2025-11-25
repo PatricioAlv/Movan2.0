@@ -6,6 +6,9 @@ import { UserMapper } from '@data/models/mappers/UserMapper';
 import { UserModel } from '@data/models/UserModel';
 import { injectable, inject } from 'inversify';
 import { TYPES } from '@infrastructure/di/types';
+import { get, ref, set } from "firebase/database";
+import { auth, database } from "../config/firebase.config";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
 @injectable()
 export class FirebaseAuthRepository implements IAuthRepository {
@@ -14,36 +17,40 @@ export class FirebaseAuthRepository implements IAuthRepository {
     @inject(TYPES.FirebaseRealtimeDataSource) private realtimeDataSource: FirebaseRealtimeDataSource
   ) {}
 
-  async login(credentials: LoginCredentials): Promise<User> {
-    const firebaseUser = await this.authDataSource.signIn(
-      credentials.email,
-      credentials.password
-    );
+  /////////////////////////
 
-    const userData = await this.realtimeDataSource.get<UserModel>(`users/${firebaseUser.uid}`);
-    
-    if (!userData) {
-      throw new Error('User data not found');
+  async login(credentials: LoginCredentials): Promise<User> {
+    const { email, password } = credentials;
+    const authData = await signInWithEmailAndPassword(auth, email, password);
+    const uid = authData.user.uid;
+
+    const snap = await get(ref(database, `user/${uid}`));
+
+    if(!snap.exists()){
+      throw new Error("No se encontró el usuario en la base de datos");
     }
 
-    return UserMapper.toDomain(userData);
+    return snap.val() as User;
   }
 
-  async register(email: string, password: string, name: string): Promise<User> {
-    const firebaseUser = await this.authDataSource.signUp(email, password);
+  async register(email: string, password: string, name: string, role: string): Promise<User> {
+    const credentials = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = credentials.user.uid;
     
-    const now = Date.now();
+    const now = new Date();
+
     const userModel: UserModel = {
-      id: firebaseUser.uid,
+      id: uid,
       email,
       name,
+      role,
       createdAt: now,
       updatedAt: now,
     };
 
-    await this.realtimeDataSource.update(`users/${firebaseUser.uid}`, userModel);
+    await set(ref(database, `users/${uid}`), userModel);
 
-    return UserMapper.toDomain(userModel);
+    return userModel;
   }
 
   async logout(): Promise<void> {
@@ -51,20 +58,15 @@ export class FirebaseAuthRepository implements IAuthRepository {
   }
 
   async getCurrentUser(): Promise<User | null> {
-    const firebaseUser = this.authDataSource.getCurrentUser();
-    
-    if (!firebaseUser) {
-      return null;
-    }
+    const current = auth.currentUser;
+    if (!current) return null;
 
-    const userData = await this.realtimeDataSource.get<UserModel>(`users/${firebaseUser.uid}`);
-    
-    if (!userData) {
-      return null;
-    }
+    const snap = await get(ref(database, `users/${current.uid}`));
+    if (!snap.exists()) return null;
 
-    return UserMapper.toDomain(userData);
+    return snap.val() as User;
   }
+
 
   onAuthStateChanged(callback: (user: User | null) => void): () => void {
     return this.authDataSource.onAuthStateChanged(async (firebaseUser) => {

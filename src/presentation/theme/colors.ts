@@ -32,14 +32,15 @@ export const colors = {
   gray900: '#111827',
 
   // Background
-  background: '#101922',
-  bgLight: '#233444ff',
+  background: '#253546ff',
+  bgLight: '#2a4864ff',
   backgroundSecondary: '#F9FAFB',
   surface: '#FFFFFF',
 
   // Text
-  textPrimary: '#111827',
-  textSecondary: '#7d838fff',
+  textPrimary: '#ffffffff',
+  textTextArea:'#242424ff',
+  textSecondary: '#9198a7ff',
   textDisabled: '#9CA3AF',
 
   // Border

@@ -180,17 +180,17 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
         <View style={styles.header}>
           <Text style={styles.title}>Nuevo Envío</Text>
           <TouchableOpacity onPress={handleUseExampleData} style={styles.exampleButton}>
-            <Text style={styles.exampleButtonText}>📝 Usar datos de ejemplo</Text>
+            <Text style={styles.exampleButtonText}> Usar datos de ejemplo</Text>
           </TouchableOpacity>
         </View>
 
         {/* ORIGEN */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📍 Origen</Text>
+          <Text style={styles.sectionTitle}> Origen</Text>
           
           {GOOGLE_MAPS_CONFIG.apiKey !== 'YOUR_GOOGLE_MAPS_API_KEY' ? (
             <>
-              <AddressAutocomplete
+              <AddressAutocomplete 
                 onSelectAddress={setOriginLocation}
                 placeholder="Buscar dirección de origen"
                 apiKey={GOOGLE_MAPS_CONFIG.apiKey}
@@ -202,7 +202,7 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
                 onPress={() => setShowOriginMap(true)}
               >
                 <Text style={styles.mapButtonText}>
-                  📍 {originLocation ? 'Cambiar ubicación en el mapa' : 'Seleccionar en el mapa'}
+                  {originLocation ? 'Cambiar ubicación en el mapa' : 'Seleccionar en el mapa'}
                 </Text>
               </TouchableOpacity>
             </>
@@ -225,13 +225,13 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
             </View>
           )}
 
-          <Input
+          <Input style={styles.details}
             placeholder="Nombre de contacto (opcional)"
             value={originContactName}
             onChangeText={setOriginContactName}
             autoCapitalize="words"
           />
-          <Input
+          <Input style={styles.details}
             placeholder="Teléfono de contacto (opcional)"
             value={originContactPhone}
             onChangeText={setOriginContactPhone}
@@ -241,7 +241,7 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
 
         {/* DESTINO */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🎯 Destino</Text>
+          <Text style={styles.sectionTitle}> Destino</Text>
           
           {GOOGLE_MAPS_CONFIG.apiKey !== 'YOUR_GOOGLE_MAPS_API_KEY' ? (
             <>
@@ -257,7 +257,7 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
                 onPress={() => setShowDestinationMap(true)}
               >
                 <Text style={styles.mapButtonText}>
-                  📍 {destinationLocation ? 'Cambiar ubicación en el mapa' : 'Seleccionar en el mapa'}
+                  {destinationLocation ? 'Cambiar ubicación en el mapa' : 'Seleccionar en el mapa'}
                 </Text>
               </TouchableOpacity>
             </>
@@ -277,13 +277,13 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
             </View>
           )}
 
-          <Input
+          <Input style={styles.details}
             placeholder="Nombre de contacto (opcional)"
             value={destinationContactName}
             onChangeText={setDestinationContactName}
             autoCapitalize="words"
           />
-          <Input
+          <Input style={styles.details}
             placeholder="Teléfono de contacto (opcional)"
             value={destinationContactPhone}
             onChangeText={setDestinationContactPhone}
@@ -320,15 +320,16 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
         {/* DETALLES DE CARGA */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>📋 Detalles de la Carga</Text>
-          <Input
+          <Input style={styles.details}
             placeholder="Descripción de la carga"
             value={cargoDescription}
             onChangeText={setCargoDescription}
             autoCapitalize="sentences"
+            
           />
           <View style={styles.row}>
             <View style={styles.halfInput}>
-              <Input
+              <Input style={styles.details}
                 placeholder="Peso (kg)"
                 value={weight}
                 onChangeText={setWeight}
@@ -336,7 +337,7 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
               />
             </View>
             <View style={styles.halfInput}>
-              <Input
+              <Input style={styles.details}
                 placeholder="Precio ($)"
                 value={price}
                 onChangeText={setPrice}
@@ -479,7 +480,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: spacing.md,
     fontSize: typography.fontSize.base,
-    color: colors.textPrimary,
+    color: colors.textTextArea,
     minHeight: 100,
   },
   buttonContainer: {
@@ -519,6 +520,9 @@ const styles = StyleSheet.create({
   selectedLocationText: {
     color: '#2E7D32',
     fontSize: typography.fontSize.sm,
+  },
+  details:{
+    color: colors.textTextArea
   },
   warningBox: {
     backgroundColor: '#FFF3E0',

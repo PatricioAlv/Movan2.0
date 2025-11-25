@@ -23,12 +23,18 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState<'CLIENT' | 'TRANSPORTIST' | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
     try {
       if (!name || !email || !password) {
         Alert.alert('Error', 'Todos los campos son requeridos');
+        return;
+      }
+
+      if (!role){
+        Alert.alert('Error', 'Debes seleccionar un rol para usar Movan');
         return;
       }
 
@@ -44,24 +50,25 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
 
       setLoading(true);
       
-      // Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
-      // Save user data in Realtime Database
       const now = Date.now();
+
       await set(ref(database, `users/${user.uid}`), {
         id: user.uid,
-        email: email,
-        name: name,
+        email,
+        name,
+        role,
         createdAt: now,
         updatedAt: now,
       });
 
       Alert.alert('Éxito', 'Cuenta creada exitosamente');
       navigation?.navigate(SCREEN_NAMES.LOGIN);
+
     } catch (error: any) {
       console.error('Register error:', error);
+
       let errorMessage = 'Error al crear cuenta';
       
       if (error.code === 'auth/email-already-in-use') {
@@ -77,6 +84,14 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
       setLoading(false);
     }
   };
+
+  const RoleButton = ({ text, value }: { text: string; value: 'CLIENT' | 'TRANSPORTIST'}, style={}) => (
+    <TouchableOpacity onPress={() => setRole(value)} style={[styles.roleButton, role === value && styles.roleButtonSelected,]}>
+      <Text style={[styles.roleText, role === value && styles.roleTextSelected,]}>
+        {text}
+      </Text>
+    </TouchableOpacity>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -113,6 +128,12 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
               onChangeText={setPassword}
               secureTextEntry
             />
+
+            <Text style={styles.roleLabel}> Selecciona tu rol en Movan</Text>
+            <View style={styles.roleContainer}>
+              <RoleButton text="CLIENTE" value="CLIENT"/>
+              <RoleButton text="TRANSPORTISTA" value="TRANSPORTIST" />
+            </View>
 
             <Button
               title="Registrarse"
@@ -173,6 +194,39 @@ const styles = StyleSheet.create({
   },
   loginTextBold: {
     color: colors.primary,
+    fontWeight: typography.fontWeight.semibold,
+  },
+  roleLabel: {
+    marginTop: spacing.md,
+    marginBottom: spacing.sm,
+    fontSize: typography.fontSize.lg,
+    color: colors.textSecondary,
+    fontWeight: typography.fontWeight.bold,
+  },
+  roleContainer: {
+    flexDirection: 'row',
+    top: 5,
+    gap: spacing.md,
+    marginBottom: spacing.lg,
+  },
+  roleButton: {
+    flex: 1,
+    paddingVertical: spacing.md,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderRadius: spacing.sm,
+    alignItems: 'center',
+  },
+  roleButtonSelected: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  roleText: {
+    fontSize: typography.fontSize.sm,
+    color: colors.textPrimary,
+  },
+  roleTextSelected: {
+    color: colors.white,
     fontWeight: typography.fontWeight.semibold,
   },
 });

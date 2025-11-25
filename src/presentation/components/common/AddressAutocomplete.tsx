@@ -108,7 +108,7 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
 
   return (
     <View style={styles.container}>
-      <Input
+      <Input style={styles.textInputArea}
         placeholder={placeholder}
         value={searchText}
         onChangeText={searchPlaces}
@@ -155,6 +155,9 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: spacing.md,
     zIndex: 1000,
+  },
+  textInputArea: {
+    color: '#242424ff',
   },
   loadingContainer: {
     position: 'absolute',
