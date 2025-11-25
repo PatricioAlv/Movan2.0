@@ -6,7 +6,7 @@ import { SCREEN_NAMES } from '@infrastructure/utils/constants';
 
 const Stack = createStackNavigator();
 
-export const MainNavigator: React.FC = () => {
+export const ClientNavigator: React.FC = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen 

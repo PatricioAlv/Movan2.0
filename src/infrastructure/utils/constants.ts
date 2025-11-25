@@ -29,6 +29,10 @@ export const SCREEN_NAMES = {
   // Client
   CLIENT_HOME: 'ClientHome',
   CREATE_SHIPMENT: 'CreateShipment',
+
+  // Transportist
+  TRANS_HOME: 'TransHome',
+  TRANS_BROWSER: 'TransBrowser',
   
   // Main
   HOME: 'Home',
