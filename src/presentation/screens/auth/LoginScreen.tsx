@@ -36,7 +36,7 @@ export const LoginScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
     } catch (error: any) {
       console.error('Login error:', error);
       let errorMessage = 'Error al iniciar sesión';
-      
+
       if (error.code === 'auth/invalid-email') {
         errorMessage = 'Email inválido';
       } else if (error.code === 'auth/user-not-found') {
@@ -46,7 +46,7 @@ export const LoginScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
       } else if (error.code === 'auth/invalid-credential') {
         errorMessage = 'Credenciales inválidas';
       }
-      
+
       Alert.alert('Error', errorMessage);
     } finally {
       setLoading(false);
@@ -60,12 +60,13 @@ export const LoginScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
         style={styles.keyboardView}
       >
         <View style={styles.content}>
-          <Text style={styles.title}>Iniciar Sesión</Text>
-          <Text style={styles.subtitle}>Bienvenido a Movan</Text>
+          <Text style={styles.title}>Bienvenidos a Movan</Text>
+          <Text style={styles.subtitle}>Conectando cargas con los transportistas de confianza</Text>
 
           <View style={styles.form}>
+            <Text style={styles.inputLabel}>Email</Text>
             <Input
-              label="Email"
+              style={styles.inputField}
               placeholder="tu@email.com"
               value={email}
               onChangeText={setEmail}
@@ -73,8 +74,9 @@ export const LoginScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
               autoCapitalize="none"
             />
 
+            <Text style={styles.inputLabel}>Contraseña</Text>
             <Input
-              label="Contraseña"
+              style={styles.inputField}
               placeholder="••••••••"
               value={password}
               onChangeText={setPassword}
@@ -93,12 +95,28 @@ export const LoginScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
               style={styles.registerButton}
             >
               <Text style={styles.registerText}>
-                ¿No tienes cuenta? <Text style={styles.registerTextBold}>Regístrate</Text>
+                ¿No tienes cuenta? <Text style={styles.registerTextBold}>Regístrate como:</Text>
               </Text>
             </TouchableOpacity>
           </View>
+          <Button
+            title='Cliente'
+            loading={loading}
+            style={styles.buttons}
+
+
+          // onPress={} Lógica para ir a cliente
+          />
+          <Button
+            title='Camionero'
+            style={styles.buttons}
+            loading={loading}
+          // onPress={} Lógica para ir a camionero
+
+          />
         </View>
       </KeyboardAvoidingView>
+
     </SafeAreaView>
   );
 };
@@ -107,6 +125,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  buttons: {
+    marginTop: spacing.md,
+    backgroundColor: colors.bgLight,
+    color: colors.gray500
   },
   keyboardView: {
     flex: 1,
@@ -119,8 +142,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: typography.fontSize['3xl'],
     fontWeight: typography.fontWeight.bold,
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
+    color: colors.white,
+    marginTop: spacing.sm,
   },
   subtitle: {
     fontSize: typography.fontSize.base,
@@ -131,15 +154,23 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
   },
   registerButton: {
-    marginTop: spacing.lg,
+    marginTop: spacing.xl,
     alignItems: 'center',
   },
   registerText: {
     fontSize: typography.fontSize.sm,
-    color: colors.textSecondary,
+    color: colors.white,
   },
   registerTextBold: {
     color: colors.primary,
     fontWeight: typography.fontWeight.semibold,
+  },
+  inputLabel: {
+    marginBottom: spacing.sm,
+    color: colors.white,
+  },
+  inputField: {
+    backgroundColor: colors.bgLight,
+    borderColor: colors.gray500
   },
 });

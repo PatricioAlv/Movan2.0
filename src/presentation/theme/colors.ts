@@ -1,3 +1,5 @@
+import { spacing } from '@presentation/theme/spacing';
+
 export const colors = {
   // Primary
   primary: '#007AFF',
@@ -30,13 +32,14 @@ export const colors = {
   gray900: '#111827',
 
   // Background
-  background: '#FFFFFF',
+  background: '#101922',
+  bgLight: '#233444ff',
   backgroundSecondary: '#F9FAFB',
   surface: '#FFFFFF',
 
   // Text
   textPrimary: '#111827',
-  textSecondary: '#6B7280',
+  textSecondary: '#7d838fff',
   textDisabled: '#9CA3AF',
 
   // Border
