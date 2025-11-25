@@ -33,7 +33,7 @@ export const colors = {
 
   // Background
   background: '#253546ff',
-  bgLight: '#233444ff',
+  bgLight: '#2a4864ff',
   backgroundSecondary: '#F9FAFB',
   surface: '#FFFFFF',
 

@@ -99,21 +99,6 @@ export const LoginScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <Button
-            title='Cliente'
-            loading={loading}
-            style={styles.buttons}
-
-
-          // onPress={} Lógica para ir a cliente
-          />
-          <Button
-            title='Camionero'
-            style={styles.buttons}
-            loading={loading}
-          // onPress={} Lógica para ir a camionero
-
-          />
         </View>
       </KeyboardAvoidingView>
 
