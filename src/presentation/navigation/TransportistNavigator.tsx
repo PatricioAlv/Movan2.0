@@ -1,24 +1,44 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
 import { TransHomeScreen } from '@presentation/screens/transportist-stack/TransHomeScreen';
 import { TransportistBrowserScreen } from '@presentation/screens/transportist-stack/TransShipmentBrowser';
 import { SCREEN_NAMES } from '@infrastructure/utils/constants';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
-export const TransportistNavigator: React.FC = () => {
+export function TransportistNavigator() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen 
-        name={SCREEN_NAMES.TRANS_HOME} 
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: '#262E93',
+        tabBarStyle: {
+          height: 60,
+          paddingBottom: 6,
+        },
+      }}
+    >
+      <Tab.Screen
+        name={SCREEN_NAMES.TRANS_HOME}
         component={TransHomeScreen}
-        options={{ title: 'Mis Pedidos', headerShown: false }}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="home" size={26} color={color} />
+          ),
+        }}
       />
-      <Stack.Screen 
-        name={SCREEN_NAMES.TRANS_BROWSER} 
+
+      <Tab.Screen
+        name={SCREEN_NAMES.TRANS_BROWSER}
         component={TransportistBrowserScreen}
-        options={{ title: 'Buscar pedidos', headerShown: false  }}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="home" size={26} color={color} />
+          ),
+        }}
       />
-    </Stack.Navigator>
+
+    </Tab.Navigator>
   );
-};
+}

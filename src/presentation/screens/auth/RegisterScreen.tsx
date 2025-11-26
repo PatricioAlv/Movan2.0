@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
@@ -11,13 +10,12 @@ import {
 } from 'react-native';
 import { Button } from '@presentation/components/common/Button';
 import { Input } from '@presentation/components/common/Input';
-import { colors } from '@presentation/theme/colors';
-import { spacing } from '@presentation/theme/spacing';
-import { typography } from '@presentation/theme/typography';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { ref, set } from 'firebase/database';
 import { auth, database } from '@data/config/firebase.config';
 import { SCREEN_NAMES } from '@infrastructure/utils/constants';
+import RegisterScreenStyle from '@presentation/theme/Auth-Screen-Styles/RegisterScreenStyle';
+
 
 export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -85,20 +83,27 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
     }
   };
 
+<<<<<<< HEAD
   const RoleButton = ({ text, value }: { text: string; value: 'CLIENT' | 'TRANSPORTIST' }, style = {}) => (
     <TouchableOpacity onPress={() => setRole(value)} style={[styles.roleButton, role === value && styles.roleButtonSelected,]}>
       <Text style={[styles.roleText, role === value && styles.roleTextSelected,]}>
+=======
+  const RoleButton = ({ text, value }: { text: string; value: 'CLIENT' | 'TRANSPORTIST'}, style={}) => (
+    <TouchableOpacity onPress={() => setRole(value)} style={[RegisterScreenStyle.roleButton, role === value && RegisterScreenStyle.roleButtonSelected,]}>
+      <Text style={[RegisterScreenStyle.roleText, role === value && RegisterScreenStyle.roleTextSelected,]}>
+>>>>>>> b1ef8ea9e65c2b14d4ca3916987f86181090d2d7
         {text}
       </Text>
     </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={RegisterScreenStyle.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
+        style={RegisterScreenStyle.keyboardView}
       >
+<<<<<<< HEAD
         <View style={styles.content}>
           <Text style={styles.title}>Crear Cuenta</Text>
           <Text style={styles.subtitle}>Únete a Movan!</Text>
@@ -107,14 +112,23 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
             <Input
               label="Nombre"
               style={styles.inputField}
+=======
+        <View style={RegisterScreenStyle.content}>
+          <Text style={RegisterScreenStyle.title}>Crear Cuenta</Text>
+          <Text style={RegisterScreenStyle.subtitle}>Únete a Movan</Text>
+
+          <View style={RegisterScreenStyle.form}>
+            <Text style={RegisterScreenStyle.inputLabel}>Nombre</Text>
+            <Input style={RegisterScreenStyle.inputField}
+>>>>>>> b1ef8ea9e65c2b14d4ca3916987f86181090d2d7
               placeholder="Tu nombre"
               value={name}
               onChangeText={setName}
               autoCapitalize="words"
             />
 
-            <Input
-              label="Email"
+            <Text style={RegisterScreenStyle.inputLabel}>Email</Text>
+            <Input style={RegisterScreenStyle.inputField}
               placeholder="tu@email.com"
               style={styles.inputField}
               value={email}
@@ -123,18 +137,29 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
               autoCapitalize="none"
             />
 
+<<<<<<< HEAD
             <Input
               label="Contraseña"
               style={styles.inputField}
+=======
+            <Text style={RegisterScreenStyle.inputLabel}>Contraseña</Text>
+            <Input style={RegisterScreenStyle.inputField}
+>>>>>>> b1ef8ea9e65c2b14d4ca3916987f86181090d2d7
               placeholder="••••••••"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
             />
 
+<<<<<<< HEAD
             <Text style={styles.roleLabel}> Selecciona tu rol en Movan</Text>
             <View style={styles.roleContainer}>
               <RoleButton text="CLIENTE" value="CLIENT" />
+=======
+            <Text style={RegisterScreenStyle.roleLabel}> Selecciona tu rol en <Text style={RegisterScreenStyle.MovanText}>Movan</Text></Text>
+            <View style={RegisterScreenStyle.roleContainer}>
+              <RoleButton text="CLIENTE" value="CLIENT"/>
+>>>>>>> b1ef8ea9e65c2b14d4ca3916987f86181090d2d7
               <RoleButton text="TRANSPORTISTA" value="TRANSPORTIST" />
             </View>
 
@@ -147,10 +172,10 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
 
             <TouchableOpacity
               onPress={() => navigation?.navigate(SCREEN_NAMES.LOGIN)}
-              style={styles.loginButton}
+              style={RegisterScreenStyle.loginButton}
             >
-              <Text style={styles.loginText}>
-                ¿Ya tienes cuenta? <Text style={styles.loginTextBold}>Inicia sesión</Text>
+              <Text style={RegisterScreenStyle.loginText}>
+                ¿Ya tienes cuenta? <Text style={RegisterScreenStyle.loginTextBold}>Inicia sesión</Text>
               </Text>
             </TouchableOpacity>
           </View>
@@ -159,6 +184,7 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
     </SafeAreaView>
   );
 };
+<<<<<<< HEAD
 
 const styles = StyleSheet.create({
   container: {
@@ -239,3 +265,5 @@ const styles = StyleSheet.create({
 
   }
 });
+=======
+>>>>>>> b1ef8ea9e65c2b14d4ca3916987f86181090d2d7

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
@@ -11,12 +10,10 @@ import {
 } from 'react-native';
 import { Button } from '@presentation/components/common/Button';
 import { Input } from '@presentation/components/common/Input';
-import { colors } from '@presentation/theme/colors';
-import { spacing } from '@presentation/theme/spacing';
-import { typography } from '@presentation/theme/typography';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@data/config/firebase.config';
 import { SCREEN_NAMES } from '@infrastructure/utils/constants';
+import LoginScreenStyle from '../../theme/Auth-Screen-Styles/LoginScreenStyle';
 
 export const LoginScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -54,19 +51,19 @@ export const LoginScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={LoginScreenStyle.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
+        style={LoginScreenStyle.keyboardView}
       >
-        <View style={styles.content}>
-          <Text style={styles.title}>Bienvenidos a Movan</Text>
-          <Text style={styles.subtitle}>Conectando cargas con los transportistas de confianza</Text>
+        <View style={LoginScreenStyle.content}>
+          <Text style={LoginScreenStyle.title}>Bienvenidos a Movan</Text>
+          <Text style={LoginScreenStyle.subtitle}>Conectando cargas con los transportistas de confianza</Text>
 
-          <View style={styles.form}>
-            <Text style={styles.inputLabel}>Email</Text>
+          <View style={LoginScreenStyle.form}>
+            <Text style={LoginScreenStyle.inputLabel}>Email</Text>
             <Input
-              style={styles.inputField}
+              style={LoginScreenStyle.inputField}
               placeholder="tu@email.com"
               value={email}
               onChangeText={setEmail}
@@ -74,16 +71,16 @@ export const LoginScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
               autoCapitalize="none"
             />
 
-            <Text style={styles.inputLabel}>Contraseña</Text>
+            <Text style={LoginScreenStyle.inputLabel}>Contraseña</Text>
             <Input
-              style={styles.inputField}
+              style={LoginScreenStyle.inputField}
               placeholder="••••••••"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
             />
 
-            <Button
+            <Button style={LoginScreenStyle.logginButton}
               title="Iniciar Sesión"
               onPress={handleLogin}
               loading={loading}
@@ -92,10 +89,10 @@ export const LoginScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
 
             <TouchableOpacity
               onPress={() => navigation?.navigate(SCREEN_NAMES.REGISTER)}
-              style={styles.registerButton}
+              style={LoginScreenStyle.goToRegister}
             >
-              <Text style={styles.registerText}>
-                ¿No tienes cuenta? <Text style={styles.registerTextBold}>Regístrate como:</Text>
+              <Text style={LoginScreenStyle.registerText}>
+                ¿No tienes cuenta? <Text style={LoginScreenStyle.registerTextBold}> Regístrate haciendo click aqui</Text>
               </Text>
             </TouchableOpacity>
           </View>
@@ -105,57 +102,3 @@ export const LoginScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  buttons: {
-    marginTop: spacing.md,
-    backgroundColor: colors.bgLight,
-    color: colors.gray500
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: spacing.lg,
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: typography.fontSize['3xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.white,
-    marginTop: spacing.sm,
-  },
-  subtitle: {
-    fontSize: typography.fontSize.base,
-    color: colors.textSecondary,
-    marginBottom: spacing.xl,
-  },
-  form: {
-    marginTop: spacing.lg,
-  },
-  registerButton: {
-    marginTop: spacing['3xl'],
-    alignItems: 'center',
-  },
-  registerText: {
-    fontSize: typography.fontSize.sm,
-    color: colors.white,
-  },
-  registerTextBold: {
-    color: colors.primary,
-    fontWeight: typography.fontWeight.semibold,
-  },
-  inputLabel: {
-    marginBottom: spacing.sm,
-    color: colors.white,
-  },
-  inputField: {
-    backgroundColor: colors.bgLight,
-    borderColor: colors.gray500
-  },
-});

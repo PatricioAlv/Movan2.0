@@ -1,82 +1,99 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  ActivityIndicator,
-  FlatList,
-  TouchableOpacity,
-  TextInput,
-} from 'react-native';
-
+import { View, Text, SafeAreaView, ActivityIndicator, FlatList, TextInput, Alert } from 'react-native';
 import { Card } from '@presentation/components/common/Card';
 import { Button } from '@presentation/components/common/Button';
 import { colors } from '@presentation/theme/colors';
 import { spacing } from '@presentation/theme/spacing';
-import { typography } from '@presentation/theme/typography';
-import { container } from '@infrastructure/di/init';
+import TransShipmentBrowser from '@presentation/theme/Trans-Screen-Styles/TransShipmentBrowser';
+import { container } from '@infrastructure/di/container';
 import { TYPES } from '@infrastructure/di/types';
+import { Shipment } from '@core/entities/Order';
+import { GetAvailableShipmentsUseCase } from '@core/usecases/shipments/GetAvailableShipmentsUseCase';
 
-// IMPORTS PARA GOOGLE MAPS / PLACES (agregalos cuando los uses)
-// import { usePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+interface Props {
+  navigation: any;
+}
 
-// ENTIDAD A USAR CUANDO COMPLETES LA LÓGICA
-// import { Shipment } from '@core/entities/Order';
-
-export const TransportistBrowserScreen = ({ navigation }) => {
+export const TransportistBrowserScreen: React.FC<Props> = ({ navigation }) => {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-
-  const [results, setResults] = useState([]); // <Shipment[]> cuando conectes todo
+  const [allShipments, setAllShipments] = useState<Shipment[]>([]);
+  const [results, setResults] = useState<Shipment[]>([]);
 
   const loadAvailableShipments = async () => {
     try {
       setLoading(true);
 
-      // const getAvailableShipmentsUseCase = container.get(
-      //   TYPES.GetAvailableShipmentsUseCase
-      // );
-      // const data = await getAvailableShipmentsUseCase.execute(query);
+      const getAvailableShipmentsUseCase = container.get<GetAvailableShipmentsUseCase>(
+        TYPES.GetAvailableShipmentsUseCase
+      );
+      const data = await getAvailableShipmentsUseCase.execute();
 
-      // setResults(data);
-      setResults([]); // placeholder visual
+      setAllShipments(data);
+      filterShipments(data, query);
     } catch (err) {
       console.error('Error loading shipments:', err);
+      Alert.alert('Error', 'No se pudieron cargar los pedidos disponibles');
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
   };
 
+  const filterShipments = (shipments: Shipment[], searchQuery: string) => {
+    if (!searchQuery.trim()) {
+      setResults(shipments);
+      return;
+    }
+
+    const filtered = shipments.filter((shipment) => {
+      const searchLower = searchQuery.toLowerCase();
+      return (
+        shipment.origin.address.toLowerCase().includes(searchLower) ||
+        shipment.destination.address.toLowerCase().includes(searchLower) ||
+        shipment.cargoDescription.toLowerCase().includes(searchLower) ||
+        shipment.cargoType.toLowerCase().includes(searchLower)
+      );
+    });
+
+    setResults(filtered);
+  };
+
   useEffect(() => {
     loadAvailableShipments();
   }, []);
+
+  useEffect(() => {
+    filterShipments(allShipments, query);
+  }, [query]);
 
   const handleRefresh = () => {
     setRefreshing(true);
     loadAvailableShipments();
   };
 
-  const renderItem = ({ item }) => ( // Render de cada pedido
-    <Card style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.shipmentId}>Pedido #{item.id?.slice(0, 8) ?? '---'}</Text>
+  const renderItem = ({ item }: { item: Shipment }) => ( // Render de cada pedido
+    <Card style={TransShipmentBrowser.card}>
+      <View style={TransShipmentBrowser.cardHeader}>
+        <Text style={TransShipmentBrowser.shipmentId}>Pedido #{item.id?.slice(0, 8) ?? '---'}</Text>
       </View>
 
-      <View style={styles.locationContainer}>
-        <Text style={styles.locationLabel}>Origen:</Text>
-        <Text style={styles.locationValue}>{item.origin?.address ?? '---'}</Text>
+      <View style={TransShipmentBrowser.locationContainer}>
+        <Text style={TransShipmentBrowser.locationLabel}>Origen:</Text>
+        <Text style={TransShipmentBrowser.locationValue}>{item.origin?.address ?? '---'}</Text>
 
-        <Text style={[styles.locationLabel, { marginTop: spacing.sm }]}>Destino:</Text>
-        <Text style={styles.locationValue}>{item.destination?.address ?? '---'}</Text>
+        <Text style={[TransShipmentBrowser.locationLabel, { marginTop: spacing.sm }]}>Destino:</Text>
+        <Text style={TransShipmentBrowser.locationValue}>{item.destination?.address ?? '---'}</Text>
       </View>
 
-      <View style={styles.detailsContainer}>
-        <Text style={styles.detailText}>Carga: {item.cargoType ?? '---'}</Text>
-        <Text style={styles.detailText}>Peso: {item.weight ?? '---'} kg</Text>
-        <Text style={styles.detailPrice}>${item.price?.toLocaleString() ?? '---'}</Text>
+      <View style={TransShipmentBrowser.detailsContainer}>
+        <Text style={TransShipmentBrowser.detailText}>Carga: {item.cargoType ?? '---'}</Text>
+        <Text style={TransShipmentBrowser.detailText}>Peso: {item.weight ?? '---'} kg</Text>
+        <Text style={TransShipmentBrowser.detailText}>
+          Fecha: {item.pickupDate ? new Date(item.pickupDate).toLocaleDateString() : '---'}
+        </Text>
+        <Text style={TransShipmentBrowser.detailPrice}>${item.price?.toLocaleString() ?? '---'}</Text>
       </View>
 
       <Button
@@ -89,28 +106,28 @@ export const TransportistBrowserScreen = ({ navigation }) => {
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={TransShipmentBrowser.centerContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Buscador de Envíos</Text>
-        <Text style={styles.subtitle}>
+    <SafeAreaView style={TransShipmentBrowser.container}>
+      <View style={TransShipmentBrowser.header}>
+        <Text style={TransShipmentBrowser.title}>Buscador de Envíos</Text>
+        <Text style={TransShipmentBrowser.subtitle}>
           {results.length} resultados
         </Text>
       </View>
 
-      <View style={styles.searchContainer}>
+      <View style={TransShipmentBrowser.searchContainer}>
         <TextInput
           placeholder="Buscar dirección, ciudad o referencia…"
           placeholderTextColor={colors.textSecondary}
           value={query}
           onChangeText={setQuery}
-          style={styles.textSearcher}
+          style={styles.searchInput}
           onSubmitEditing={loadAvailableShipments}
         />
       </View>
@@ -119,14 +136,14 @@ export const TransportistBrowserScreen = ({ navigation }) => {
         data={results}
         keyExtractor={(item, index) => item.id ?? index.toString()}
         renderItem={renderItem}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={TransShipmentBrowser.listContent}
         refreshing={refreshing}
         onRefresh={handleRefresh}
         ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyIcon}>🔍</Text>
-            <Text style={styles.emptyTitle}>No se encontraron pedidos</Text>
-            <Text style={styles.emptySubtitle}>
+          <View style={TransShipmentBrowser.emptyContainer}>
+            <Text style={TransShipmentBrowser.emptyIcon}>🔍</Text>
+            <Text style={TransShipmentBrowser.emptyTitle}>No se encontraron pedidos</Text>
+            <Text style={TransShipmentBrowser.emptySubtitle}>
               Probá otra búsqueda o ajustá los filtros.
             </Text>
           </View>
@@ -138,7 +155,7 @@ export const TransportistBrowserScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1, 
     backgroundColor: colors.background,
   },
 
@@ -158,7 +175,6 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.bold,
     color: '#FFFFFF',
   },
-  
   subtitle: {
     fontSize: typography.fontSize.sm,
     color: '#FFFFFF',
