@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intro Camioneros V2</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #2c3e50; /* Color de fondo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #intro-container {
+            /* Transición suave para cuando el camión se vaya */
+            transition: transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045); /* Efecto de "arrancada" hacia atrás antes de salir */
+        }
+
+        /* --- Estilos del SVG --- */
+        .camion-svg {
+            width: 250px; /* Un poco más grande para que se vea bien */
+            height: auto;
+            /* Sombra para darle profundidad al suelo */
+            filter: drop-shadow(0px 10px 5px rgba(0,0,0,0.3));
+        }
+
+        .cuerpo-camion { fill: #E74C3C; }
+        .ventana { fill: #ECF0F1; }
+
+        /* --- LA CLAVE ESTÁ AQUÍ --- */
+        .rueda {
+            fill: #34495E;
+            stroke: #BDC3C7;
+            stroke-width: 3;
+            
+            /* ESTO ES LO IMPORTANTE PARA QUE GIRE SOBRE SU EJE */
+            /* Le dice al navegador: usa la caja de la propia rueda para calcular el centro */
+            transform-box: fill-box;
+            /* Pon el punto de pivote en el centro exacto de esa caja */
+            transform-origin: center;
+        }
+
+        /* --- Animación 1: Ruedas girando a toda velocidad --- */
+        @keyframes girar-furioso {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mientras se carga, las ruedas giran muy rápido (0.3s por vuelta) */
+        #intro-container:not(.app-cargada) .rueda {
+            animation: girar-furioso 0.3s linear infinite;
+        }
+
+        /* --- Animación 2: Salida (El camión se va) --- */
+        .app-cargada {
+             /* Se va rápido hacia la derecha */
+            transform: translateX(150vw);
+        }
+        
+        /* Detenemos las ruedas justo cuando empieza a moverse para que no se vea raro */
+        .app-cargada .rueda {
+             animation: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="intro-container">
+        <svg class="camion-svg" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+            <path class="cuerpo-camion" d="M10,40 L130,40 L130,10 L160,10 L190,40 L190,85 L10,85 Z" />
+            <rect class="ventana" x="140" y="20" width="30" height="20" />
+            
+            <g class="rueda" id="rueda-trasera">
+                <circle cx="45" cy="90" r="20" />
+                <line x1="30" y1="90" x2="60" y2="90" stroke="#BDC3C7" stroke-width="2"/>
+                <line x1="45" y1="75" x2="45" y2="105" stroke="#BDC3C7" stroke-width="2"/>
+            </g>
+
+            <g class="rueda" id="rueda-delantera">
+                <circle cx="155" cy="90" r="20" />
+                <line x1="140" y1="90" x2="170" y2="90" stroke="#BDC3C7" stroke-width="2"/>
+                <line x1="155" y1="75" x2="155" y2="105" stroke="#BDC3C7" stroke-width="2"/>
+            </g>
+        </svg>
+    </div>
+
+    <script>
+        // El mismo script de antes para simular los 3 segundos
+        window.addEventListener('load', () => {
+            const introContainer = document.getElementById('intro-container');
+            // Espera 3 segundos
+            setTimeout(() => {
+                introContainer.classList.add('app-cargada');
+            }, 3000);
+        });
+    </script>
+
+</body>
+</html>
