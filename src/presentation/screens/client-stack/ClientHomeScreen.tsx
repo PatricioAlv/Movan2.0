@@ -150,7 +150,11 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
   };
 
   const renderShipmentItem = ({ item }: { item: Shipment }) => (
-    <View style={ClientHomeScreenStyle.card}>
+    <TouchableOpacity 
+      style={ClientHomeScreenStyle.card}
+      onPress={() => navigation.navigate('ClientShipmentDetails', { shipmentId: item.id })}
+      activeOpacity={0.7}
+    >
       <View style={ClientHomeScreenStyle.cardHeader}>
         <View>
           <Text style={ClientHomeScreenStyle.shipmentId}>ID: #{item.id.slice(0, 8).toUpperCase()}</Text>
@@ -188,6 +192,14 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
         </View>
       </View>
 
+      {item.driverId && (
+        <View style={ClientHomeScreenStyle.driverAssignedBanner}>
+          <Text style={ClientHomeScreenStyle.driverAssignedText}>
+            ✓ Transportista asignado - Toca para ver detalles
+          </Text>
+        </View>
+      )}
+
       {item.status === ShipmentStatus.PENDING && (
         <TouchableOpacity
           style={ClientHomeScreenStyle.cancelButton}
@@ -196,7 +208,7 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
           <Text style={ClientHomeScreenStyle.cancelButtonText}>✕ Cancelar Envío</Text>
         </TouchableOpacity>
       )}
-    </View>
+    </TouchableOpacity>
   );
 
   if (loading) {

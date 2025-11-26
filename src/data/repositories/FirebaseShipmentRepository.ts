@@ -39,7 +39,7 @@ export class FirebaseShipmentRepository implements IShipmentRepository {
     return await this.dataSource.getByDriverId(driverId);
   }
 
-  async acceptShipment(shipmentId: string, driverId: string): Promise<void> {
-    await this.dataSource.assignDriver(shipmentId, driverId);
+  async acceptShipment(shipmentId: string, driverId: string, driverName: string, driverPhone?: string, driverEmail?: string): Promise<void> {
+    await this.dataSource.assignDriver(shipmentId, driverId, driverName, driverPhone, driverEmail);
   }
 }

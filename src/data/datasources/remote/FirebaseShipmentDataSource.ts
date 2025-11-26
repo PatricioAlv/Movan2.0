@@ -123,12 +123,23 @@ export class FirebaseShipmentDataSource {
     return shipments;
   }
 
-  async assignDriver(shipmentId: string, driverId: string): Promise<void> {
+  async assignDriver(shipmentId: string, driverId: string, driverName: string, driverPhone?: string, driverEmail?: string): Promise<void> {
     const shipmentRef = ref(database, `shipments/${shipmentId}`);
-    await update(shipmentRef, {
+    const updateData: any = {
       driverId,
+      driverName,
       status: ShipmentStatus.ACCEPTED,
       updatedAt: new Date().toISOString(),
-    });
+    };
+
+    if (driverPhone) {
+      updateData.driverPhone = driverPhone;
+    }
+
+    if (driverEmail) {
+      updateData.driverEmail = driverEmail;
+    }
+
+    await update(shipmentRef, updateData);
   }
 }

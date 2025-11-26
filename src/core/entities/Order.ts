@@ -26,6 +26,9 @@ export interface Shipment {
   id: string;
   clientId: string;
   driverId?: string;
+  driverName?: string;
+  driverPhone?: string;
+  driverEmail?: string;
   origin: Location;
   destination: Location;
   cargoType: CargoType;

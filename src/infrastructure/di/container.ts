@@ -89,7 +89,7 @@ const getAvailableShipmentsUseCase = new GetAvailableShipmentsUseCase(firebaseSh
 console.log('Creating GetDriverShipmentsUseCase instance...');
 const getDriverShipmentsUseCase = new GetDriverShipmentsUseCase(firebaseShipmentRepository);
 console.log('Creating AcceptShipmentUseCase instance...');
-const acceptShipmentUseCase = new AcceptShipmentUseCase(firebaseShipmentRepository);
+const acceptShipmentUseCase = new AcceptShipmentUseCase(firebaseShipmentRepository, firebaseUserRepository);
 console.log('Creating UpdateShipmentStatusUseCase instance...');
 const updateShipmentStatusUseCase = new UpdateShipmentStatusUseCase(firebaseShipmentRepository);
 console.log('Creating LogoutUseCase instance...');

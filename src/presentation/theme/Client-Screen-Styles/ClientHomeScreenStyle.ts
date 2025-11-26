@@ -130,6 +130,21 @@ const ClientHomeScreenStyle = {
     color: '#4A90E2',
     fontWeight: typography.fontWeight.bold,
   },
+  driverAssignedBanner: {
+    marginTop: spacing.sm,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    backgroundColor: '#064E3B',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#10B981',
+  },
+  driverAssignedText: {
+    color: '#6EE7B7',
+    fontSize: typography.fontSize.xs,
+    fontWeight: typography.fontWeight.semibold,
+    textAlign: 'center' as const,
+  },
   cancelButton: {
     marginTop: spacing.sm,
     paddingVertical: spacing.sm,
