@@ -177,7 +177,7 @@ export const MyShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) 
         {/* Cargo Info */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <FontAwesome name="cube" size={20} color={colors.primary} />
+            <FontAwesome name="cube" size={20} color="#10B981" />
             <Text style={styles.cardTitle}>Información de la Carga</Text>
           </View>
           <Text style={styles.cargoDescription}>{shipment.cargoDescription}</Text>
@@ -202,7 +202,7 @@ export const MyShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) 
           <Text style={styles.locationAddress}>{shipment.origin.address}</Text>
           {shipment.origin.contactName && (
             <View style={styles.contactRow}>
-              <FontAwesome name="user" size={14} color={colors.gray600} />
+              <FontAwesome name="user" size={14} color="#9CA3AF" />
               <Text style={styles.contactText}>{shipment.origin.contactName}</Text>
             </View>
           )}
@@ -211,7 +211,7 @@ export const MyShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) 
               style={styles.contactRow}
               onPress={() => Linking.openURL(`tel:${shipment.origin.contactPhone}`)}
             >
-              <FontAwesome name="phone" size={14} color={colors.primary} />
+              <FontAwesome name="phone" size={14} color="#10B981" />
               <Text style={[styles.contactText, styles.phoneLink]}>{shipment.origin.contactPhone}</Text>
             </TouchableOpacity>
           )}
@@ -237,7 +237,7 @@ export const MyShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) 
           <Text style={styles.locationAddress}>{shipment.destination.address}</Text>
           {shipment.destination.contactName && (
             <View style={styles.contactRow}>
-              <FontAwesome name="user" size={14} color={colors.gray600} />
+              <FontAwesome name="user" size={14} color="#9CA3AF" />
               <Text style={styles.contactText}>{shipment.destination.contactName}</Text>
             </View>
           )}
@@ -246,7 +246,7 @@ export const MyShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) 
               style={styles.contactRow}
               onPress={() => Linking.openURL(`tel:${shipment.destination.contactPhone}`)}
             >
-              <FontAwesome name="phone" size={14} color={colors.primary} />
+              <FontAwesome name="phone" size={14} color="#10B981" />
               <Text style={[styles.contactText, styles.phoneLink]}>{shipment.destination.contactPhone}</Text>
             </TouchableOpacity>
           )}
@@ -267,7 +267,7 @@ export const MyShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) 
         <View style={styles.card}>
           <View style={styles.infoRow}>
             <View style={styles.infoItem}>
-              <FontAwesome name="calendar" size={18} color={colors.gray600} />
+              <FontAwesome name="calendar" size={18} color="#9CA3AF" />
               <View style={styles.infoContent}>
                 <Text style={styles.infoLabel}>Fecha de Recogida</Text>
                 <Text style={styles.infoValue}>
@@ -298,7 +298,7 @@ export const MyShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) 
         {shipment.notes && (
           <View style={styles.card}>
             <View style={styles.cardHeader}>
-              <FontAwesome name="sticky-note-o" size={18} color={colors.gray600} />
+              <FontAwesome name="sticky-note-o" size={18} color="#9CA3AF" />
               <Text style={styles.cardTitle}>Notas</Text>
             </View>
             <Text style={styles.notesText}>{shipment.notes}</Text>
@@ -346,35 +346,37 @@ export const MyShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#111315',
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#111315',
   },
   scrollContent: {
     padding: spacing.md,
   },
   header: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1A1D21',
     padding: spacing.lg,
     borderRadius: 12,
     marginBottom: spacing.md,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#2A2D32',
   },
   headerLabel: {
     fontSize: 12,
-    color: colors.gray600,
+    color: '#9CA3AF',
     marginBottom: 4,
   },
   shipmentId: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#FFFFFF',
   },
   statusBadge: {
     paddingHorizontal: 12,
@@ -387,10 +389,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1A1D21',
     padding: spacing.lg,
     borderRadius: 12,
     marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: '#2A2D32',
   },
   cardHeader: {
     flexDirection: 'row',
@@ -400,13 +404,13 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#000',
+    color: '#FFFFFF',
     marginLeft: spacing.sm,
   },
   cargoDescription: {
     fontSize: 18,
     fontWeight: '500',
-    color: '#000',
+    color: '#FFFFFF',
     marginBottom: spacing.md,
   },
   detailsGrid: {
@@ -418,17 +422,17 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 12,
-    color: colors.gray600,
+    color: '#9CA3AF',
     marginBottom: 4,
   },
   detailValue: {
     fontSize: 14,
-    color: '#000',
+    color: '#FFFFFF',
     fontWeight: '500',
   },
   locationAddress: {
     fontSize: 15,
-    color: '#000',
+    color: '#FFFFFF',
     fontWeight: '500',
     marginBottom: spacing.sm,
   },
@@ -439,17 +443,17 @@ const styles = StyleSheet.create({
   },
   contactText: {
     fontSize: 14,
-    color: colors.gray600,
+    color: '#9CA3AF',
     marginLeft: spacing.xs,
   },
   phoneLink: {
-    color: colors.primary,
+    color: '#10B981',
     textDecorationLine: 'underline',
   },
   mapButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: '#10B981',
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 8,
@@ -475,12 +479,12 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 12,
-    color: colors.gray600,
+    color: '#9CA3AF',
     marginBottom: 4,
   },
   infoValue: {
     fontSize: 14,
-    color: '#000',
+    color: '#FFFFFF',
     fontWeight: '500',
   },
   priceValue: {
@@ -490,12 +494,12 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: colors.gray200,
+    backgroundColor: '#2A2D32',
     marginVertical: spacing.md,
   },
   notesText: {
     fontSize: 14,
-    color: '#000',
+    color: '#FFFFFF',
     lineHeight: 20,
   },
   actionsContainer: {
@@ -520,6 +524,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: colors.gray600,
+    color: '#9CA3AF',
   },
 });
