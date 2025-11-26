@@ -113,7 +113,6 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
             <Text style={RegisterScreenStyle.inputLabel}>Email</Text>
             <Input style={RegisterScreenStyle.inputField}
               placeholder="tu@email.com"
-              style={styles.inputField}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"

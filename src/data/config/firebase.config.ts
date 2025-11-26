@@ -1,7 +1,8 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
-import { getAnalytics, Analytics } from 'firebase/analytics';
+import { getAnalytics, Analytics, isSupported } from 'firebase/analytics';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
   apiKey: "AIzaSyASHt-0Q9eeRC6MrQ5BcD69Vq4cY7xFxf4",
@@ -16,15 +17,23 @@ const firebaseConfig = {
 //mandar para un .env!!!!!!!!!
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+
+// Inicializar Auth con persistencia en AsyncStorage
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage)
+});
+
 const database = getDatabase(app);
 let analytics: Analytics | null = null;
 
-try {
-  analytics = getAnalytics(app);
-} catch (error) {
-  console.warn('Firebase Analytics not available in this environment');
-}
+// Inicializar Analytics solo si está soportado
+isSupported().then((supported) => {
+  if (supported) {
+    analytics = getAnalytics(app);
+  }
+}).catch(() => {
+  console.log('Firebase Analytics no está disponible en este entorno');
+});
 
 export { auth, database, analytics };
 export default app;

@@ -5,134 +5,155 @@ import { typography } from '../typography';
 const ClientHomeScreenStyle = {
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#1a2332',
   },
   centerContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'center' as const,
+    alignItems: 'center' as const,
   },
   header: {
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
-    backgroundColor: colors.primary,
+    backgroundColor: '#1a2332',
+    borderBottomWidth: 1,
+    borderBottomColor: '#2a3442',
   },
   title: {
     fontSize: typography.fontSize['2xl'],
     fontWeight: typography.fontWeight.bold,
     color: '#FFFFFF',
-  },
-  subtitle: {
-    fontSize: typography.fontSize.sm,
-    color: '#FFFFFF',
-    opacity: 0.9,
-    marginTop: spacing.xs,
-  },
-  listContent: {
-    padding: spacing.lg,
-  },
-  card: {
     marginBottom: spacing.md,
   },
+  tabContainer: {
+    flexDirection: 'row' as const,
+    gap: spacing.lg,
+  },
+  tabActive: {
+    fontSize: typography.fontSize.base,
+    fontWeight: typography.fontWeight.semibold,
+    color: '#FFFFFF',
+    paddingBottom: spacing.xs,
+    borderBottomWidth: 2,
+    borderBottomColor: '#4A90E2',
+  },
+  tabInactive: {
+    fontSize: typography.fontSize.base,
+    fontWeight: typography.fontWeight.medium,
+    color: '#6B7280',
+  },
+  listContent: {
+    padding: spacing.md,
+  },
+  card: {
+    backgroundColor: '#243447',
+    borderRadius: 12,
+    padding: spacing.md,
+    marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: '#2a3442',
+  },
   cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: 'row' as const,
+    justifyContent: 'space-between' as const,
+    alignItems: 'flex-start' as const,
     marginBottom: spacing.md,
   },
   shipmentId: {
+    fontSize: typography.fontSize.sm,
+    fontWeight: typography.fontWeight.medium,
+    color: '#9CA3AF',
+    marginBottom: 4,
+  },
+  cargoType: {
     fontSize: typography.fontSize.base,
     fontWeight: typography.fontWeight.semibold,
-    color: colors.textTextArea,
+    color: '#FFFFFF',
   },
   statusBadge: {
     paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    borderRadius: 12,
+    paddingVertical: 4,
+    borderRadius: 8,
   },
   statusText: {
     fontSize: typography.fontSize.xs,
     fontWeight: typography.fontWeight.semibold,
     color: '#FFFFFF',
   },
-  locationContainer: {
+  routeContainer: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'space-between' as const,
     marginBottom: spacing.md,
+    paddingVertical: spacing.sm,
   },
-  locationItem: {
-    marginBottom: spacing.sm,
+  locationPoint: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    flex: 1,
   },
-  locationLabel: {
-    fontSize: typography.fontSize.xs,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.textSecondary,
-    textTransform: 'uppercase',
-    marginBottom: spacing.xs,
+  locationIcon: {
+    fontSize: 16,
+    marginRight: 6,
   },
-  locationAddress: {
-    fontSize: typography.fontSize.base,
-    color: colors.textSecondary,
+  locationCity: {
+    fontSize: typography.fontSize.sm,
+    color: '#E5E7EB',
     fontWeight: typography.fontWeight.medium,
+    flex: 1,
   },
-  contactInfo: {
-    fontSize: typography.fontSize.sm,
-    color: colors.textSecondary,
-    marginTop: spacing.xs,
+  routeArrow: {
+    fontSize: 16,
+    color: '#6B7280',
+    marginHorizontal: spacing.sm,
   },
-  arrow: {
-    alignItems: 'center',
-    marginVertical: spacing.xs,
-  },
-  arrowText: {
-    fontSize: typography.fontSize.lg,
-    color: colors.primary,
-  },
-  detailsContainer: {
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    paddingTop: spacing.md,
+  infoRow: {
+    flexDirection: 'row' as const,
+    justifyContent: 'space-between' as const,
     marginBottom: spacing.sm,
   },
-  detailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: spacing.xs,
+  infoItem: {
+    flex: 1,
   },
-  detailLabel: {
-    fontSize: typography.fontSize.sm,
-    color: colors.textSecondary,
+  infoLabel: {
+    fontSize: typography.fontSize.xs,
+    color: '#9CA3AF',
+    marginBottom: 4,
   },
-  detailValue: {
+  infoValue: {
     fontSize: typography.fontSize.sm,
-    color: colors.textSecondary,
+    color: '#E5E7EB',
     fontWeight: typography.fontWeight.medium,
   },
   priceValue: {
     fontSize: typography.fontSize.base,
-    color: colors.primary,
+    color: '#4A90E2',
     fontWeight: typography.fontWeight.bold,
   },
   cancelButton: {
     marginTop: spacing.sm,
     paddingVertical: spacing.sm,
-    backgroundColor: '#FFE5E5',
+    backgroundColor: '#3F2626',
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: 'center' as const,
+    borderWidth: 1,
+    borderColor: '#DC143C',
   },
   cancelButtonText: {
-    color: '#DC143C',
+    color: '#FF6B6B',
     fontSize: typography.fontSize.sm,
     fontWeight: typography.fontWeight.semibold,
   },
   buttonContainer: {
     padding: spacing.lg,
-    backgroundColor: colors.background,
+    backgroundColor: '#1a2332',
     borderTopWidth: 1,
-    borderTopColor: colors.border,
+    borderTopColor: '#2a3442',
   },
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'center' as const,
+    alignItems: 'center' as const,
     paddingHorizontal: spacing.xl,
   },
   emptyText: {
@@ -142,13 +163,13 @@ const ClientHomeScreenStyle = {
   emptyTitle: {
     fontSize: typography.fontSize.xl,
     fontWeight: typography.fontWeight.bold,
-    color: colors.textPrimary,
+    color: '#FFFFFF',
     marginBottom: spacing.sm,
   },
   emptySubtext: {
     fontSize: typography.fontSize.base,
-    color: colors.textSecondary,
-    textAlign: 'center',
+    color: '#9CA3AF',
+    textAlign: 'center' as const,
   },
 }
 

@@ -6,7 +6,7 @@ import { typography } from '@presentation/theme/typography';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#1a2332',
   },
   scrollContent: {
     paddingBottom: spacing.xl,
@@ -14,61 +14,64 @@ export const styles = StyleSheet.create({
   header: {
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.lg,
-    backgroundColor: colors.background,
+    backgroundColor: '#1a2332',
+    borderBottomWidth: 1,
+    borderBottomColor: '#2a3442',
   },
   headerTitle: {
     fontSize: typography.fontSize['2xl'],
     fontWeight: typography.fontWeight.bold,
-    color: colors.textPrimary,
+    color: '#FFFFFF',
   },
   
   // Profile Section
   profileSection: {
     alignItems: 'center',
     paddingVertical: spacing.xl,
-    backgroundColor: colors.bgLight,
+    backgroundColor: '#1a2332',
     marginHorizontal: spacing.lg,
     marginBottom: spacing.lg,
-    borderRadius: 16,
   },
   profileImageContainer: {
     marginBottom: spacing.md,
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
   profileImagePlaceholder: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: colors.primary,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#4A90E2',
     justifyContent: 'center',
     alignItems: 'center',
   },
   userName: {
     fontSize: typography.fontSize.xl,
     fontWeight: typography.fontWeight.bold,
-    color: colors.textPrimary,
+    color: '#FFFFFF',
     marginBottom: spacing.xs,
   },
   userRole: {
     fontSize: typography.fontSize.base,
-    color: colors.textSecondary,
+    color: '#9CA3AF',
     marginBottom: spacing.md,
   },
   editProfileButton: {
-    backgroundColor: colors.primary,
+    backgroundColor: '#2C3E50',
     paddingHorizontal: spacing.xl,
     paddingVertical: spacing.sm,
     borderRadius: 8,
     marginTop: spacing.sm,
+    borderWidth: 1,
+    borderColor: '#4A5568',
   },
   editProfileButtonText: {
     fontSize: typography.fontSize.base,
     fontWeight: typography.fontWeight.semibold,
-    color: colors.white,
+    color: '#E5E7EB',
   },
 
   // Sections
@@ -79,7 +82,7 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: typography.fontSize.xs,
     fontWeight: typography.fontWeight.bold,
-    color: colors.textSecondary,
+    color: '#6B7280',
     marginBottom: spacing.md,
     letterSpacing: 1,
   },
@@ -89,11 +92,13 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.bgLight,
+    backgroundColor: '#243447',
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.md,
     borderRadius: 12,
     marginBottom: spacing.sm,
+    borderWidth: 1,
+    borderColor: '#2a3442',
   },
   menuItemLeft: {
     flexDirection: 'row',
@@ -104,37 +109,39 @@ export const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 8,
-    backgroundColor: colors.primary,
+    backgroundColor: '#2C3E50',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.md,
   },
   menuItemText: {
     fontSize: typography.fontSize.base,
-    color: colors.textPrimary,
+    color: '#E5E7EB',
     fontWeight: typography.fontWeight.medium,
   },
 
   // Logout Button
   logoutButton: {
     marginHorizontal: spacing.lg,
-    backgroundColor: colors.error,
+    backgroundColor: '#991B1B',
     paddingVertical: spacing.md,
     borderRadius: 12,
     alignItems: 'center',
     marginTop: spacing.md,
     marginBottom: spacing.lg,
+    borderWidth: 1,
+    borderColor: '#DC2626',
   },
   logoutButtonText: {
     fontSize: typography.fontSize.base,
     fontWeight: typography.fontWeight.bold,
-    color: colors.white,
+    color: '#FFFFFF',
   },
 
   // Version
   versionText: {
     fontSize: typography.fontSize.sm,
-    color: colors.textSecondary,
+    color: '#6B7280',
     textAlign: 'center',
     marginTop: spacing.sm,
   },

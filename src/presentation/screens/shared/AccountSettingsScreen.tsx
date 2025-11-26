@@ -8,14 +8,17 @@ import {
   Image,
   Alert,
   Switch,
+  ActivityIndicator,
 } from 'react-native';
 import { styles } from '@presentation/theme/Shared-Screen-Styles/AccountSettingsStyle';
 import { container } from '@infrastructure/di/container';
 import { TYPES } from '@infrastructure/di/types';
 import { LogoutUseCase } from '@core/usecases/auth/LogoutUseCase';
+import { GetUserUseCase } from '@core/usecases/user/GetUserUseCase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '@infrastructure/utils/constants';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { auth } from '@data/config/firebase.config';
 
 interface Props {
   navigation: any;
@@ -42,21 +45,38 @@ export const AccountSettingsScreen: React.FC<Props> = ({ navigation }) => {
   const [userRole, setUserRole] = useState('');
   const [darkMode, setDarkMode] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const logoutUseCase = container.get<LogoutUseCase>(TYPES.LogoutUseCase);
+  const getUserUseCase = container.get<GetUserUseCase>(TYPES.GetUserUseCase);
 
   useEffect(() => {
     loadUserData();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadUserData();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const loadUserData = async () => {
     try {
-      const userData = await AsyncStorage.getItem(STORAGE_KEYS.USER_DATA);
-      if (userData) {
-        const user = JSON.parse(userData);
+      setLoading(true);
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        console.error('No user authenticated');
+        return;
+      }
+
+      const user = await getUserUseCase.execute(currentUser.uid);
+      if (user) {
         setUserName(user.name || 'Usuario');
         setUserRole(getRoleLabel(user.role));
       }
     } catch (error) {
       console.error('Error loading user data:', error);
+      Alert.alert('Error', 'No se pudo cargar la información del usuario');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -197,10 +217,21 @@ export const AccountSettingsScreen: React.FC<Props> = ({ navigation }) => {
     </View>
   );
 
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#4A90E2" />
+          <Text style={{ marginTop: 16, fontSize: 16, color: '#9CA3AF' }}>Cargando...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header con perfil */}
+        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Configuración</Text>
         </View>

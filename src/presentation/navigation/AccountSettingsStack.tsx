@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AccountSettingsScreen } from '@presentation/screens/shared/AccountSettingsScreen';
 import { ProfileDetailScreen } from '@presentation/screens/shared/ProfileDetailScreen';
+import { EditProfileScreen } from '@presentation/screens/shared/EditProfileScreen';
 
 const Stack = createStackNavigator();
 
@@ -19,6 +20,10 @@ export function AccountSettingsStack() {
       <Stack.Screen
         name="ProfileDetail"
         component={ProfileDetailScreen}
+      />
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfileScreen}
       />
     </Stack.Navigator>
   );

@@ -6,7 +6,7 @@ import { typography } from '@presentation/theme/typography';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#1a2332',
   },
   scrollContent: {
     paddingBottom: spacing.xl,
@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.lg,
-    backgroundColor: colors.background,
+    backgroundColor: '#1a2332',
   },
   backButton: {
     width: 40,
@@ -30,7 +30,7 @@ export const styles = StyleSheet.create({
   headerTitle: {
     fontSize: typography.fontSize.xl,
     fontWeight: typography.fontWeight.bold,
-    color: colors.textPrimary,
+    color: '#FFFFFF',
   },
   placeholder: {
     width: 40,
@@ -40,10 +40,9 @@ export const styles = StyleSheet.create({
   profileCard: {
     alignItems: 'center',
     paddingVertical: spacing.xl,
-    backgroundColor: colors.bgLight,
+    backgroundColor: '#1a2332',
     marginHorizontal: spacing.lg,
     marginBottom: spacing.lg,
-    borderRadius: 16,
   },
   profileImageContainer: {
     position: 'relative',
@@ -58,7 +57,7 @@ export const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: colors.primary,
+    backgroundColor: '#F4A261',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -66,24 +65,24 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 0,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.primary,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#4A90E2',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
-    borderColor: colors.bgLight,
+    borderColor: '#1a2332',
   },
   userName: {
-    fontSize: typography.fontSize.xl,
+    fontSize: typography.fontSize['2xl'],
     fontWeight: typography.fontWeight.bold,
-    color: colors.textPrimary,
+    color: '#FFFFFF',
     marginBottom: spacing.xs,
   },
   userRole: {
     fontSize: typography.fontSize.base,
-    color: colors.textSecondary,
+    color: '#9CA3AF',
   },
 
   // Sections
@@ -94,7 +93,7 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: typography.fontSize.xs,
     fontWeight: typography.fontWeight.bold,
-    color: colors.textSecondary,
+    color: '#6B7280',
     marginBottom: spacing.md,
     letterSpacing: 1,
   },
@@ -104,11 +103,13 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.bgLight,
+    backgroundColor: '#243447',
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.md,
     borderRadius: 12,
     marginBottom: spacing.sm,
+    borderWidth: 1,
+    borderColor: '#2a3442',
   },
   menuItemLeft: {
     flexDirection: 'row',
@@ -116,17 +117,17 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   iconContainer: {
-    width: 36,
-    height: 36,
+    width: 40,
+    height: 40,
     borderRadius: 8,
-    backgroundColor: colors.primary,
+    backgroundColor: '#2C3E50',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.md,
   },
   menuItemText: {
     fontSize: typography.fontSize.base,
-    color: colors.textPrimary,
+    color: '#E5E7EB',
     fontWeight: typography.fontWeight.medium,
   },
 });

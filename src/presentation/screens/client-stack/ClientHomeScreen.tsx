@@ -53,6 +53,8 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
   const [shipments, setShipments] = useState<Shipment[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [activeTab, setActiveTab] = useState<'active' | 'history'>('active');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const loadShipments = async () => {
     try {
@@ -88,6 +90,35 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
     loadShipments();
   };
 
+  const getFilteredShipments = () => {
+    let filtered = shipments;
+
+    // Filtrar por tab
+    if (activeTab === 'active') {
+      filtered = filtered.filter(s => 
+        s.status !== ShipmentStatus.DELIVERED && 
+        s.status !== ShipmentStatus.CANCELLED
+      );
+    } else {
+      filtered = filtered.filter(s => 
+        s.status === ShipmentStatus.DELIVERED || 
+        s.status === ShipmentStatus.CANCELLED
+      );
+    }
+
+    // Filtrar por búsqueda
+    if (searchQuery) {
+      filtered = filtered.filter(s =>
+        s.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.cargoType.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.origin.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.destination.address.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    return filtered;
+  };
+
   const handleCancelShipment = async (shipmentId: string) => {
     Alert.alert(
       'Cancelar Envío',
@@ -119,51 +150,40 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
   };
 
   const renderShipmentItem = ({ item }: { item: Shipment }) => (
-    <Card style={ClientHomeScreenStyle.card}>
+    <View style={ClientHomeScreenStyle.card}>
       <View style={ClientHomeScreenStyle.cardHeader}>
-        <Text style={ClientHomeScreenStyle.shipmentId}>Envío #{item.id.slice(0, 8)}</Text>
+        <View>
+          <Text style={ClientHomeScreenStyle.shipmentId}>ID: #{item.id.slice(0, 8).toUpperCase()}</Text>
+          <Text style={ClientHomeScreenStyle.cargoType}>{item.cargoType}</Text>
+        </View>
         <View style={[ClientHomeScreenStyle.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
           <Text style={ClientHomeScreenStyle.statusText}>{getStatusText(item.status)}</Text>
         </View>
       </View>
 
-      <View style={ClientHomeScreenStyle.locationContainer}>
-        <View style={ClientHomeScreenStyle.locationItem}>
-          <Text style={ClientHomeScreenStyle.locationLabel}>Origen:</Text>
-          <Text style={ClientHomeScreenStyle.locationAddress}>{item.origin.address}</Text>
-          {item.origin.contactName && (
-            <Text style={ClientHomeScreenStyle.contactInfo}>👤 {item.origin.contactName}</Text>
-          )}
+      <View style={ClientHomeScreenStyle.routeContainer}>
+        <View style={ClientHomeScreenStyle.locationPoint}>
+          <Text style={ClientHomeScreenStyle.locationIcon}>🟢</Text>
+          <Text style={ClientHomeScreenStyle.locationCity} numberOfLines={1}>
+            {item.origin.address.split(',')[0]}
+          </Text>
         </View>
-
-        <View style={ClientHomeScreenStyle.arrow}>
-          <Text style={ClientHomeScreenStyle.arrowText}>⬇</Text>
-        </View>
-
-        <View style={ClientHomeScreenStyle.locationItem}>
-          <Text style={ClientHomeScreenStyle.locationLabel}>Destino:</Text>
-          <Text style={ClientHomeScreenStyle.locationAddress}>{item.destination.address}</Text>
-          {item.destination.contactName && (
-            <Text style={ClientHomeScreenStyle.contactInfo}>👤 {item.destination.contactName}</Text>
-          )}
+        <Text style={ClientHomeScreenStyle.routeArrow}>→</Text>
+        <View style={ClientHomeScreenStyle.locationPoint}>
+          <Text style={ClientHomeScreenStyle.locationIcon}>🔴</Text>
+          <Text style={ClientHomeScreenStyle.locationCity} numberOfLines={1}>
+            {item.destination.address.split(',')[0]}
+          </Text>
         </View>
       </View>
 
-      <View style={ClientHomeScreenStyle.detailsContainer}>
-        <View style={ClientHomeScreenStyle.detailRow}>
-          <Text style={ClientHomeScreenStyle.detailLabel}>Tipo de carga:</Text>
-          <Text style={ClientHomeScreenStyle.detailValue}>{item.cargoType}</Text>
+      <View style={ClientHomeScreenStyle.infoRow}>
+        <View style={ClientHomeScreenStyle.infoItem}>
+          <Text style={ClientHomeScreenStyle.infoLabel}>📦 Peso</Text>
+          <Text style={ClientHomeScreenStyle.infoValue}>{item.weight} kg</Text>
         </View>
-        <View style={ClientHomeScreenStyle.detailRow}>
-          <Text style={ClientHomeScreenStyle.detailLabel}>Descripción:</Text>
-          <Text style={ClientHomeScreenStyle.detailValue}>{item.cargoDescription}</Text>
-        </View>
-        <View style={ClientHomeScreenStyle.detailRow}>
-          <Text style={ClientHomeScreenStyle.detailLabel}>Peso:</Text>
-          <Text style={ClientHomeScreenStyle.detailValue}>{item.weight} kg</Text>
-        </View>
-        <View style={ClientHomeScreenStyle.detailRow}>
-          <Text style={ClientHomeScreenStyle.detailLabel}>Precio:</Text>
+        <View style={ClientHomeScreenStyle.infoItem}>
+          <Text style={ClientHomeScreenStyle.infoLabel}>💰 Precio</Text>
           <Text style={ClientHomeScreenStyle.priceValue}>${item.price.toLocaleString()}</Text>
         </View>
       </View>
@@ -173,10 +193,10 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
           style={ClientHomeScreenStyle.cancelButton}
           onPress={() => handleCancelShipment(item.id)}
         >
-          <Text style={ClientHomeScreenStyle.cancelButtonText}>Cancelar Envío</Text>
+          <Text style={ClientHomeScreenStyle.cancelButtonText}>✕ Cancelar Envío</Text>
         </TouchableOpacity>
       )}
-    </Card>
+    </View>
   );
 
   if (loading) {
@@ -187,26 +207,42 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
     );
   }
 
+  const filteredShipments = getFilteredShipments();
+
   return (
     <SafeAreaView style={ClientHomeScreenStyle.container}>
       <View style={ClientHomeScreenStyle.header}>
         <Text style={ClientHomeScreenStyle.title}>Mis Envíos</Text>
-        <Text style={ClientHomeScreenStyle.subtitle}>
-          {shipments.length} {shipments.length === 1 ? 'envío' : 'envíos'}
-        </Text>
+        <View style={ClientHomeScreenStyle.tabContainer}>
+          <TouchableOpacity onPress={() => setActiveTab('active')}>
+            <Text style={activeTab === 'active' ? ClientHomeScreenStyle.tabActive : ClientHomeScreenStyle.tabInactive}>
+              En Curso
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setActiveTab('history')}>
+            <Text style={activeTab === 'history' ? ClientHomeScreenStyle.tabActive : ClientHomeScreenStyle.tabInactive}>
+              Historial
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
-      {shipments.length === 0 ? (
+      {filteredShipments.length === 0 ? (
         <View style={ClientHomeScreenStyle.emptyContainer}>
           <Text style={ClientHomeScreenStyle.emptyText}>📦</Text>
-          <Text style={ClientHomeScreenStyle.emptyTitle}>No tienes envíos</Text>
+          <Text style={ClientHomeScreenStyle.emptyTitle}>
+            {activeTab === 'active' ? 'No tienes envíos activos' : 'No hay historial'}
+          </Text>
           <Text style={ClientHomeScreenStyle.emptySubtext}>
-            Crea tu primer envío para comenzar
+            {activeTab === 'active' 
+              ? 'Crea tu primer envío para comenzar'
+              : 'Tus envíos completados aparecerán aquí'
+            }
           </Text>
         </View>
       ) : (
         <FlatList
-          data={shipments}
+          data={filteredShipments}
           keyExtractor={(item) => item.id}
           renderItem={renderShipmentItem}
           contentContainerStyle={ClientHomeScreenStyle.listContent}

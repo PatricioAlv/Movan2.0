@@ -14,7 +14,7 @@ const RegisterScreenStyle = {
   content: {
     flex: 1,
     paddingHorizontal: spacing.lg,
-    justifyContent: 'center',
+    justifyContent: 'center' as const,
   },
   title: {
     fontSize: typography.fontSize['3xl'],
@@ -32,7 +32,7 @@ const RegisterScreenStyle = {
   },
   loginButton: {
     marginTop: spacing.lg,
-    alignItems: 'center',
+    alignItems: 'center' as const,
   },
   InputText: {
     fontSize: typography.fontSize.sm,
@@ -57,7 +57,7 @@ const RegisterScreenStyle = {
     fontWeight: typography.fontWeight.bold,
   },
   roleContainer: {
-    flexDirection: 'row',
+    flexDirection: 'row' as const,
     top: 5,
     gap: spacing.md,
     marginBottom: spacing.lg,
@@ -68,7 +68,7 @@ const RegisterScreenStyle = {
     borderWidth: 2,
     borderColor: colors.border,
     borderRadius: spacing.sm,
-    alignItems: 'center',
+    alignItems: 'center' as const,
   },
   roleButtonSelected: {
     backgroundColor: colors.primary,
