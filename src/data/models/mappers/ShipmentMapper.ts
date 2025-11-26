@@ -4,6 +4,9 @@ export interface ShipmentModel {
   id: string;
   clientId: string;
   driverId?: string;
+  driverName?: string;
+  driverPhone?: string;
+  driverEmail?: string;
   origin: Location;
   destination: Location;
   cargoType: CargoType;
@@ -24,6 +27,9 @@ export class ShipmentMapper {
       id: model.id,
       clientId: model.clientId,
       driverId: model.driverId,
+      driverName: model.driverName,
+      driverPhone: model.driverPhone,
+      driverEmail: model.driverEmail,
       origin: model.origin,
       destination: model.destination,
       cargoType: model.cargoType,
@@ -44,6 +50,9 @@ export class ShipmentMapper {
       id: domain.id,
       clientId: domain.clientId,
       driverId: domain.driverId,
+      driverName: domain.driverName,
+      driverPhone: domain.driverPhone,
+      driverEmail: domain.driverEmail,
       origin: domain.origin,
       destination: domain.destination,
       cargoType: domain.cargoType,
