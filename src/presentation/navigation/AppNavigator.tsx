@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthNavigator } from './AuthNavigator';
 import { ClientNavigator } from './ClientNavigator';
 import { TransportistNavigator } from './TransportistNavigator';
@@ -11,11 +12,15 @@ import { container } from '@infrastructure/di/container';
 import { IAuthRepository } from '@core/repositories/IAuthRepository';
 import { TYPES } from '@infrastructure/di/types';
 import { SplashScreen } from '@presentation/screens/SplashScreen';
+import { WelcomeScreen } from '@presentation/screens/WelcomeScreen';
+
+const Stack = createNativeStackNavigator();
 
 export const AppNavigator: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [showSplash, setShowSplash] = useState(true);
+  const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
 
   useEffect(() => {
     const authRepository = container.get<IAuthRepository>(TYPES.IAuthRepository);
@@ -29,6 +34,7 @@ export const AppNavigator: React.FC = () => {
 
       const user = await authRepository.getCurrentUser();
       setUserRole(user?.role ?? null);
+      setHasSeenWelcome(true); // Si ya está autenticado, ya vio el welcome
 
       setIsLoading(false);
     });
@@ -55,6 +61,15 @@ export const AppNavigator: React.FC = () => {
       case 'TRANSPORTIST':
         return <TransportistNavigator />;
       default:
+        // Si no está autenticado, mostrar Welcome primero
+        if (!hasSeenWelcome) {
+          return (
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="Welcome" component={WelcomeScreen} />
+              <Stack.Screen name="Auth" component={AuthNavigator} />
+            </Stack.Navigator>
+          );
+        }
         return <AuthNavigator />;
     }
   };
