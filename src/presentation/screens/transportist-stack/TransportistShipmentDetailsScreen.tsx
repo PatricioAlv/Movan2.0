@@ -37,7 +37,7 @@ export const TransportistShipmentDetailsScreen: React.FC<Props> = ({ navigation,
         TYPES.GetShipmentByIdUseCase
       );
       const data = await getShipmentByIdUseCase.execute(shipmentId);
-      
+
       if (data) {
         setShipment(data);
       } else {
@@ -77,7 +77,7 @@ export const TransportistShipmentDetailsScreen: React.FC<Props> = ({ navigation,
                 TYPES.AcceptShipmentUseCase
               );
               await acceptShipmentUseCase.execute(shipmentId, driverId);
-              
+
               Alert.alert('Éxito', 'Has aceptado el pedido exitosamente', [
                 {
                   text: 'OK',
@@ -116,11 +116,12 @@ export const TransportistShipmentDetailsScreen: React.FC<Props> = ({ navigation,
 
   return (
     <SafeAreaView style={styles.container}>
+
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Card style={styles.card}>
           <Text style={styles.title}>Detalles del Pedido</Text>
           <Text style={styles.shipmentId}>#{shipment.id.slice(0, 8)}</Text>
-          
+
           <View style={styles.statusContainer}>
             <Text style={[
               styles.statusBadge,
@@ -133,7 +134,7 @@ export const TransportistShipmentDetailsScreen: React.FC<Props> = ({ navigation,
 
         <Card style={styles.card}>
           <Text style={styles.sectionTitle}>📍 Ubicaciones</Text>
-          
+
           <View style={styles.locationSection}>
             <Text style={styles.locationLabel}>Origen</Text>
             <Text style={styles.locationAddress}>{shipment.origin.address}</Text>
@@ -169,7 +170,6 @@ export const TransportistShipmentDetailsScreen: React.FC<Props> = ({ navigation,
 
         <Card style={styles.card}>
           <Text style={styles.sectionTitle}>📦 Información de la Carga</Text>
-          
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Tipo de carga:</Text>
             <Text style={styles.detailValue}>{shipment.cargoType}</Text>

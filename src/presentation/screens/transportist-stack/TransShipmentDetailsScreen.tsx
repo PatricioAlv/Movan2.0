@@ -125,284 +125,341 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
   const canAccept = shipment.status === ShipmentStatus.PENDING && !shipment.driverId;
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        {/* Sección de Origen */}
-        <View style={styles.locationSection}>
-          <View style={styles.iconCircle}>
-            <Text style={styles.iconText}>📍</Text>
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContent}>
+        {/* Map Placeholder */}
+        <View style={styles.mapCard}>
+          <TouchableOpacity 
+            style={styles.mapPlaceholder}
+            onPress={() => openGoogleMaps(
+              shipment.origin.latitude,
+              shipment.origin.longitude,
+              shipment.origin.address
+            )}
+          >
+            <FontAwesome name="map" size={40} color="#4B5563" />
+            <Text style={styles.mapPlaceholderText}>Ver Ruta en Mapa</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Price Card */}
+        <View style={styles.card}>
+          <Text style={styles.priceText}>${shipment.price.toLocaleString('es-ES', { minimumFractionDigits: 2 })} USD</Text>
+          <View style={styles.metaRow}>
+             <Text style={styles.metaText}>850 km</Text>
+             <Text style={styles.metaText}>10h 30m</Text>
           </View>
-          <View style={styles.locationInfo}>
-            <Text style={styles.locationLabel}>Origen</Text>
-            <Text style={styles.locationAddress}>{shipment.origin.address}</Text>
-            {shipment.origin.contactName && (
-              <Text style={styles.contactText}>Contacto: {shipment.origin.contactName}</Text>
-            )}
-            {shipment.origin.contactPhone && (
-              <Text style={styles.contactText}>Tel: {shipment.origin.contactPhone}</Text>
-            )}
+        </View>
+
+        {/* Points Section */}
+        <Text style={styles.sectionTitle}>Puntos de Recogida y Entrega</Text>
+        <View style={styles.card}>
+          {/* Origin */}
+          <View style={styles.pointRow}>
+            <View style={styles.iconContainer}>
+               <FontAwesome name="arrow-up" size={14} color="#10B981" />
+            </View>
+            <View style={styles.pointDetails}>
+               <Text style={styles.pointAddress} numberOfLines={2}>{shipment.origin.address}</Text>
+               <Text style={styles.pointDate}>
+                 {new Date(shipment.pickupDate).toLocaleDateString('es-ES', { 
+                    day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' 
+                 })}
+               </Text>
+            </View>
+          </View>
+
+          <View style={styles.divider} />
+
+          {/* Destination */}
+          <View style={styles.pointRow}>
+            <View style={styles.iconContainer}>
+               <FontAwesome name="arrow-down" size={14} color="#10B981" />
+            </View>
+            <View style={styles.pointDetails}>
+               <Text style={styles.pointAddress} numberOfLines={2}>{shipment.destination.address}</Text>
+               <Text style={styles.pointDate}>
+                 {shipment.deliveryDate 
+                   ? new Date(shipment.deliveryDate).toLocaleDateString('es-ES', { 
+                        day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' 
+                     })
+                   : 'Fecha por definir'}
+               </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Cargo Details */}
+        <Text style={styles.sectionTitle}>Detalles de la Carga</Text>
+        <View style={styles.card}>
+           <View style={styles.detailItem}>
+              <FontAwesome name="cube" size={16} color="#10B981" style={styles.detailIcon} />
+              <Text style={styles.detailText}>{shipment.cargoType}</Text>
+           </View>
+           <View style={styles.detailItem}>
+              <FontAwesome name="balance-scale" size={16} color="#10B981" style={styles.detailIcon} />
+              <Text style={styles.detailText}>{shipment.weight} kg</Text>
+           </View>
+           <View style={styles.detailItem}>
+              <FontAwesome name="arrows-alt" size={16} color="#10B981" style={styles.detailIcon} />
+              <Text style={styles.detailText}>4.5m x 2.5m x 3.0m</Text>
+           </View>
+        </View>
+
+        {/* Client Info */}
+        <Text style={styles.sectionTitle}>Información del Cliente</Text>
+        <View style={styles.card}>
+           <View style={styles.clientRow}>
+              <View style={styles.clientInfo}>
+                 <Text style={styles.clientName}>{shipment.origin.contactName || 'Cliente'}</Text>
+                 <View style={styles.ratingContainer}>
+                    <FontAwesome name="star" size={12} color="#FBBF24" />
+                    <FontAwesome name="star" size={12} color="#FBBF24" />
+                    <FontAwesome name="star" size={12} color="#FBBF24" />
+                    <FontAwesome name="star" size={12} color="#FBBF24" />
+                    <FontAwesome name="star-half-full" size={12} color="#FBBF24" />
+                    <Text style={styles.ratingText}>(4.1)</Text>
+                 </View>
+              </View>
+              <TouchableOpacity style={styles.phoneButton}>
+                 <FontAwesome name="phone" size={18} color="#10B981" />
+              </TouchableOpacity>
+           </View>
+        </View>
+        
+        <View style={{ height: 100 }} /> 
+      </ScrollView>
+
+      {/* Bottom Action Bar */}
+      <View style={styles.bottomBar}>
+         <TouchableOpacity style={styles.rejectButton} onPress={() => navigation.goBack()}>
+            <Text style={styles.rejectButtonText}>Rechazar</Text>
+         </TouchableOpacity>
+         
+         {canAccept ? (
             <TouchableOpacity 
-              style={styles.mapButton}
-              onPress={() => openGoogleMaps(
-                shipment.origin.latitude,
-                shipment.origin.longitude,
-                shipment.origin.address
-              )}
+              style={[styles.acceptButton, accepting && styles.disabledButton]} 
+              onPress={handleAcceptShipment}
+              disabled={accepting}
             >
-              <FontAwesome name="map-marker" size={16} color="#FFFFFF" />
-              <Text style={styles.mapButtonText}>Ver en Google Maps</Text>
+               {accepting ? (
+                 <ActivityIndicator color="#FFF" />
+               ) : (
+                 <Text style={styles.acceptButtonText}>Aceptar Carga</Text>
+               )}
             </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Línea divisoria */}
-        <View style={styles.divider} />
-
-        {/* Sección de Destino */}
-        <View style={styles.locationSection}>
-          <View style={styles.iconCircle}>
-            <Text style={styles.iconText}>📍</Text>
-          </View>
-          <View style={styles.locationInfo}>
-            <Text style={styles.locationLabel}>Destino</Text>
-            <Text style={styles.locationAddress}>{shipment.destination.address}</Text>
-            {shipment.destination.contactName && (
-              <Text style={styles.contactText}>Contacto: {shipment.destination.contactName}</Text>
-            )}
-            {shipment.destination.contactPhone && (
-              <Text style={styles.contactText}>Tel: {shipment.destination.contactPhone}</Text>
-            )}
-            <TouchableOpacity 
-              style={styles.mapButton}
-              onPress={() => openGoogleMaps(
-                shipment.destination.latitude,
-                shipment.destination.longitude,
-                shipment.destination.address
-              )}
-            >
-              <FontAwesome name="map-marker" size={16} color="#FFFFFF" />
-              <Text style={styles.mapButtonText}>Ver en Google Maps</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Línea divisoria */}
-        <View style={styles.divider} />
-
-        {/* Información de Carga */}
-        <View style={styles.cargoSection}>
-          <View style={styles.iconCircle}>
-            <Text style={styles.iconText}>📦</Text>
-          </View>
-          <View style={styles.cargoInfo}>
-            <Text style={styles.cargoLabel}>Tipo:</Text>
-            <Text style={styles.cargoLabel}>Descripción:</Text>
-            <Text style={styles.cargoLabel}>Peso:</Text>
-          </View>
-          <View style={styles.cargoValues}>
-            <Text style={styles.cargoValue}>{shipment.cargoType}</Text>
-            <Text style={styles.cargoValue}>{shipment.cargoDescription}</Text>
-            <Text style={styles.cargoValue}>{shipment.weight} kg</Text>
-          </View>
-        </View>
-
-        {/* Línea divisoria */}
-        <View style={styles.divider} />
-
-        {/* Fecha de Recogida */}
-        <View style={styles.dateSection}>
-          <View style={styles.iconCircle}>
-            <Text style={styles.iconText}>📅</Text>
-          </View>
-          <View style={styles.dateInfo}>
-            <Text style={styles.dateLabel}>Recogida:</Text>
-            <Text style={styles.dateValue}>
-              {new Date(shipment.pickupDate).toLocaleDateString('es-ES', { 
-                day: '2-digit', 
-                month: 'short', 
-                hour: '2-digit', 
-                minute: '2-digit' 
-              })}
-            </Text>
-          </View>
-        </View>
-
-        {/* Línea divisoria */}
-        <View style={styles.divider} />
-
-        {/* Precio */}
-        <View style={styles.priceSection}>
-          <View style={styles.iconCircle}>
-            <Text style={styles.iconText}>💰</Text>
-          </View>
-          <Text style={styles.price}>${shipment.price.toLocaleString('es-ES')}</Text>
-        </View>
-
-        {/* Botón de Aceptar o Mensaje */}
-        {canAccept ? (
-          <Button
-            title={accepting ? 'Aceptando...' : 'Aceptar Pedido'}
-            onPress={handleAcceptShipment}
-            disabled={accepting}
-            style={styles.acceptButton}
-          />
-        ) : (
-          <View style={styles.notAvailableContainer}>
-            <Text style={styles.notAvailableText}>
-              {shipment.driverId ? 'Este pedido ya fue aceptado' : 'Este pedido ya no está disponible'}
-            </Text>
-          </View>
-        )}
+         ) : (
+            <View style={[styles.acceptButton, styles.disabledButton]}>
+               <Text style={styles.acceptButtonText}>No Disponible</Text>
+            </View>
+         )}
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#111315',
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: '#111315',
     padding: spacing.lg,
   },
-  content: {
-    backgroundColor: colors.white,
-    margin: spacing.md,
+  scrollContainer: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: spacing.md,
+    paddingBottom: 100,
+  },
+  mapCard: {
+    height: 180,
+    backgroundColor: '#1A1D21',
     borderRadius: 12,
-    padding: spacing.lg,
+    marginBottom: spacing.md,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#2A2D32',
   },
-  locationSection: {
+  mapPlaceholder: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1F2937',
+  },
+  mapPlaceholderText: {
+    color: '#9CA3AF',
+    marginTop: spacing.sm,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  card: {
+    backgroundColor: '#1A1D21',
+    borderRadius: 12,
+    padding: spacing.md,
+    marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: '#2A2D32',
+  },
+  priceText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#10B981',
+    marginBottom: 4,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  metaText: {
+    color: '#9CA3AF',
+    fontSize: 14,
+    marginRight: spacing.md,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: spacing.sm,
+    marginTop: spacing.xs,
+  },
+  pointRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: spacing.md,
+    paddingVertical: spacing.xs,
   },
-  iconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#F5F5F5',
+  iconContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(16, 185, 129, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.md,
   },
-  iconText: {
-    fontSize: 20,
-  },
-  locationInfo: {
+  pointDetails: {
     flex: 1,
   },
-  locationLabel: {
-    fontSize: 12,
-    color: colors.gray600,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  locationAddress: {
-    fontSize: 15,
-    color: '#000',
-    fontWeight: '500',
-    marginBottom: spacing.xs,
-  },
-  contactText: {
-    fontSize: 13,
-    color: colors.gray600,
-    marginTop: 2,
-  },
-  mapButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.primary,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 6,
-    marginTop: spacing.sm,
-    alignSelf: 'flex-start',
-  },
-  mapButtonText: {
+  pointAddress: {
     color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '600',
-    marginLeft: 6,
+    fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 2,
+  },
+  pointDate: {
+    color: '#9CA3AF',
+    fontSize: 12,
   },
   divider: {
     height: 1,
-    backgroundColor: colors.gray200,
+    backgroundColor: '#2A2D32',
     marginVertical: spacing.md,
+    marginLeft: 48,
   },
-  cargoSection: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: spacing.md,
-  },
-  cargoInfo: {
-    flex: 1,
-    marginLeft: spacing.sm,
-  },
-  cargoLabel: {
-    fontSize: 13,
-    color: colors.gray600,
-    marginBottom: spacing.xs,
-  },
-  cargoValues: {
-    flex: 1,
-  },
-  cargoValue: {
-    fontSize: 13,
-    color: '#000',
-    marginBottom: spacing.xs,
-    textAlign: 'right',
-  },
-  dateSection: {
+  detailItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.md,
+    marginBottom: spacing.sm,
   },
-  dateInfo: {
-    flex: 1,
-    marginLeft: spacing.sm,
+  detailIcon: {
+    width: 24,
+    marginRight: spacing.sm,
+    textAlign: 'center',
   },
-  dateLabel: {
-    fontSize: 13,
-    color: colors.gray600,
-    marginBottom: 2,
+  detailText: {
+    color: '#FFFFFF',
+    fontSize: 14,
   },
-  dateValue: {
-    fontSize: 13,
-    color: '#000',
-  },
-  priceSection: {
+  clientRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.lg,
+    justifyContent: 'space-between',
   },
-  price: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: colors.primary,
-    marginLeft: spacing.sm,
+  clientInfo: {
+    flex: 1,
+  },
+  clientName: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ratingText: {
+    color: '#9CA3AF',
+    fontSize: 12,
+    marginLeft: spacing.xs,
+  },
+  phoneButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bottomBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#1A1D21',
+    padding: spacing.md,
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: '#2A2D32',
+    paddingBottom: Platform.OS === 'ios' ? 34 : spacing.md,
+  },
+  rejectButton: {
+    flex: 1,
+    backgroundColor: '#2A2D32',
+    paddingVertical: 14,
+    borderRadius: 8,
+    marginRight: spacing.sm,
+    alignItems: 'center',
+  },
+  rejectButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 16,
   },
   acceptButton: {
-    marginTop: spacing.md,
+    flex: 2,
+    backgroundColor: '#10B981',
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  acceptButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  disabledButton: {
+    opacity: 0.6,
   },
   notAvailableContainer: {
-    backgroundColor: '#FFF3CD',
+    backgroundColor: '#2B2B2B',
     padding: spacing.md,
     borderRadius: 8,
     marginTop: spacing.md,
   },
   notAvailableText: {
-    color: '#856404',
+    color: '#9CA3AF',
     fontSize: 14,
     textAlign: 'center',
   },
   errorText: {
     fontSize: 16,
-    color: colors.textSecondary,
+    color: '#9CA3AF',
     marginBottom: spacing.md,
   },
 });
