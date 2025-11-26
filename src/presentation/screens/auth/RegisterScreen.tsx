@@ -33,7 +33,7 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
         return;
       }
 
-      if (!role){
+      if (!role) {
         Alert.alert('Error', 'Debes seleccionar un rol para usar Movan');
         return;
       }
@@ -49,7 +49,7 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
       }
 
       setLoading(true);
-      
+
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       const now = Date.now();
@@ -70,7 +70,7 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
       console.error('Register error:', error);
 
       let errorMessage = 'Error al crear cuenta';
-      
+
       if (error.code === 'auth/email-already-in-use') {
         errorMessage = 'El email ya está registrado';
       } else if (error.code === 'auth/invalid-email') {
@@ -78,14 +78,14 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
       } else if (error.code === 'auth/weak-password') {
         errorMessage = 'La contraseña es muy débil';
       }
-      
+
       Alert.alert('Error', errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  const RoleButton = ({ text, value }: { text: string; value: 'CLIENT' | 'TRANSPORTIST'}, style={}) => (
+  const RoleButton = ({ text, value }: { text: string; value: 'CLIENT' | 'TRANSPORTIST' }, style = {}) => (
     <TouchableOpacity onPress={() => setRole(value)} style={[styles.roleButton, role === value && styles.roleButtonSelected,]}>
       <Text style={[styles.roleText, role === value && styles.roleTextSelected,]}>
         {text}
@@ -101,11 +101,12 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
       >
         <View style={styles.content}>
           <Text style={styles.title}>Crear Cuenta</Text>
-          <Text style={styles.subtitle}>Únete a Movan</Text>
+          <Text style={styles.subtitle}>Únete a Movan!</Text>
 
           <View style={styles.form}>
             <Input
               label="Nombre"
+              style={styles.inputField}
               placeholder="Tu nombre"
               value={name}
               onChangeText={setName}
@@ -115,6 +116,7 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
             <Input
               label="Email"
               placeholder="tu@email.com"
+              style={styles.inputField}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -123,6 +125,7 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
 
             <Input
               label="Contraseña"
+              style={styles.inputField}
               placeholder="••••••••"
               value={password}
               onChangeText={setPassword}
@@ -131,7 +134,7 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
 
             <Text style={styles.roleLabel}> Selecciona tu rol en Movan</Text>
             <View style={styles.roleContainer}>
-              <RoleButton text="CLIENTE" value="CLIENT"/>
+              <RoleButton text="CLIENTE" value="CLIENT" />
               <RoleButton text="TRANSPORTISTA" value="TRANSPORTIST" />
             </View>
 
@@ -229,4 +232,10 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontWeight: typography.fontWeight.semibold,
   },
+  inputField: {
+    backgroundColor: colors.bgLight,
+    borderColor: colors.gray500
+
+
+  }
 });

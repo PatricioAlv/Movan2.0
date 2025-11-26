@@ -8,7 +8,9 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Alert,
+  ScrollView,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import { Card } from '@presentation/components/common/Card';
 import { Button } from '@presentation/components/common/Button';
@@ -16,48 +18,51 @@ import { colors } from '@presentation/theme/colors';
 import { spacing } from '@presentation/theme/spacing';
 import { typography } from '@presentation/theme/typography';
 
-import { container } from '@infrastructure/di/init';
-import { TYPES } from '@infrastructure/di/types';
-
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
 import { auth } from '@data/config/firebase.config';
+import { TransportistBrowserScreen } from './TransShipmentBrowser';
 
-// (Opcional) importar tus casos de uso reales
-// import { GetTransportistShipmentsUseCase } from '@core/usecases/shipments/GetTransportistShipmentsUseCase';
-// import { UpdateShipmentStatusUseCase } from '@core/usecases/shipments/UpdateShipmentStatusUseCase';
+// --- DATOS DE PRUEBA PARA LA UI (MOCK) ---
+const MOCK_LOADS = [
+  {
+    id: '1',
+    type: 'Contenedor',
+    weight: '40,000 lbs',
+    origin: 'Los Angeles, CA',
+    destination: 'Phoenix, AZ',
+    distance: '373 mi',
+    price: '$1,200',
+    icon: 'cube-outline' as const,
+  },
+  {
+    id: '2',
+    type: 'Carga General',
+    weight: '25,000 lbs',
+    origin: 'Dallas, TX',
+    destination: 'Houston, TX',
+    distance: '240 mi',
+    price: '$850',
+    icon: 'truck-outline' as const,
+  },
+  {
+    id: '3',
+    type: 'Refrigerado',
+    weight: '30,000 lbs',
+    origin: 'Miami, FL',
+    destination: 'Atlanta, GA',
+    distance: '663 mi',
+    price: '$2,100',
+    icon: 'snow-outline' as const,
+  },
+];
 
-const getStatusColor = (status: ShipmentStatus): string => {
-  switch (status) {
-    case ShipmentStatus.PENDING:
-      return '#FFA500';
-    case ShipmentStatus.ACCEPTED:
-      return '#4169E1';
-    case ShipmentStatus.IN_TRANSIT:
-      return '#9370DB';
-    case ShipmentStatus.DELIVERED:
-      return '#32CD32';
-    case ShipmentStatus.CANCELLED:
-      return '#DC143C';
-    default:
-      return colors.textSecondary;
-  }
-};
-
-const getStatusText = (status: ShipmentStatus): string => {
-  switch (status) {
-    case ShipmentStatus.PENDING:
-      return 'Pendiente';
-    case ShipmentStatus.ACCEPTED:
-      return 'Aceptado';
-    case ShipmentStatus.IN_TRANSIT:
-      return 'En Tránsito';
-    case ShipmentStatus.DELIVERED:     
-      return 'Entregado';
-    case ShipmentStatus.CANCELLED:
-      return 'Cancelado';
-    default:
-      return status;
-  }
+// --- COLORES ESPECÍFICOS DEL DISEÑO OSCURO ---
+const UI_COLORS = {
+  cardBg: '#1e293b', // Azul oscuro grisáceo
+  accentBlue: '#2563eb', // Azul brillante botón
+  accentYellow: '#fbbf24', // Amarillo precio
+  textGray: '#94a3b8',
+  bgDark: '#0f172a', // Fondo muy oscuro
 };
 
 interface TransHomeProps {
@@ -66,8 +71,13 @@ interface TransHomeProps {
 
 export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
   const [shipments, setShipments] = useState<Shipment[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Cambiado a false para mostrar la UI mock
   const [refreshing, setRefreshing] = useState(false);
+  
+  // Estados para la UI
+  const [activeFilter, setActiveFilter] = useState('Nuevos');
+  const [viewMode, setViewMode] = useState<'Lista' | 'Mapa'>('Lista');
+  const [currentTab, setCurrentTab] = useState<'home' | 'my_shipments'>('home');
 
   // ============================
   // CARGA DE ENVÍOS DEL TRANSPORTISTA
@@ -81,15 +91,6 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
         setRefreshing(false);
         return;
       }
-
-      // Instanciar caso de uso real cuando exista
-      // const getShipmentsUseCase = container.get<GetTransportistShipmentsUseCase>(
-      //   TYPES.GetTransportistShipmentsUseCase
-      // );
-
-      // const assignedShipments = await getShipmentsUseCase.execute(userId);
-      // setShipments(assignedShipments);
-
       // TEMPORAL: lista vacía hasta que lo conectes
       setShipments([]);
 
@@ -111,70 +112,86 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
     loadTransportistShipments();
   };
 
-  // ============================
-  // ACCIÓN SOBRE UN ENVÍO
-  // (Aceptar, Iniciar, Finalizar, etc.)
-  // ============================
-  const handleAction = async (shipmentId: string, nextStatus: ShipmentStatus) => {
-    try {
-      Alert.alert(
-        'Actualizar Estado',
-        `¿Confirmas cambiar el estado del envío a ${getStatusText(nextStatus)}?`,
-        [
-          { text: 'No', style: 'cancel' },
-          {
-            text: 'Sí',
-            style: 'destructive',
-            onPress: async () => {
-              // const updateUseCase = container.get<UpdateShipmentStatusUseCase>(
-              //   TYPES.UpdateShipmentStatusUseCase
-              // );
-              // await updateUseCase.execute(shipmentId, nextStatus);
+  // --- RENDERIZADO DE FILTROS (CHIPS) ---
+  const renderFilters = () => (
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersContainer}>
+      {['Nuevos', 'Populares', 'Cerca de mí'].map((filter) => (
+        <TouchableOpacity
+          key={filter}
+          style={[
+            styles.filterChip,
+            activeFilter === filter && styles.filterChipActive
+          ]}
+          onPress={() => setActiveFilter(filter)}
+        >
+          <Ionicons 
+            name={filter === 'Nuevos' ? 'time-outline' : filter === 'Populares' ? 'flame-outline' : 'navigate-outline'} 
+            size={16} 
+            color={activeFilter === filter ? '#fff' : UI_COLORS.textGray} 
+            style={{ marginRight: 4 }}
+          />
+          <Text style={[
+            styles.filterText,
+            activeFilter === filter && styles.filterTextActive
+          ]}>
+            {filter}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
+  );
 
-              Alert.alert('Éxito', 'Estado actualizado correctamente');
-              loadTransportistShipments();
-            },
-          },
-        ]
-      );
-    } catch (error: any) {
-      console.error('Error updating shipment:', error);
-      Alert.alert('Error', error.message || 'No se pudo actualizar el envío');
-    }
-  };
+  // --- RENDERIZADO DEL TOGGLE LISTA/MAPA ---
+  const renderViewToggle = () => (
+    <View style={styles.toggleContainer}>
+      <TouchableOpacity 
+        style={[styles.toggleButton, viewMode === 'Lista' && styles.toggleButtonActive]}
+        onPress={() => setViewMode('Lista')}
+      >
+        <Text style={[styles.toggleText, viewMode === 'Lista' && styles.toggleTextActive]}>Lista</Text>
+      </TouchableOpacity>
+      <TouchableOpacity 
+        style={[styles.toggleButton, viewMode === 'Mapa' && styles.toggleButtonActive]}
+        onPress={() => setViewMode('Mapa')}
+      >
+        <Text style={[styles.toggleText, viewMode === 'Mapa' && styles.toggleTextActive]}>Mapa</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
-  // ============================
-  // ITEM DEL LISTADO
-  // ============================
-  const renderShipmentItem = ({ item }: { item: Shipment }) => (
-    <Card style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.shipmentId}>Envío #{item.id.slice(0, 8)}</Text>
-        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
-          <Text style={styles.statusText}>{getStatusText(item.status)}</Text>
+  // --- RENDERIZADO DE LA TARJETA DE CARGA (NUEVO DISEÑO) ---
+  const renderLoadItem = ({ item }: { item: typeof MOCK_LOADS[0] }) => (
+    <View style={styles.loadCard}>
+      {/* Encabezado: Icono y Tipo */}
+      <View style={styles.loadHeader}>
+        <Ionicons name={item.icon as any} size={20} color={UI_COLORS.textGray} />
+        <Text style={styles.loadType}>{item.type} - {item.weight}</Text>
+      </View>
+
+      {/* Ruta */}
+      <View style={styles.routeContainer}>
+        <Text style={styles.routeText}>
+          {item.origin.split(',')[0]} <Ionicons name="arrow-forward" size={16} color="#fff" /> {item.destination.split(',')[0]}
+        </Text>
+        <Text style={styles.routeSubtext}>
+          {item.origin} → {item.destination}
+        </Text>
+      </View>
+
+      {/* Distancia */}
+      <Text style={styles.distanceText}>Distancia: {item.distance}</Text>
+
+      {/* Footer: Precio y Botón */}
+      <View style={styles.cardFooter}>
+        <View>
+          <Text style={styles.priceLabel}>Pago:</Text>
+          <Text style={styles.priceValue}>{item.price}</Text>
         </View>
+        <TouchableOpacity style={styles.detailsButton}>
+          <Text style={styles.detailsButtonText}>Ver Detalles</Text>
+        </TouchableOpacity>
       </View>
-
-      <Text style={styles.locationLabel}>Origen:</Text>
-      <Text style={styles.locationAddress}>{item.origin.address}</Text>
-
-      <Text style={styles.locationLabel}>Destino:</Text>
-      <Text style={styles.locationAddress}>{item.destination.address}</Text>
-
-      <View style={styles.actionsContainer}>
-        {item.status === ShipmentStatus.PENDING && (
-          <Button title="Aceptar" onPress={() => handleAction(item.id, ShipmentStatus.ACCEPTED)} />
-        )}
-
-        {item.status === ShipmentStatus.ACCEPTED && (
-          <Button title="Iniciar Viaje" onPress={() => handleAction(item.id, ShipmentStatus.IN_TRANSIT)} />
-        )}
-
-        {item.status === ShipmentStatus.IN_TRANSIT && (
-          <Button title="Marcar Entregado" onPress={() => handleAction(item.id, ShipmentStatus.DELIVERED)} />
-        )}
-      </View>
-    </Card>
+    </View>
   );
 
   if (loading) {
@@ -187,41 +204,85 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Envíos Asignados</Text>
-        <Text style={styles.subtitle}>
-          {shipments.length} {shipments.length === 1 ? 'envío' : 'envíos'}
-        </Text>
+      <View style={{ flex: 1 }}>
+        {currentTab === 'home' ? (
+          <>
+            {/* Header existente */}
+            <View style={styles.header}>
+              <Text style={styles.title}>Envíos Disponibles</Text>
+              <Text style={styles.subtitle}>Encuentra tu próxima carga</Text>
+            </View>
+
+            <View style={styles.contentContainer}>
+              {/* Buscador */}
+              <TouchableOpacity
+                style={styles.searcher}
+                onPress={() => Alert.alert('Buscar', 'Funcionalidad pendiente')}
+              >
+                <Text style={styles.textSearcher}> Buscar ruta o ciudad...</Text>
+              </TouchableOpacity>
+
+              {/* Nuevos Componentes de UI */}
+              <View style={{ marginBottom: 10 }}>
+                {renderFilters()}
+              </View>
+
+              {renderViewToggle()}
+
+              {/* Lista de Cargas */}
+              <FlatList
+                data={MOCK_LOADS}
+                keyExtractor={(item) => item.id}
+                renderItem={renderLoadItem}
+                contentContainerStyle={styles.listContent}
+                showsVerticalScrollIndicator={false}
+              />
+            </View>
+          </>
+        ) : (
+          <TransportistBrowserScreen navigation={navigation} />
+        )}
       </View>
 
-      {shipments.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>🚚</Text>
-          <Text style={styles.emptyTitle}>No tienes envíos asignados</Text>
-          <Text style={styles.emptySubtext}>Cuando te asignen uno, aparecerá aquí</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={shipments}
-          keyExtractor={(item) => item.id}
-          renderItem={renderShipmentItem}
-          contentContainerStyle={styles.listContent}
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-        />
-      )}
+      {/* Barra de Navegación Inferior */}
+      <View style={styles.bottomTabBar}>
+        <TouchableOpacity 
+          style={styles.tabButton} 
+          onPress={() => setCurrentTab('home')}
+        >
+          <Ionicons 
+            name={currentTab === 'home' ? "home" : "home-outline"} 
+            size={24} 
+            color={currentTab === 'home' ? UI_COLORS.accentBlue : UI_COLORS.textGray} 
+          />
+          <Text style={[styles.tabLabel, currentTab === 'home' && styles.tabLabelActive]}>Inicio</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.tabButton} 
+          onPress={() => setCurrentTab('my_shipments')}
+        >
+          <Ionicons 
+            name={currentTab === 'my_shipments' ? "list" : "list-outline"} 
+            size={24} 
+            color={currentTab === 'my_shipments' ? UI_COLORS.accentBlue : UI_COLORS.textGray} 
+          />
+          <Text style={[styles.tabLabel, currentTab === 'my_shipments' && styles.tabLabelActive]}>Mis Envíos</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
-  centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  container: { flex: 1, backgroundColor: UI_COLORS.bgDark }, // Fondo oscuro general
+  contentContainer: { flex: 1 },
+  centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: UI_COLORS.bgDark },
 
   header: {
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
-    backgroundColor: colors.primary,
+    backgroundColor: UI_COLORS.bgDark, // Header oscuro
   },
   title: {
     fontSize: typography.fontSize['2xl'],
@@ -230,67 +291,174 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: typography.fontSize.sm,
-    color: '#FFFFFF',
-    opacity: 0.9,
+    color: UI_COLORS.textGray,
     marginTop: spacing.xs,
   },
 
-  listContent: { padding: spacing.lg },
+  // Buscador
+  searcher: {
+    marginHorizontal: spacing.lg,
+    marginBottom: spacing.md,
+    padding: spacing.md,
+    backgroundColor: UI_COLORS.cardBg,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#334155',
+  },
+  textSearcher: {
+    color: UI_COLORS.textGray,
+    fontSize: typography.fontSize.base,
+  },
 
-  card: { marginBottom: spacing.md },
-  cardHeader: {
+  // Filtros (Chips)
+  filtersContainer: {
+    paddingHorizontal: spacing.lg,
+    marginBottom: spacing.md,
+    flexGrow: 0,
+  },
+  filterChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: UI_COLORS.cardBg,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: '#334155',
+  },
+  filterChipActive: {
+    backgroundColor: '#1d4ed8', // Azul más oscuro para activo
+    borderColor: UI_COLORS.accentBlue,
+  },
+  filterText: {
+    color: UI_COLORS.textGray,
+    fontWeight: '600',
+  },
+  filterTextActive: {
+    color: '#fff',
+  },
+
+  // Toggle Lista/Mapa
+  toggleContainer: {
+    flexDirection: 'row',
+    backgroundColor: UI_COLORS.cardBg,
+    marginHorizontal: spacing.lg,
+    borderRadius: 8,
+    padding: 4,
+    marginBottom: spacing.md,
+  },
+  toggleButton: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: 'center',
+    borderRadius: 6,
+  },
+  toggleButtonActive: {
+    backgroundColor: '#334155',
+  },
+  toggleText: {
+    color: UI_COLORS.textGray,
+    fontWeight: '600',
+  },
+  toggleTextActive: {
+    color: '#fff',
+  },
+
+  // Lista
+  listContent: { 
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.xl,
+  },
+
+  // Tarjeta de Carga (Load Card)
+  loadCard: {
+    backgroundColor: UI_COLORS.cardBg,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#334155',
+  },
+  loadHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  loadType: {
+    color: UI_COLORS.textGray,
+    marginLeft: 8,
+    fontSize: 14,
+  },
+  routeContainer: {
+    marginBottom: 8,
+  },
+  routeText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  routeSubtext: {
+    color: '#fff',
+    fontSize: 14,
+    opacity: 0.8,
+  },
+  distanceText: {
+    color: UI_COLORS.textGray,
+    fontSize: 14,
+    marginBottom: 16,
+  },
+  cardFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: '#334155',
+    paddingTop: 12,
   },
-  shipmentId: {
-    fontSize: typography.fontSize.base,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.textPrimary,
+  priceLabel: {
+    color: UI_COLORS.textGray,
+    fontSize: 12,
   },
-
-  statusBadge: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    borderRadius: 12,
+  priceValue: {
+    color: UI_COLORS.accentYellow,
+    fontSize: 20,
+    fontWeight: 'bold',
   },
-  statusText: {
-    fontSize: typography.fontSize.xs,
-    fontWeight: typography.fontWeight.semibold,
-    color: '#FFFFFF',
+  detailsButton: {
+    backgroundColor: UI_COLORS.accentBlue,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
   },
-
-  locationLabel: {
-    fontSize: typography.fontSize.xs,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.textSecondary,
-    marginTop: spacing.sm,
+  detailsButtonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 14,
   },
-  locationAddress: {
-    fontSize: typography.fontSize.base,
-    color: colors.textPrimary,
-    fontWeight: typography.fontWeight.medium,
+  // --- ESTILOS DE LA BARRA INFERIOR ---
+  bottomTabBar: {
+    flexDirection: 'row',
+    backgroundColor: UI_COLORS.cardBg,
+    borderTopWidth: 1,
+    borderTopColor: '#334155',
+    paddingBottom: spacing.sm, // Ajuste para dispositivos sin botón físico
+    paddingTop: spacing.sm,
+    height: 65,
   },
-
-  actionsContainer: { marginTop: spacing.md },
-
-  emptyContainer: {
+  tabButton: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: spacing.xl,
+    justifyContent: 'center',
   },
-  emptyText: { fontSize: 64, marginBottom: spacing.md },
-  emptyTitle: {
-    fontSize: typography.fontSize.xl,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
+  tabLabel: {
+    fontSize: 10,
+    marginTop: 4,
+    color: UI_COLORS.textGray,
   },
-  emptySubtext: {
-    fontSize: typography.fontSize.base,
-    color: colors.textSecondary,
-    textAlign: 'center',
+  tabLabelActive: {
+    color: UI_COLORS.accentBlue,
+    fontWeight: 'bold',
   },
 });

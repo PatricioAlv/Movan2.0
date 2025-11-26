@@ -110,7 +110,7 @@ export const TransportistBrowserScreen = ({ navigation }) => {
           placeholderTextColor={colors.textSecondary}
           value={query}
           onChangeText={setQuery}
-          style={styles.searchInput}
+          style={styles.textSearcher}
           onSubmitEditing={loadAvailableShipments}
         />
       </View>
@@ -158,6 +158,7 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.bold,
     color: '#FFFFFF',
   },
+  
   subtitle: {
     fontSize: typography.fontSize.sm,
     color: '#FFFFFF',
