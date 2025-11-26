@@ -1,24 +1,44 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
 import { ClientHomeScreen } from '@presentation/screens/client-stack/ClientHomeScreen';
 import { CreateShipmentScreen } from '@presentation/screens/client-stack/CreateShipmentScreen';
 import { SCREEN_NAMES } from '@infrastructure/utils/constants';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
-export const ClientNavigator: React.FC = () => {
+export function ClientNavigator() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen 
-        name={SCREEN_NAMES.CLIENT_HOME} 
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: '#262E93',
+        tabBarStyle: {
+          height: 60,
+          paddingBottom: 6,
+        },
+      }}
+    >
+      <Tab.Screen
+        name={SCREEN_NAMES.CLIENT_HOME}
         component={ClientHomeScreen}
-        options={{ title: 'Mis Envíos', headerShown: false }}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="home" size={26} color={color} />
+          ),
+        }}
       />
-      <Stack.Screen 
-        name={SCREEN_NAMES.CREATE_SHIPMENT} 
+
+      <Tab.Screen
+        name={SCREEN_NAMES.CREATE_SHIPMENT}
         component={CreateShipmentScreen}
-        options={{ title: 'Crear Envío' }}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="home" size={26} color={color} />
+          ),
+        }}
       />
-    </Stack.Navigator>
+
+    </Tab.Navigator>
   );
-};
+}

@@ -36,17 +36,14 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
   const [showOriginMap, setShowOriginMap] = useState(false);
   const [showDestinationMap, setShowDestinationMap] = useState(false);
 
-  // Datos de origen
   const [originLocation, setOriginLocation] = useState<LocationData | null>(null);
   const [originContactName, setOriginContactName] = useState('');
   const [originContactPhone, setOriginContactPhone] = useState('');
 
-  // Datos de destino
   const [destinationLocation, setDestinationLocation] = useState<LocationData | null>(null);
   const [destinationContactName, setDestinationContactName] = useState('');
   const [destinationContactPhone, setDestinationContactPhone] = useState('');
 
-  // Datos de carga
   const [cargoType, setCargoType] = useState<CargoType>(CargoType.GENERAL);
   const [cargoDescription, setCargoDescription] = useState('');
   const [weight, setWeight] = useState('');
