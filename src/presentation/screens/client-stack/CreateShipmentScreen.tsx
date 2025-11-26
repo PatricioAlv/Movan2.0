@@ -1,27 +1,17 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  SafeAreaView,
-  Alert,
-  TouchableOpacity,
-  TextInput as RNTextInput,
-} from 'react-native';
+import { View, Text, ScrollView, SafeAreaView, Alert, TouchableOpacity, TextInput as RNTextInput, } from 'react-native';
 import { Input } from '@presentation/components/common/Input';
 import { Button } from '@presentation/components/common/Button';
 import { AddressAutocomplete } from '@presentation/components/common/AddressAutocomplete';
 import { LocationPicker } from '@presentation/components/common/LocationPicker';
 import { colors } from '@presentation/theme/colors';
-import { spacing } from '@presentation/theme/spacing';
-import { typography } from '@presentation/theme/typography';
 import { container } from '@infrastructure/di/init';
 import { TYPES } from '@infrastructure/di/types';
 import { CreateShipmentUseCase } from '@core/usecases/shipments/CreateShipmentUseCase';
 import { CargoType } from '@core/entities/Order';
 import { auth } from '@data/config/firebase.config';
 import { GOOGLE_MAPS_CONFIG } from '@infrastructure/utils/googleMaps.config';
+import CreateShipmentScreenStyle from '@presentation/theme/Client-Screen-Styles/CreateShipmentScreen';
 
 interface CreateShipmentScreenProps {
   navigation: any;
@@ -172,21 +162,21 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={CreateShipmentScreenStyle.container}>
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={CreateShipmentScreenStyle.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={styles.header}>
-          <Text style={styles.title}>Nuevo Envío</Text>
-          <TouchableOpacity onPress={handleUseExampleData} style={styles.exampleButton}>
-            <Text style={styles.exampleButtonText}> Usar datos de ejemplo</Text>
+        <View style={CreateShipmentScreenStyle.header}>
+          <Text style={CreateShipmentScreenStyle.title}>Nuevo Envío</Text>
+          <TouchableOpacity onPress={handleUseExampleData} style={CreateShipmentScreenStyle.exampleButton}>
+            <Text style={CreateShipmentScreenStyle.exampleButtonText}> Usar datos de ejemplo</Text>
           </TouchableOpacity>
         </View>
 
         {/* ORIGEN */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}> Origen</Text>
+        <View style={CreateShipmentScreenStyle.section}>
+          <Text style={CreateShipmentScreenStyle.sectionTitle}> Origen</Text>
           
           {GOOGLE_MAPS_CONFIG.apiKey !== 'YOUR_GOOGLE_MAPS_API_KEY' ? (
             <>
@@ -198,40 +188,40 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
               />
               
               <TouchableOpacity
-                style={styles.mapButton}
+                style={CreateShipmentScreenStyle.mapButton}
                 onPress={() => setShowOriginMap(true)}
               >
-                <Text style={styles.mapButtonText}>
+                <Text style={CreateShipmentScreenStyle.mapButtonText}>
                   {originLocation ? 'Cambiar ubicación en el mapa' : 'Seleccionar en el mapa'}
                 </Text>
               </TouchableOpacity>
             </>
           ) : (
-            <View style={styles.warningBox}>
-              <Text style={styles.warningText}>
+            <View style={CreateShipmentScreenStyle.warningBox}>
+              <Text style={CreateShipmentScreenStyle.warningText}>
                 ⚠️ Configura tu Google Maps API Key en:
               </Text>
-              <Text style={styles.warningPath}>
+              <Text style={CreateShipmentScreenStyle.warningPath}>
                 src/infrastructure/utils/googleMaps.config.ts
               </Text>
             </View>
           )}
 
           {originLocation && (
-            <View style={styles.selectedLocation}>
-              <Text style={styles.selectedLocationText}>
+            <View style={CreateShipmentScreenStyle.selectedLocation}>
+              <Text style={CreateShipmentScreenStyle.selectedLocationText}>
                 ✓ {originLocation.address}
               </Text>
             </View>
           )}
 
-          <Input style={styles.details}
+          <Input style={CreateShipmentScreenStyle.details}
             placeholder="Nombre de contacto (opcional)"
             value={originContactName}
             onChangeText={setOriginContactName}
             autoCapitalize="words"
           />
-          <Input style={styles.details}
+          <Input style={CreateShipmentScreenStyle.details}
             placeholder="Teléfono de contacto (opcional)"
             value={originContactPhone}
             onChangeText={setOriginContactPhone}
@@ -240,8 +230,8 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
         </View>
 
         {/* DESTINO */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}> Destino</Text>
+        <View style={CreateShipmentScreenStyle.section}>
+          <Text style={CreateShipmentScreenStyle.sectionTitle}> Destino</Text>
           
           {GOOGLE_MAPS_CONFIG.apiKey !== 'YOUR_GOOGLE_MAPS_API_KEY' ? (
             <>
@@ -253,37 +243,37 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
               />
               
               <TouchableOpacity
-                style={styles.mapButton}
+                style={CreateShipmentScreenStyle.mapButton}
                 onPress={() => setShowDestinationMap(true)}
               >
-                <Text style={styles.mapButtonText}>
+                <Text style={CreateShipmentScreenStyle.mapButtonText}>
                   {destinationLocation ? 'Cambiar ubicación en el mapa' : 'Seleccionar en el mapa'}
                 </Text>
               </TouchableOpacity>
             </>
           ) : (
-            <View style={styles.warningBox}>
-              <Text style={styles.warningText}>
-                ⚠️ Configura tu Google Maps API Key
+            <View style={CreateShipmentScreenStyle.warningBox}>
+              <Text style={CreateShipmentScreenStyle.warningText}>
+                Configura tu Google Maps API Key
               </Text>
             </View>
           )}
 
           {destinationLocation && (
-            <View style={styles.selectedLocation}>
-              <Text style={styles.selectedLocationText}>
+            <View style={CreateShipmentScreenStyle.selectedLocation}>
+              <Text style={CreateShipmentScreenStyle.selectedLocationText}>
                 ✓ {destinationLocation.address}
               </Text>
             </View>
           )}
 
-          <Input style={styles.details}
+          <Input style={CreateShipmentScreenStyle.details}
             placeholder="Nombre de contacto (opcional)"
             value={destinationContactName}
             onChangeText={setDestinationContactName}
             autoCapitalize="words"
           />
-          <Input style={styles.details}
+          <Input style={CreateShipmentScreenStyle.details}
             placeholder="Teléfono de contacto (opcional)"
             value={destinationContactPhone}
             onChangeText={setDestinationContactPhone}
@@ -292,22 +282,22 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
         </View>
 
         {/* TIPO DE CARGA */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📦 Tipo de Carga</Text>
-          <View style={styles.cargoTypeContainer}>
+        <View style={CreateShipmentScreenStyle.section}>
+          <Text style={CreateShipmentScreenStyle.sectionTitle}>📦 Tipo de Carga</Text>
+          <View style={CreateShipmentScreenStyle.cargoTypeContainer}>
             {CARGO_TYPES.map((type) => (
               <TouchableOpacity
                 key={type.value}
                 style={[
-                  styles.cargoTypeButton,
-                  cargoType === type.value && styles.cargoTypeButtonActive,
+                  CreateShipmentScreenStyle.cargoTypeButton,
+                  cargoType === type.value && CreateShipmentScreenStyle.cargoTypeButtonActive,
                 ]}
                 onPress={() => setCargoType(type.value)}
               >
                 <Text
                   style={[
-                    styles.cargoTypeText,
-                    cargoType === type.value && styles.cargoTypeTextActive,
+                    CreateShipmentScreenStyle.cargoTypeText,
+                    cargoType === type.value && CreateShipmentScreenStyle.cargoTypeTextActive,
                   ]}
                 >
                   {type.label}
@@ -318,26 +308,26 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
         </View>
 
         {/* DETALLES DE CARGA */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📋 Detalles de la Carga</Text>
-          <Input style={styles.details}
+        <View style={CreateShipmentScreenStyle.section}>
+          <Text style={CreateShipmentScreenStyle.sectionTitle}>📋 Detalles de la Carga</Text>
+          <Input style={CreateShipmentScreenStyle.details}
             placeholder="Descripción de la carga"
             value={cargoDescription}
             onChangeText={setCargoDescription}
             autoCapitalize="sentences"
             
           />
-          <View style={styles.row}>
-            <View style={styles.halfInput}>
-              <Input style={styles.details}
+          <View style={CreateShipmentScreenStyle.row}>
+            <View style={CreateShipmentScreenStyle.halfInput}>
+              <Input style={CreateShipmentScreenStyle.details}
                 placeholder="Peso (kg)"
                 value={weight}
                 onChangeText={setWeight}
                 keyboardType="numeric"
               />
             </View>
-            <View style={styles.halfInput}>
-              <Input style={styles.details}
+            <View style={CreateShipmentScreenStyle.halfInput}>
+              <Input style={CreateShipmentScreenStyle.details}
                 placeholder="Precio ($)"
                 value={price}
                 onChangeText={setPrice}
@@ -345,9 +335,9 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
               />
             </View>
           </View>
-          <View style={styles.textAreaContainer}>
+          <View style={CreateShipmentScreenStyle.textAreaContainer}>
             <RNTextInput
-              style={styles.textArea}
+              style={CreateShipmentScreenStyle.textArea}
               placeholder="Notas adicionales (opcional)"
               value={notes}
               onChangeText={setNotes}
@@ -359,18 +349,18 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
           </View>
         </View>
 
-        <View style={styles.buttonContainer}>
+        <View style={CreateShipmentScreenStyle.buttonContainer}>
           <Button
             title={loading ? 'Creando...' : 'Crear Envío'}
             onPress={handleCreateShipment}
             disabled={loading}
           />
           <TouchableOpacity
-            style={styles.cancelButton}
+            style={CreateShipmentScreenStyle.cancelButton}
             onPress={() => navigation.goBack()}
             disabled={loading}
           >
-            <Text style={styles.cancelButtonText}>Cancelar</Text>
+            <Text style={CreateShipmentScreenStyle.cancelButtonText}>Cancelar</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -401,146 +391,3 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scrollContent: {
-    padding: spacing.lg,
-  },
-  header: {
-    marginBottom: spacing.lg,
-  },
-  title: {
-    fontSize: typography.fontSize['2xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
-  },
-  exampleButton: {
-    backgroundColor: '#E3F2FD',
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderRadius: 8,
-    alignSelf: 'flex-start',
-  },
-  exampleButtonText: {
-    color: '#1976D2',
-    fontSize: typography.fontSize.sm,
-    fontWeight: typography.fontWeight.medium,
-  },
-  section: {
-    marginBottom: spacing.lg,
-  },
-  sectionTitle: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.textPrimary,
-    marginBottom: spacing.md,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  halfInput: {
-    width: '48%',
-  },
-  cargoTypeContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-  },
-  cargoTypeButton: {
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.background,
-  },
-  cargoTypeButtonActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  cargoTypeText: {
-    fontSize: typography.fontSize.sm,
-    color: colors.textPrimary,
-  },
-  cargoTypeTextActive: {
-    color: '#FFFFFF',
-    fontWeight: typography.fontWeight.semibold,
-  },
-  textAreaContainer: {
-    marginTop: spacing.xs,
-  },
-  textArea: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
-    padding: spacing.md,
-    fontSize: typography.fontSize.base,
-    color: colors.textTextArea,
-    minHeight: 100,
-  },
-  buttonContainer: {
-    marginTop: spacing.md,
-  },
-  cancelButton: {
-    marginTop: spacing.md,
-    paddingVertical: spacing.md,
-    alignItems: 'center',
-  },
-  cancelButtonText: {
-    color: colors.textSecondary,
-    fontSize: typography.fontSize.base,
-    fontWeight: typography.fontWeight.medium,
-  },
-  mapButton: {
-    backgroundColor: '#E8F5E9',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.md,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#4CAF50',
-    marginBottom: spacing.sm,
-  },
-  mapButtonText: {
-    color: '#2E7D32',
-    fontSize: typography.fontSize.sm,
-    fontWeight: typography.fontWeight.medium,
-    textAlign: 'center',
-  },
-  selectedLocation: {
-    backgroundColor: '#E8F5E9',
-    padding: spacing.md,
-    borderRadius: 8,
-    marginBottom: spacing.sm,
-  },
-  selectedLocationText: {
-    color: '#2E7D32',
-    fontSize: typography.fontSize.sm,
-  },
-  details:{
-    color: colors.textTextArea
-  },
-  warningBox: {
-    backgroundColor: '#FFF3E0',
-    padding: spacing.md,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#FF9800',
-    marginBottom: spacing.md,
-  },
-  warningText: {
-    color: '#E65100',
-    fontSize: typography.fontSize.sm,
-    fontWeight: typography.fontWeight.semibold,
-    marginBottom: spacing.xs,
-  },
-  warningPath: {
-    color: '#E65100',
-    fontSize: typography.fontSize.xs,
-    fontFamily: 'monospace',
-  },
-});

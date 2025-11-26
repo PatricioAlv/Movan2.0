@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
@@ -11,13 +10,12 @@ import {
 } from 'react-native';
 import { Button } from '@presentation/components/common/Button';
 import { Input } from '@presentation/components/common/Input';
-import { colors } from '@presentation/theme/colors';
-import { spacing } from '@presentation/theme/spacing';
-import { typography } from '@presentation/theme/typography';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { ref, set } from 'firebase/database';
 import { auth, database } from '@data/config/firebase.config';
 import { SCREEN_NAMES } from '@infrastructure/utils/constants';
+import RegisterScreenStyle from '@presentation/theme/Auth-Screen-Styles/RegisterScreenStyle';
+
 
 export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -86,34 +84,34 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
   };
 
   const RoleButton = ({ text, value }: { text: string; value: 'CLIENT' | 'TRANSPORTIST'}, style={}) => (
-    <TouchableOpacity onPress={() => setRole(value)} style={[styles.roleButton, role === value && styles.roleButtonSelected,]}>
-      <Text style={[styles.roleText, role === value && styles.roleTextSelected,]}>
+    <TouchableOpacity onPress={() => setRole(value)} style={[RegisterScreenStyle.roleButton, role === value && RegisterScreenStyle.roleButtonSelected,]}>
+      <Text style={[RegisterScreenStyle.roleText, role === value && RegisterScreenStyle.roleTextSelected,]}>
         {text}
       </Text>
     </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={RegisterScreenStyle.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
+        style={RegisterScreenStyle.keyboardView}
       >
-        <View style={styles.content}>
-          <Text style={styles.title}>Crear Cuenta</Text>
-          <Text style={styles.subtitle}>Únete a Movan</Text>
+        <View style={RegisterScreenStyle.content}>
+          <Text style={RegisterScreenStyle.title}>Crear Cuenta</Text>
+          <Text style={RegisterScreenStyle.subtitle}>Únete a Movan</Text>
 
-          <View style={styles.form}>
-            <Input
-              label="Nombre"
+          <View style={RegisterScreenStyle.form}>
+            <Text style={RegisterScreenStyle.inputLabel}>Nombre</Text>
+            <Input style={RegisterScreenStyle.inputField}
               placeholder="Tu nombre"
               value={name}
               onChangeText={setName}
               autoCapitalize="words"
             />
 
-            <Input
-              label="Email"
+            <Text style={RegisterScreenStyle.inputLabel}>Email</Text>
+            <Input style={RegisterScreenStyle.inputField}
               placeholder="tu@email.com"
               value={email}
               onChangeText={setEmail}
@@ -121,16 +119,16 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
               autoCapitalize="none"
             />
 
-            <Input
-              label="Contraseña"
+            <Text style={RegisterScreenStyle.inputLabel}>Contraseña</Text>
+            <Input style={RegisterScreenStyle.inputField}
               placeholder="••••••••"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
             />
 
-            <Text style={styles.roleLabel}> Selecciona tu rol en Movan</Text>
-            <View style={styles.roleContainer}>
+            <Text style={RegisterScreenStyle.roleLabel}> Selecciona tu rol en <Text style={RegisterScreenStyle.MovanText}>Movan</Text></Text>
+            <View style={RegisterScreenStyle.roleContainer}>
               <RoleButton text="CLIENTE" value="CLIENT"/>
               <RoleButton text="TRANSPORTISTA" value="TRANSPORTIST" />
             </View>
@@ -144,10 +142,10 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
 
             <TouchableOpacity
               onPress={() => navigation?.navigate(SCREEN_NAMES.LOGIN)}
-              style={styles.loginButton}
+              style={RegisterScreenStyle.loginButton}
             >
-              <Text style={styles.loginText}>
-                ¿Ya tienes cuenta? <Text style={styles.loginTextBold}>Inicia sesión</Text>
+              <Text style={RegisterScreenStyle.loginText}>
+                ¿Ya tienes cuenta? <Text style={RegisterScreenStyle.loginTextBold}>Inicia sesión</Text>
               </Text>
             </TouchableOpacity>
           </View>
@@ -156,77 +154,3 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: spacing.lg,
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: typography.fontSize['3xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
-  },
-  subtitle: {
-    fontSize: typography.fontSize.base,
-    color: colors.textSecondary,
-    marginBottom: spacing.xl,
-  },
-  form: {
-    marginTop: spacing.lg,
-  },
-  loginButton: {
-    marginTop: spacing.lg,
-    alignItems: 'center',
-  },
-  loginText: {
-    fontSize: typography.fontSize.sm,
-    color: colors.textSecondary,
-  },
-  loginTextBold: {
-    color: colors.primary,
-    fontWeight: typography.fontWeight.semibold,
-  },
-  roleLabel: {
-    marginTop: spacing.md,
-    marginBottom: spacing.sm,
-    fontSize: typography.fontSize.lg,
-    color: colors.textSecondary,
-    fontWeight: typography.fontWeight.bold,
-  },
-  roleContainer: {
-    flexDirection: 'row',
-    top: 5,
-    gap: spacing.md,
-    marginBottom: spacing.lg,
-  },
-  roleButton: {
-    flex: 1,
-    paddingVertical: spacing.md,
-    borderWidth: 2,
-    borderColor: colors.border,
-    borderRadius: spacing.sm,
-    alignItems: 'center',
-  },
-  roleButtonSelected: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  roleText: {
-    fontSize: typography.fontSize.sm,
-    color: colors.textPrimary,
-  },
-  roleTextSelected: {
-    color: colors.white,
-    fontWeight: typography.fontWeight.semibold,
-  },
-});

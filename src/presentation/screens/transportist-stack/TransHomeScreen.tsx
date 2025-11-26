@@ -1,26 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  SafeAreaView,
-  ActivityIndicator,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
-
+import { View, Text, FlatList, SafeAreaView, ActivityIndicator, Alert, } from 'react-native';
 import { Card } from '@presentation/components/common/Card';
 import { Button } from '@presentation/components/common/Button';
 import { colors } from '@presentation/theme/colors';
-import { spacing } from '@presentation/theme/spacing';
-import { typography } from '@presentation/theme/typography';
-
-import { container } from '@infrastructure/di/init';
-import { TYPES } from '@infrastructure/di/types';
-
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
 import { auth } from '@data/config/firebase.config';
+import TransHomeScreenStyle from '@presentation/theme/Trans-Screen-Styles/TransHomeScreen';
 
 // (Opcional) importar tus casos de uso reales
 // import { GetTransportistShipmentsUseCase } from '@core/usecases/shipments/GetTransportistShipmentsUseCase';
@@ -147,21 +132,21 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
   // ITEM DEL LISTADO
   // ============================
   const renderShipmentItem = ({ item }: { item: Shipment }) => (
-    <Card style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.shipmentId}>Envío #{item.id.slice(0, 8)}</Text>
-        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
-          <Text style={styles.statusText}>{getStatusText(item.status)}</Text>
+    <Card style={TransHomeScreenStyle.card}>
+      <View style={TransHomeScreenStyle.cardHeader}>
+        <Text style={TransHomeScreenStyle.shipmentId}>Envío #{item.id.slice(0, 8)}</Text>
+        <View style={[TransHomeScreenStyle.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
+          <Text style={TransHomeScreenStyle.statusText}>{getStatusText(item.status)}</Text>
         </View>
       </View>
 
-      <Text style={styles.locationLabel}>Origen:</Text>
-      <Text style={styles.locationAddress}>{item.origin.address}</Text>
+      <Text style={TransHomeScreenStyle.locationLabel}>Origen:</Text>
+      <Text style={TransHomeScreenStyle.locationAddress}>{item.origin.address}</Text>
 
-      <Text style={styles.locationLabel}>Destino:</Text>
-      <Text style={styles.locationAddress}>{item.destination.address}</Text>
+      <Text style={TransHomeScreenStyle.locationLabel}>Destino:</Text>
+      <Text style={TransHomeScreenStyle.locationAddress}>{item.destination.address}</Text>
 
-      <View style={styles.actionsContainer}>
+      <View style={TransHomeScreenStyle.actionsContainer}>
         {item.status === ShipmentStatus.PENDING && (
           <Button title="Aceptar" onPress={() => handleAction(item.id, ShipmentStatus.ACCEPTED)} />
         )}
@@ -179,33 +164,33 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={TransHomeScreenStyle.centerContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Envíos Asignados</Text>
-        <Text style={styles.subtitle}>
+    <SafeAreaView style={TransHomeScreenStyle.container}>
+      <View style={TransHomeScreenStyle.header}>
+        <Text style={TransHomeScreenStyle.title}>Envíos Asignados</Text>
+        <Text style={TransHomeScreenStyle.subtitle}>
           {shipments.length} {shipments.length === 1 ? 'envío' : 'envíos'}
         </Text>
       </View>
 
       {shipments.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>🚚</Text>
-          <Text style={styles.emptyTitle}>No tienes envíos asignados</Text>
-          <Text style={styles.emptySubtext}>Cuando te asignen uno, aparecerá aquí</Text>
+        <View style={TransHomeScreenStyle.emptyContainer}>
+          <Text style={TransHomeScreenStyle.emptyText}>🚚</Text>
+          <Text style={TransHomeScreenStyle.emptyTitle}>No tienes envíos asignados</Text>
+          <Text style={TransHomeScreenStyle.emptySubtext}>Cuando te asignen uno, aparecerá aquí</Text>
         </View>
       ) : (
         <FlatList
           data={shipments}
           keyExtractor={(item) => item.id}
           renderItem={renderShipmentItem}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={TransHomeScreenStyle.listContent}
           refreshing={refreshing}
           onRefresh={handleRefresh}
         />
@@ -213,84 +198,3 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
-  centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-
-  header: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    backgroundColor: colors.primary,
-  },
-  title: {
-    fontSize: typography.fontSize['2xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: '#FFFFFF',
-  },
-  subtitle: {
-    fontSize: typography.fontSize.sm,
-    color: '#FFFFFF',
-    opacity: 0.9,
-    marginTop: spacing.xs,
-  },
-
-  listContent: { padding: spacing.lg },
-
-  card: { marginBottom: spacing.md },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-  },
-  shipmentId: {
-    fontSize: typography.fontSize.base,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.textPrimary,
-  },
-
-  statusBadge: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    borderRadius: 12,
-  },
-  statusText: {
-    fontSize: typography.fontSize.xs,
-    fontWeight: typography.fontWeight.semibold,
-    color: '#FFFFFF',
-  },
-
-  locationLabel: {
-    fontSize: typography.fontSize.xs,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.textSecondary,
-    marginTop: spacing.sm,
-  },
-  locationAddress: {
-    fontSize: typography.fontSize.base,
-    color: colors.textPrimary,
-    fontWeight: typography.fontWeight.medium,
-  },
-
-  actionsContainer: { marginTop: spacing.md },
-
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: spacing.xl,
-  },
-  emptyText: { fontSize: 64, marginBottom: spacing.md },
-  emptyTitle: {
-    fontSize: typography.fontSize.xl,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
-  },
-  emptySubtext: {
-    fontSize: typography.fontSize.base,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-});
