@@ -13,7 +13,7 @@ const firebaseConfig = {
   appId: "1:719398366977:web:2598c8ad4f199dbffb3500",
   measurementId: "G-0G0MSDHHFV"
 };
-
+//mandar para un .env!!!!!!!!!
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
