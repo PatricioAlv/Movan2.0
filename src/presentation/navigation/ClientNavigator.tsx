@@ -1,6 +1,7 @@
 import React from 'react';
 import { ClientHomeScreen } from '@presentation/screens/client-stack/ClientHomeScreen';
 import { CreateShipmentScreen } from '@presentation/screens/client-stack/CreateShipmentScreen';
+import { AccountSettingsStack } from '@presentation/navigation/AccountSettingsStack';
 import { SCREEN_NAMES } from '@infrastructure/utils/constants';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -26,6 +27,7 @@ export function ClientNavigator() {
           tabBarIcon: ({ color }) => (
             <FontAwesome name="home" size={26} color={color} />
           ),
+          tabBarLabel: 'Inicio',
         }}
       />
 
@@ -34,8 +36,20 @@ export function ClientNavigator() {
         component={CreateShipmentScreen}
         options={{
           tabBarIcon: ({ color }) => (
-            <FontAwesome name="home" size={26} color={color} />
+            <FontAwesome name="plus-circle" size={26} color={color} />
           ),
+          tabBarLabel: 'Crear',
+        }}
+      />
+
+      <Tab.Screen
+        name={SCREEN_NAMES.ACCOUNT_SETTINGS}
+        component={AccountSettingsStack}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="cog" size={26} color={color} />
+          ),
+          tabBarLabel: 'Configuración',
         }}
       />
 

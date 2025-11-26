@@ -19,6 +19,7 @@ export class AcceptShipmentUseCase {
     }
 
     try {
+      
       // Verificar que el pedido existe y está disponible
       const shipment = await this.shipmentRepository.getShipmentById(shipmentId);
       

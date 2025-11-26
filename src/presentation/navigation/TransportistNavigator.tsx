@@ -1,6 +1,7 @@
 import React from 'react';
 import { TransHomeScreen } from '@presentation/screens/transportist-stack/TransHomeScreen';
 import { TransportistBrowserScreen } from '@presentation/screens/transportist-stack/TransShipmentBrowser';
+import { AccountSettingsStack } from '@presentation/navigation/AccountSettingsStack';
 import { SCREEN_NAMES } from '@infrastructure/utils/constants';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -26,6 +27,7 @@ export function TransportistNavigator() {
           tabBarIcon: ({ color }) => (
             <FontAwesome name="home" size={26} color={color} />
           ),
+          tabBarLabel: 'Inicio',
         }}
       />
 
@@ -34,8 +36,20 @@ export function TransportistNavigator() {
         component={TransportistBrowserScreen}
         options={{
           tabBarIcon: ({ color }) => (
-            <FontAwesome name="home" size={26} color={color} />
+            <FontAwesome name="search" size={26} color={color} />
           ),
+          tabBarLabel: 'Buscar',
+        }}
+      />
+
+      <Tab.Screen
+        name={SCREEN_NAMES.ACCOUNT_SETTINGS}
+        component={AccountSettingsStack}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="cog" size={26} color={color} />
+          ),
+          tabBarLabel: 'Configuración',
         }}
       />
 

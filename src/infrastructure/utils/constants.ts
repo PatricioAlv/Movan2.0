@@ -34,6 +34,9 @@ export const SCREEN_NAMES = {
   TRANS_HOME: 'TransHome',
   TRANS_BROWSER: 'TransBrowser',
   
+  // Shared
+  ACCOUNT_SETTINGS: 'AccountSettings',
+  
   // Main
   HOME: 'Home',
   PROFILE: 'Profile',
