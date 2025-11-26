@@ -6,10 +6,11 @@ import { colors } from '@presentation/theme/colors';
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
 import { auth } from '@data/config/firebase.config';
 import TransHomeScreenStyle from '@presentation/theme/Trans-Screen-Styles/TransHomeScreen';
-
-// (Opcional) importar tus casos de uso reales
-// import { GetTransportistShipmentsUseCase } from '@core/usecases/shipments/GetTransportistShipmentsUseCase';
-// import { UpdateShipmentStatusUseCase } from '@core/usecases/shipments/UpdateShipmentStatusUseCase';
+import { container } from '@infrastructure/di/container';
+import { TYPES } from '@infrastructure/di/types';
+import { GetDriverShipmentsUseCase } from '@core/usecases/shipments/GetDriverShipmentsUseCase';
+import { UpdateShipmentStatusUseCase } from '@core/usecases/shipments/UpdateShipmentStatusUseCase';
+import { useFocusEffect } from '@react-navigation/native';
 
 const getStatusColor = (status: ShipmentStatus): string => {
   switch (status) {
@@ -67,16 +68,12 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
         return;
       }
 
-      // Instanciar caso de uso real cuando exista
-      // const getShipmentsUseCase = container.get<GetTransportistShipmentsUseCase>(
-      //   TYPES.GetTransportistShipmentsUseCase
-      // );
+      const getShipmentsUseCase = container.get<GetDriverShipmentsUseCase>(
+        TYPES.GetDriverShipmentsUseCase
+      );
 
-      // const assignedShipments = await getShipmentsUseCase.execute(userId);
-      // setShipments(assignedShipments);
-
-      // TEMPORAL: lista vacía hasta que lo conectes
-      setShipments([]);
+      const assignedShipments = await getShipmentsUseCase.execute(userId);
+      setShipments(assignedShipments);
 
     } catch (error: any) {
       console.error('Error loading shipments:', error);
@@ -90,6 +87,13 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
   useEffect(() => {
     loadTransportistShipments();
   }, []);
+
+  // Recargar cuando la pantalla recibe foco
+  useFocusEffect(
+    React.useCallback(() => {
+      loadTransportistShipments();
+    }, [])
+  );
 
   const handleRefresh = () => {
     setRefreshing(true);
@@ -111,10 +115,10 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
             text: 'Sí',
             style: 'destructive',
             onPress: async () => {
-              // const updateUseCase = container.get<UpdateShipmentStatusUseCase>(
-              //   TYPES.UpdateShipmentStatusUseCase
-              // );
-              // await updateUseCase.execute(shipmentId, nextStatus);
+              const updateUseCase = container.get<UpdateShipmentStatusUseCase>(
+                TYPES.UpdateShipmentStatusUseCase
+              );
+              await updateUseCase.execute(shipmentId, nextStatus);
 
               Alert.alert('Éxito', 'Estado actualizado correctamente');
               loadTransportistShipments();
@@ -133,25 +137,49 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
   // ============================
   
   const renderShipmentItem = ({ item }: { item: Shipment }) => (
-    <Card style={TransHomeScreenStyle.card}>
+    <View style={TransHomeScreenStyle.card}>
+      {/* Header con ID y Status Badge */}
       <View style={TransHomeScreenStyle.cardHeader}>
-        <Text style={TransHomeScreenStyle.shipmentId}>Envío #{item.id.slice(0, 8)}</Text>
+        <View>
+          <Text style={TransHomeScreenStyle.shipmentId}>ID: #{item.id.slice(0, 8).toUpperCase()}</Text>
+          <Text style={TransHomeScreenStyle.cargoType}>{item.cargoDescription}</Text>
+        </View>
         <View style={[TransHomeScreenStyle.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
           <Text style={TransHomeScreenStyle.statusText}>{getStatusText(item.status)}</Text>
         </View>
       </View>
 
-      <Text style={TransHomeScreenStyle.locationLabel}>Origen:</Text>
-      <Text style={TransHomeScreenStyle.locationAddress}>{item.origin.address}</Text>
+      {/* Ruta: Origen -> Destino */}
+      <View style={TransHomeScreenStyle.routeContainer}>
+        <View style={TransHomeScreenStyle.locationPoint}>
+          <Text style={TransHomeScreenStyle.locationIcon}>📍</Text>
+          <Text style={TransHomeScreenStyle.locationCity}>
+            {item.origin.address.split(',')[0]}
+          </Text>
+        </View>
+        <Text style={TransHomeScreenStyle.routeArrow}>→</Text>
+        <View style={TransHomeScreenStyle.locationPoint}>
+          <Text style={TransHomeScreenStyle.locationIcon}>📍</Text>
+          <Text style={TransHomeScreenStyle.locationCity}>
+            {item.destination.address.split(',')[0]}
+          </Text>
+        </View>
+      </View>
 
-      <Text style={TransHomeScreenStyle.locationLabel}>Destino:</Text>
-      <Text style={TransHomeScreenStyle.locationAddress}>{item.destination.address}</Text>
+      {/* Fecha */}
+      <View style={TransHomeScreenStyle.dateContainer}>
+        <Text style={TransHomeScreenStyle.dateIcon}>📅</Text>
+        <Text style={TransHomeScreenStyle.dateText}>
+          {new Date(item.pickupDate).toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+          })}
+        </Text>
+      </View>
 
+      {/* Botones de acción */}
       <View style={TransHomeScreenStyle.actionsContainer}>
-        {item.status === ShipmentStatus.PENDING && (
-          <Button title="Aceptar" onPress={() => handleAction(item.id, ShipmentStatus.ACCEPTED)} />
-        )}
-
         {item.status === ShipmentStatus.ACCEPTED && (
           <Button title="Iniciar Viaje" onPress={() => handleAction(item.id, ShipmentStatus.IN_TRANSIT)} />
         )}
@@ -160,7 +188,7 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
           <Button title="Marcar Entregado" onPress={() => handleAction(item.id, ShipmentStatus.DELIVERED)} />
         )}
       </View>
-    </Card>
+    </View>
   );
 
   if (loading) {
@@ -174,10 +202,11 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
   return (
     <SafeAreaView style={TransHomeScreenStyle.container}>
       <View style={TransHomeScreenStyle.header}>
-        <Text style={TransHomeScreenStyle.title}>Envíos Asignados</Text>
-        <Text style={TransHomeScreenStyle.subtitle}>
-          {shipments.length} {shipments.length === 1 ? 'envío' : 'envíos'}
-        </Text>
+        <Text style={TransHomeScreenStyle.title}>Mis Envíos</Text>
+        <View style={TransHomeScreenStyle.tabContainer}>
+          <Text style={TransHomeScreenStyle.tabActive}>En Curso</Text>
+          <Text style={TransHomeScreenStyle.tabInactive}>Historial</Text>
+        </View>
       </View>
 
       {shipments.length === 0 ? (

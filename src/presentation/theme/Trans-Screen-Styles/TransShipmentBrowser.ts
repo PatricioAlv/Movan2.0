@@ -6,7 +6,7 @@ import { colors } from '../colors';
 const TransShipmentBrowser = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#1a2332',
   },
 
   centerContainer: {
@@ -17,85 +17,176 @@ const TransShipmentBrowser = StyleSheet.create({
 
   header: {
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    backgroundColor: colors.primary,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.sm,
+    backgroundColor: '#1a2332',
   },
   title: {
     fontSize: typography.fontSize['2xl'],
     fontWeight: typography.fontWeight.bold,
     color: '#FFFFFF',
+    marginBottom: spacing.md,
   },
-  subtitle: {
+  tabContainer: {
+    flexDirection: 'row',
+    gap: spacing.lg,
+  },
+  tabActive: {
     fontSize: typography.fontSize.sm,
+    fontWeight: typography.fontWeight.semibold,
     color: '#FFFFFF',
-    opacity: 0.9,
-    marginTop: spacing.xs,
+    paddingBottom: spacing.xs,
+    borderBottomWidth: 2,
+    borderBottomColor: '#4A90E2',
+  },
+  tabInactive: {
+    fontSize: typography.fontSize.sm,
+    fontWeight: typography.fontWeight.medium,
+    color: '#6B7280',
   },
 
   searchContainer: {
-    padding: spacing.lg,
-    backgroundColor: colors.background,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    backgroundColor: '#1a2332',
+  },
+  searchIcon: {
+    fontSize: 18,
+    marginRight: spacing.sm,
+    position: 'absolute',
+    left: spacing.lg + spacing.sm,
+    zIndex: 1,
   },
   searchInput: {
-    backgroundColor: '#FFF',
+    flex: 1,
+    backgroundColor: '#243447',
     borderRadius: 8,
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: spacing.xl,
     paddingVertical: spacing.sm,
-    fontSize: typography.fontSize.base,
-    color: colors.textPrimary,
+    fontSize: typography.fontSize.sm,
+    color: '#FFFFFF',
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#2a3442',
   },
 
-  listContent: {
-    padding: spacing.lg,
-  },
-  card: {
-    marginBottom: spacing.md,
-  },
-
-  cardHeader: {
+  filterContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: spacing.md,
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.md,
+    gap: spacing.sm,
   },
-  shipmentId: {
-    fontSize: typography.fontSize.base,
+  filterButton: {
+    flex: 1,
+    backgroundColor: '#243447',
+    paddingVertical: spacing.sm,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#4A90E2',
+  },
+  filterText: {
+    color: '#FFFFFF',
+    fontSize: typography.fontSize.sm,
     fontWeight: typography.fontWeight.semibold,
-    color: colors.textTextArea,
   },
-
-  locationContainer: {
-    marginBottom: spacing.md,
+  filterButtonInactive: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    paddingVertical: spacing.sm,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#2a3442',
   },
-  locationLabel: {
-    fontSize: typography.fontSize.xs,
-    color: colors.textSecondary,
-    fontWeight: typography.fontWeight.semibold,
-  },
-  locationValue: {
-    fontSize: typography.fontSize.base,
-    color: colors.textSecondary,
+  filterTextInactive: {
+    color: '#6B7280',
+    fontSize: typography.fontSize.sm,
     fontWeight: typography.fontWeight.medium,
   },
 
-  detailsContainer: {
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    paddingTop: spacing.md,
+  listContent: {
+    padding: spacing.md,
   },
-  detailText: {
-    fontSize: typography.fontSize.sm,
-    color: colors.textSecondary,
-    marginBottom: spacing.xs,
+  
+  card: {
+    backgroundColor: '#243447',
+    borderRadius: 12,
+    padding: spacing.md,
+    marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: '#2a3442',
   },
-  detailPrice: {
+
+  cardHeader: {
+    marginBottom: spacing.sm,
+  },
+  cargoType: {
     fontSize: typography.fontSize.base,
-    color: colors.primary,
+    fontWeight: typography.fontWeight.semibold,
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  weightText: {
+    fontSize: typography.fontSize.sm,
+    color: '#9CA3AF',
+  },
+
+  routeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.sm,
+    paddingVertical: spacing.xs,
+  },
+  locationPoint: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  locationIcon: {
+    fontSize: 16,
+    marginRight: 6,
+  },
+  locationCity: {
+    fontSize: typography.fontSize.sm,
+    color: '#E5E7EB',
+    fontWeight: typography.fontWeight.medium,
+  },
+  routeArrow: {
+    fontSize: 16,
+    color: '#6B7280',
+    marginHorizontal: spacing.sm,
+  },
+
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: spacing.md,
+    paddingBottom: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: '#2a3442',
+  },
+  infoText: {
+    fontSize: typography.fontSize.xs,
+    color: '#9CA3AF',
+  },
+
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  priceLabel: {
+    fontSize: typography.fontSize.xs,
+    color: '#9CA3AF',
+    marginBottom: 2,
+  },
+  price: {
+    fontSize: typography.fontSize.xl,
     fontWeight: typography.fontWeight.bold,
-    marginTop: spacing.xs,
+    color: '#4A90E2',
   },
 
   emptyContainer: {
@@ -109,11 +200,11 @@ const TransShipmentBrowser = StyleSheet.create({
   emptyTitle: {
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.bold,
-    color: colors.textPrimary,
+    color: '#FFFFFF',
   },
   emptySubtitle: {
     fontSize: typography.fontSize.base,
-    color: colors.textSecondary,
+    color: '#9CA3AF',
     marginTop: spacing.xs,
     textAlign: 'center',
     paddingHorizontal: spacing.lg,

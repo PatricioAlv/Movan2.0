@@ -9,6 +9,7 @@ import { container } from '@infrastructure/di/container';
 import { TYPES } from '@infrastructure/di/types';
 import { Shipment } from '@core/entities/Order';
 import { GetAvailableShipmentsUseCase } from '@core/usecases/shipments/GetAvailableShipmentsUseCase';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface Props {
   navigation: any;
@@ -64,6 +65,13 @@ export const TransportistBrowserScreen: React.FC<Props> = ({ navigation }) => {
     loadAvailableShipments();
   }, []);
 
+  // Recargar cuando la pantalla recibe foco (vuelve de detalles)
+  useFocusEffect(
+    React.useCallback(() => {
+      loadAvailableShipments();
+    }, [])
+  );
+
   useEffect(() => {
     filterShipments(allShipments, query);
   }, [query]);
@@ -73,35 +81,51 @@ export const TransportistBrowserScreen: React.FC<Props> = ({ navigation }) => {
     loadAvailableShipments();
   };
 
-  const renderItem = ({ item }: { item: Shipment }) => ( // Render de cada pedido
-    <Card style={TransShipmentBrowser.card}>
+  const renderItem = ({ item }: { item: Shipment }) => (
+    <View style={TransShipmentBrowser.card}>
+      {/* Header con tipo de carga y peso */}
       <View style={TransShipmentBrowser.cardHeader}>
-        <Text style={TransShipmentBrowser.shipmentId}>Pedido #{item.id?.slice(0, 8) ?? '---'}</Text>
+        <View>
+          <Text style={TransShipmentBrowser.cargoType}>{item.cargoDescription}</Text>
+          <Text style={TransShipmentBrowser.weightText}>{item.weight} kg</Text>
+        </View>
       </View>
 
-      <View style={TransShipmentBrowser.locationContainer}>
-        <Text style={TransShipmentBrowser.locationLabel}>Origen:</Text>
-        <Text style={TransShipmentBrowser.locationValue}>{item.origin?.address ?? '---'}</Text>
-
-        <Text style={[TransShipmentBrowser.locationLabel, { marginTop: spacing.sm }]}>Destino:</Text>
-        <Text style={TransShipmentBrowser.locationValue}>{item.destination?.address ?? '---'}</Text>
+      {/* Ruta: Origen -> Destino */}
+      <View style={TransShipmentBrowser.routeContainer}>
+        <View style={TransShipmentBrowser.locationPoint}>
+          <Text style={TransShipmentBrowser.locationIcon}>📍</Text>
+          <Text style={TransShipmentBrowser.locationCity}>
+            {item.origin.address.split(',')[0]}
+          </Text>
+        </View>
+        <Text style={TransShipmentBrowser.routeArrow}>→</Text>
+        <View style={TransShipmentBrowser.locationPoint}>
+          <Text style={TransShipmentBrowser.locationIcon}>📍</Text>
+          <Text style={TransShipmentBrowser.locationCity}>
+            {item.destination.address.split(',')[0]}
+          </Text>
+        </View>
       </View>
 
-      <View style={TransShipmentBrowser.detailsContainer}>
-        <Text style={TransShipmentBrowser.detailText}>Carga: {item.cargoType ?? '---'}</Text>
-        <Text style={TransShipmentBrowser.detailText}>Peso: {item.weight ?? '---'} kg</Text>
-        <Text style={TransShipmentBrowser.detailText}>
-          Fecha: {item.pickupDate ? new Date(item.pickupDate).toLocaleDateString() : '---'}
-        </Text>
-        <Text style={TransShipmentBrowser.detailPrice}>${item.price?.toLocaleString() ?? '---'}</Text>
+      {/* Distancia y duración */}
+      <View style={TransShipmentBrowser.infoRow}>
+        <Text style={TransShipmentBrowser.infoText}>Distancia: {Math.round(Math.random() * 500 + 100)} km</Text>
+        <Text style={TransShipmentBrowser.infoText}>⏱️ {Math.round(Math.random() * 20 + 5)}h</Text>
       </View>
 
-      <Button
-        title="Ver Detalles"
-        onPress={() => navigation.navigate('TransportistShipmentDetails', { shipmentId: item.id })}
-        style={{ marginTop: spacing.sm }}
-      />
-    </Card>
+      {/* Precio y botón */}
+      <View style={TransShipmentBrowser.footer}>
+        <View>
+          <Text style={TransShipmentBrowser.priceLabel}>Pago:</Text>
+          <Text style={TransShipmentBrowser.price}>${item.price.toLocaleString('es-ES')}</Text>
+        </View>
+        <Button
+          title="Ver Detalles"
+          onPress={() => navigation.navigate('TransportistShipmentDetails', { shipmentId: item.id })}
+        />
+      </View>
+    </View>
   );
 
   if (loading) {
@@ -115,21 +139,32 @@ export const TransportistBrowserScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <SafeAreaView style={TransShipmentBrowser.container}>
       <View style={TransShipmentBrowser.header}>
-        <Text style={TransShipmentBrowser.title}>Buscador de Envíos</Text>
-        <Text style={TransShipmentBrowser.subtitle}>
-          {results.length} resultados
-        </Text>
+        <Text style={TransShipmentBrowser.title}>Encuentra Cargas</Text>
+        <View style={TransShipmentBrowser.tabContainer}>
+          <Text style={TransShipmentBrowser.tabActive}>Nuevos</Text>
+          <Text style={TransShipmentBrowser.tabInactive}>Populares</Text>
+          <Text style={TransShipmentBrowser.tabInactive}>Cerca de mí</Text>
+        </View>
       </View>
 
       <View style={TransShipmentBrowser.searchContainer}>
+        <Text style={TransShipmentBrowser.searchIcon}>🔍</Text>
         <TextInput
-          placeholder="Buscar dirección, ciudad o referencia…"
-          placeholderTextColor={colors.textSecondary}
+          placeholder="Buscar por ciudad, estado o ID"
+          placeholderTextColor="#6B7280"
           value={query}
           onChangeText={setQuery}
           style={TransShipmentBrowser.searchInput}
-          onSubmitEditing={loadAvailableShipments}
         />
+      </View>
+
+      <View style={TransShipmentBrowser.filterContainer}>
+        <View style={TransShipmentBrowser.filterButton}>
+          <Text style={TransShipmentBrowser.filterText}>Lista</Text>
+        </View>
+        <View style={TransShipmentBrowser.filterButtonInactive}>
+          <Text style={TransShipmentBrowser.filterTextInactive}>Mapa</Text>
+        </View>
       </View>
 
       <FlatList
