@@ -84,6 +84,8 @@ console.log('Creating AcceptShipmentUseCase instance...');
 const acceptShipmentUseCase = new AcceptShipmentUseCase(firebaseShipmentRepository);
 console.log('Creating UpdateShipmentStatusUseCase instance...');
 const updateShipmentStatusUseCase = new UpdateShipmentStatusUseCase(firebaseShipmentRepository);
+console.log('Creating LogoutUseCase instance...');
+const logoutUseCase = new LogoutUseCase(firebaseAuthRepository);
 
 // Bind Use Cases como constantes
 console.log('Binding LoginUseCase...');
@@ -91,7 +93,7 @@ container.bind<LoginUseCase>(TYPES.LoginUseCase).to(LoginUseCase);
 console.log('Binding RegisterUseCase...');
 container.bind<RegisterUseCase>(TYPES.RegisterUseCase).to(RegisterUseCase);
 console.log('Binding LogoutUseCase...');
-container.bind<LogoutUseCase>(TYPES.LogoutUseCase).to(LogoutUseCase);
+container.bind<LogoutUseCase>(TYPES.LogoutUseCase).toConstantValue(logoutUseCase);
 console.log('Binding CreateShipmentUseCase...');
 container.bind<CreateShipmentUseCase>(TYPES.CreateShipmentUseCase).toConstantValue(createShipmentUseCase);
 console.log('Binding GetClientShipmentsUseCase...');
