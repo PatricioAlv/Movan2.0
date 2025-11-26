@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, Alert, TouchableOpacity, Linking, Platform } from 'react-native';
 import { Card } from '@presentation/components/common/Card';
 import { Button } from '@presentation/components/common/Button';
 import { colors } from '@presentation/theme/colors';
@@ -12,6 +12,7 @@ import { AcceptShipmentUseCase } from '@core/usecases/shipments/AcceptShipmentUs
 import { SCREEN_NAMES } from '@infrastructure/utils/constants';
 import { auth } from '@data/config/firebase.config';
 import { StyleSheet } from 'react-native';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 interface Props {
   route: any;
@@ -42,6 +43,21 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
   useEffect(() => {
     loadShipmentDetails();
   }, []);
+
+  const openGoogleMaps = (latitude: number, longitude: number, address: string) => {
+    const scheme = Platform.select({
+      ios: 'maps:0,0?q=',
+      android: 'geo:0,0?q=',
+    });
+    const latLng = `${latitude},${longitude}`;
+    const label = encodeURIComponent(address);
+    const url = Platform.select({
+      ios: `${scheme}${label}@${latLng}`,
+      android: `${scheme}${latLng}(${label})`,
+    });
+
+    Linking.openURL(url || `https://www.google.com/maps/search/?api=1&query=${latLng}`);
+  };
 
   const handleAcceptShipment = async () => {
     const userId = auth.currentUser?.uid;
@@ -117,6 +133,7 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
             <Text style={styles.iconText}>📍</Text>
           </View>
           <View style={styles.locationInfo}>
+            <Text style={styles.locationLabel}>Origen</Text>
             <Text style={styles.locationAddress}>{shipment.origin.address}</Text>
             {shipment.origin.contactName && (
               <Text style={styles.contactText}>Contacto: {shipment.origin.contactName}</Text>
@@ -124,6 +141,17 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
             {shipment.origin.contactPhone && (
               <Text style={styles.contactText}>Tel: {shipment.origin.contactPhone}</Text>
             )}
+            <TouchableOpacity 
+              style={styles.mapButton}
+              onPress={() => openGoogleMaps(
+                shipment.origin.latitude,
+                shipment.origin.longitude,
+                shipment.origin.address
+              )}
+            >
+              <FontAwesome name="map-marker" size={16} color="#FFFFFF" />
+              <Text style={styles.mapButtonText}>Ver en Google Maps</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -136,6 +164,7 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
             <Text style={styles.iconText}>📍</Text>
           </View>
           <View style={styles.locationInfo}>
+            <Text style={styles.locationLabel}>Destino</Text>
             <Text style={styles.locationAddress}>{shipment.destination.address}</Text>
             {shipment.destination.contactName && (
               <Text style={styles.contactText}>Contacto: {shipment.destination.contactName}</Text>
@@ -143,6 +172,17 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
             {shipment.destination.contactPhone && (
               <Text style={styles.contactText}>Tel: {shipment.destination.contactPhone}</Text>
             )}
+            <TouchableOpacity 
+              style={styles.mapButton}
+              onPress={() => openGoogleMaps(
+                shipment.destination.latitude,
+                shipment.destination.longitude,
+                shipment.destination.address
+              )}
+            >
+              <FontAwesome name="map-marker" size={16} color="#FFFFFF" />
+              <Text style={styles.mapButtonText}>Ver en Google Maps</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -256,6 +296,12 @@ const styles = StyleSheet.create({
   locationInfo: {
     flex: 1,
   },
+  locationLabel: {
+    fontSize: 12,
+    color: colors.gray600,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
   locationAddress: {
     fontSize: 15,
     color: '#000',
@@ -266,6 +312,22 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.gray600,
     marginTop: 2,
+  },
+  mapButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 6,
+    marginTop: spacing.sm,
+    alignSelf: 'flex-start',
+  },
+  mapButtonText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '600',
+    marginLeft: 6,
   },
   divider: {
     height: 1,
