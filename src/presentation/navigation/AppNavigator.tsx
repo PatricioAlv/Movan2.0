@@ -10,10 +10,12 @@ import { colors } from '@presentation/theme/colors';
 import { container } from '@infrastructure/di/container';
 import { IAuthRepository } from '@core/repositories/IAuthRepository';
 import { TYPES } from '@infrastructure/di/types';
+import { SplashScreen } from '@presentation/screens/SplashScreen';
 
 export const AppNavigator: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
     const authRepository = container.get<IAuthRepository>(TYPES.IAuthRepository);
@@ -33,6 +35,10 @@ export const AppNavigator: React.FC = () => {
 
     return unsubscribe;
   }, []);
+
+  if(showSplash){
+    return <SplashScreen onFinish={() => setShowSplash(false)} />
+  }
 
   if (isLoading) {
     return (
