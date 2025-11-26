@@ -80,4 +80,55 @@ export class FirebaseShipmentDataSource {
       updatedAt: new Date().toISOString(),
     });
   }
+
+  async getByStatus(status: ShipmentStatus): Promise<Shipment[]> {
+    const shipmentsQuery = query(
+      this.shipmentsRef,
+      orderByChild('status'),
+      equalTo(status)
+    );
+
+    const snapshot = await get(shipmentsQuery);
+
+    if (!snapshot.exists()) {
+      return [];
+    }
+
+    const shipments: Shipment[] = [];
+    snapshot.forEach((childSnapshot) => {
+      shipments.push(ShipmentMapper.toDomain(childSnapshot.val()));
+    });
+
+    return shipments;
+  }
+
+  async getByDriverId(driverId: string): Promise<Shipment[]> {
+    const shipmentsQuery = query(
+      this.shipmentsRef,
+      orderByChild('driverId'),
+      equalTo(driverId)
+    );
+
+    const snapshot = await get(shipmentsQuery);
+
+    if (!snapshot.exists()) {
+      return [];
+    }
+
+    const shipments: Shipment[] = [];
+    snapshot.forEach((childSnapshot) => {
+      shipments.push(ShipmentMapper.toDomain(childSnapshot.val()));
+    });
+
+    return shipments;
+  }
+
+  async assignDriver(shipmentId: string, driverId: string): Promise<void> {
+    const shipmentRef = ref(database, `shipments/${shipmentId}`);
+    await update(shipmentRef, {
+      driverId,
+      status: ShipmentStatus.ACCEPTED,
+      updatedAt: new Date().toISOString(),
+    });
+  }
 }

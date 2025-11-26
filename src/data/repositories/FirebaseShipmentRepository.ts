@@ -30,4 +30,16 @@ export class FirebaseShipmentRepository implements IShipmentRepository {
   async cancelShipment(id: string): Promise<void> {
     await this.dataSource.cancel(id);
   }
+
+  async getAvailableShipments(): Promise<Shipment[]> {
+    return await this.dataSource.getByStatus(ShipmentStatus.PENDING);
+  }
+
+  async getDriverShipments(driverId: string): Promise<Shipment[]> {
+    return await this.dataSource.getByDriverId(driverId);
+  }
+
+  async acceptShipment(shipmentId: string, driverId: string): Promise<void> {
+    await this.dataSource.assignDriver(shipmentId, driverId);
+  }
 }

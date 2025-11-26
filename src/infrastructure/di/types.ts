@@ -22,4 +22,8 @@ export const TYPES = {
   GetClientShipmentsUseCase: Symbol.for('GetClientShipmentsUseCase'),
   GetShipmentByIdUseCase: Symbol.for('GetShipmentByIdUseCase'),
   CancelShipmentUseCase: Symbol.for('CancelShipmentUseCase'),
+  GetAvailableShipmentsUseCase: Symbol.for('GetAvailableShipmentsUseCase'),
+  GetDriverShipmentsUseCase: Symbol.for('GetDriverShipmentsUseCase'),
+  AcceptShipmentUseCase: Symbol.for('AcceptShipmentUseCase'),
+  UpdateShipmentStatusUseCase: Symbol.for('UpdateShipmentStatusUseCase'),
 };

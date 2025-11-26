@@ -23,6 +23,10 @@ import { CreateShipmentUseCase } from '@core/usecases/shipments/CreateShipmentUs
 import { GetClientShipmentsUseCase } from '@core/usecases/shipments/GetClientShipmentsUseCase';
 import { GetShipmentByIdUseCase } from '@core/usecases/shipments/GetShipmentByIdUseCase';
 import { CancelShipmentUseCase } from '@core/usecases/shipments/CancelShipmentUseCase';
+import { GetAvailableShipmentsUseCase } from '@core/usecases/shipments/GetAvailableShipmentsUseCase';
+import { GetDriverShipmentsUseCase } from '@core/usecases/shipments/GetDriverShipmentsUseCase';
+import { AcceptShipmentUseCase } from '@core/usecases/shipments/AcceptShipmentUseCase';
+import { UpdateShipmentStatusUseCase } from '@core/usecases/shipments/UpdateShipmentStatusUseCase';
 
 const container = new Container({ defaultScope: 'Singleton' });
 
@@ -72,6 +76,14 @@ console.log('Creating GetShipmentByIdUseCase instance...');
 const getShipmentByIdUseCase = new GetShipmentByIdUseCase(firebaseShipmentRepository);
 console.log('Creating CancelShipmentUseCase instance...');
 const cancelShipmentUseCase = new CancelShipmentUseCase(firebaseShipmentRepository);
+console.log('Creating GetAvailableShipmentsUseCase instance...');
+const getAvailableShipmentsUseCase = new GetAvailableShipmentsUseCase(firebaseShipmentRepository);
+console.log('Creating GetDriverShipmentsUseCase instance...');
+const getDriverShipmentsUseCase = new GetDriverShipmentsUseCase(firebaseShipmentRepository);
+console.log('Creating AcceptShipmentUseCase instance...');
+const acceptShipmentUseCase = new AcceptShipmentUseCase(firebaseShipmentRepository);
+console.log('Creating UpdateShipmentStatusUseCase instance...');
+const updateShipmentStatusUseCase = new UpdateShipmentStatusUseCase(firebaseShipmentRepository);
 
 // Bind Use Cases como constantes
 console.log('Binding LoginUseCase...');
@@ -88,6 +100,14 @@ console.log('Binding GetShipmentByIdUseCase...');
 container.bind<GetShipmentByIdUseCase>(TYPES.GetShipmentByIdUseCase).toConstantValue(getShipmentByIdUseCase);
 console.log('Binding CancelShipmentUseCase...');
 container.bind<CancelShipmentUseCase>(TYPES.CancelShipmentUseCase).toConstantValue(cancelShipmentUseCase);
+console.log('Binding GetAvailableShipmentsUseCase...');
+container.bind<GetAvailableShipmentsUseCase>(TYPES.GetAvailableShipmentsUseCase).toConstantValue(getAvailableShipmentsUseCase);
+console.log('Binding GetDriverShipmentsUseCase...');
+container.bind<GetDriverShipmentsUseCase>(TYPES.GetDriverShipmentsUseCase).toConstantValue(getDriverShipmentsUseCase);
+console.log('Binding AcceptShipmentUseCase...');
+container.bind<AcceptShipmentUseCase>(TYPES.AcceptShipmentUseCase).toConstantValue(acceptShipmentUseCase);
+console.log('Binding UpdateShipmentStatusUseCase...');
+container.bind<UpdateShipmentStatusUseCase>(TYPES.UpdateShipmentStatusUseCase).toConstantValue(updateShipmentStatusUseCase);
 
 console.log('Container initialized successfully!');
 
