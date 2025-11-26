@@ -83,15 +83,9 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
     }
   };
 
-<<<<<<< HEAD
-  const RoleButton = ({ text, value }: { text: string; value: 'CLIENT' | 'TRANSPORTIST' }, style = {}) => (
-    <TouchableOpacity onPress={() => setRole(value)} style={[styles.roleButton, role === value && styles.roleButtonSelected,]}>
-      <Text style={[styles.roleText, role === value && styles.roleTextSelected,]}>
-=======
   const RoleButton = ({ text, value }: { text: string; value: 'CLIENT' | 'TRANSPORTIST'}, style={}) => (
     <TouchableOpacity onPress={() => setRole(value)} style={[RegisterScreenStyle.roleButton, role === value && RegisterScreenStyle.roleButtonSelected,]}>
       <Text style={[RegisterScreenStyle.roleText, role === value && RegisterScreenStyle.roleTextSelected,]}>
->>>>>>> b1ef8ea9e65c2b14d4ca3916987f86181090d2d7
         {text}
       </Text>
     </TouchableOpacity>
@@ -103,16 +97,6 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={RegisterScreenStyle.keyboardView}
       >
-<<<<<<< HEAD
-        <View style={styles.content}>
-          <Text style={styles.title}>Crear Cuenta</Text>
-          <Text style={styles.subtitle}>Únete a Movan!</Text>
-
-          <View style={styles.form}>
-            <Input
-              label="Nombre"
-              style={styles.inputField}
-=======
         <View style={RegisterScreenStyle.content}>
           <Text style={RegisterScreenStyle.title}>Crear Cuenta</Text>
           <Text style={RegisterScreenStyle.subtitle}>Únete a Movan</Text>
@@ -120,7 +104,6 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
           <View style={RegisterScreenStyle.form}>
             <Text style={RegisterScreenStyle.inputLabel}>Nombre</Text>
             <Input style={RegisterScreenStyle.inputField}
->>>>>>> b1ef8ea9e65c2b14d4ca3916987f86181090d2d7
               placeholder="Tu nombre"
               value={name}
               onChangeText={setName}
@@ -137,29 +120,17 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
               autoCapitalize="none"
             />
 
-<<<<<<< HEAD
-            <Input
-              label="Contraseña"
-              style={styles.inputField}
-=======
             <Text style={RegisterScreenStyle.inputLabel}>Contraseña</Text>
             <Input style={RegisterScreenStyle.inputField}
->>>>>>> b1ef8ea9e65c2b14d4ca3916987f86181090d2d7
               placeholder="••••••••"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
             />
 
-<<<<<<< HEAD
-            <Text style={styles.roleLabel}> Selecciona tu rol en Movan</Text>
-            <View style={styles.roleContainer}>
-              <RoleButton text="CLIENTE" value="CLIENT" />
-=======
             <Text style={RegisterScreenStyle.roleLabel}> Selecciona tu rol en <Text style={RegisterScreenStyle.MovanText}>Movan</Text></Text>
             <View style={RegisterScreenStyle.roleContainer}>
               <RoleButton text="CLIENTE" value="CLIENT"/>
->>>>>>> b1ef8ea9e65c2b14d4ca3916987f86181090d2d7
               <RoleButton text="TRANSPORTISTA" value="TRANSPORTIST" />
             </View>
 
@@ -184,86 +155,3 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
     </SafeAreaView>
   );
 };
-<<<<<<< HEAD
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: spacing.lg,
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: typography.fontSize['3xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
-  },
-  subtitle: {
-    fontSize: typography.fontSize.base,
-    color: colors.textSecondary,
-    marginBottom: spacing.xl,
-  },
-  form: {
-    marginTop: spacing.lg,
-  },
-  loginButton: {
-    marginTop: spacing.lg,
-    alignItems: 'center',
-  },
-  loginText: {
-    fontSize: typography.fontSize.sm,
-    color: colors.textSecondary,
-  },
-  loginTextBold: {
-    color: colors.primary,
-    fontWeight: typography.fontWeight.semibold,
-  },
-  roleLabel: {
-    marginTop: spacing.md,
-    marginBottom: spacing.sm,
-    fontSize: typography.fontSize.lg,
-    color: colors.textSecondary,
-    fontWeight: typography.fontWeight.bold,
-  },
-  roleContainer: {
-    flexDirection: 'row',
-    top: 5,
-    gap: spacing.md,
-    marginBottom: spacing.lg,
-  },
-  roleButton: {
-    flex: 1,
-    paddingVertical: spacing.md,
-    borderWidth: 2,
-    borderColor: colors.border,
-    borderRadius: spacing.sm,
-    alignItems: 'center',
-  },
-  roleButtonSelected: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  roleText: {
-    fontSize: typography.fontSize.sm,
-    color: colors.textPrimary,
-  },
-  roleTextSelected: {
-    color: colors.white,
-    fontWeight: typography.fontWeight.semibold,
-  },
-  inputField: {
-    backgroundColor: colors.bgLight,
-    borderColor: colors.gray500
-
-
-  }
-});
-=======
->>>>>>> b1ef8ea9e65c2b14d4ca3916987f86181090d2d7
