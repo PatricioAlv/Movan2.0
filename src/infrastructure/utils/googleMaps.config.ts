@@ -1,6 +1,7 @@
+import { GOOGLE_MAPS_API_KEY } from '@env';
 
 export const GOOGLE_MAPS_CONFIG = {
-  apiKey: 'AIzaSyCW39d9V4_n71WXVtj_GUNStURgFf3d008', // Reemplaza con tu API key
+  apiKey: GOOGLE_MAPS_API_KEY,
   defaultRegion: {
     latitude: -34.6037, // Buenos Aires, Argentina
     longitude: -58.3816,
@@ -8,4 +9,3 @@ export const GOOGLE_MAPS_CONFIG = {
     longitudeDelta: 0.0421,
   },
 };
-//mandar para un .env!!!!!!!!!

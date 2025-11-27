@@ -61,7 +61,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
     // Obtener la dirección usando Geocoding
     try {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${selectedLocation.latitude},${selectedLocation.longitude}&key=AIzaSyCW39d9V4_n71WXVtj_GUNStURgFf3d008`
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${selectedLocation.latitude},${selectedLocation.longitude}&key=${GOOGLE_MAPS_CONFIG.apiKey}`
       );
       const data = await response.json();
 
