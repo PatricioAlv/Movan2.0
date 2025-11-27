@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
   ActivityIndicator,
 } from 'react-native';
 import { Input } from './Input';
@@ -47,11 +46,39 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   const [searchText, setSearchText] = useState(initialValue);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [showPredictions, setShowPredictions] = useState(false);
+  const [typingTimeout, setTypingTimeout] =
+    useState<ReturnType<typeof setTimeout> | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const searchPlaces = async (text: string) => {
+  // 🔥 Limpia el timeout cuando el componente se desmonta
+  useEffect(() => {
+    return () => {
+      if (typingTimeout) clearTimeout(typingTimeout);
+    };
+  }, [typingTimeout]);
+
+  const handleChangeText = (text: string) => {
     setSearchText(text);
 
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+
+    // Si borra todo, limpiamos las predicciones
+    if (text.length === 0) {
+      setPredictions([]);
+      setShowPredictions(false);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      searchPlaces(text);
+    }, 800); 
+
+    setTypingTimeout(timeout);
+  };
+
+  const searchPlaces = async (text: string) => {
     if (text.length < 3) {
       setPredictions([]);
       setShowPredictions(false);
@@ -85,7 +112,6 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   const selectPlace = async (placeId: string, description: string) => {
     setLoading(true);
     try {
-      // Obtener detalles del lugar para conseguir las coordenadas
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${apiKey}&fields=geometry,formatted_address`
       );
@@ -93,6 +119,7 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
 
       if (data.result && data.result.geometry) {
         const { lat, lng } = data.result.geometry.location;
+
         onSelectAddress({
           address: data.result.formatted_address || description,
           latitude: lat,
@@ -116,7 +143,7 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         style={[styles.textInputArea, inputStyle]}
         placeholder={placeholder}
         value={searchText}
-        onChangeText={searchPlaces}
+        onChangeText={handleChangeText}
         onFocus={() => predictions.length > 0 && setShowPredictions(true)}
         editable={!loading}
       />
@@ -170,7 +197,7 @@ const styles = StyleSheet.create({
     top: '100%',
     left: 0,
     right: 0,
-    backgroundColor: '#1E293B', // Dark theme background
+    backgroundColor: '#1E293B',
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#334155',
