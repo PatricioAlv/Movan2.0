@@ -8,6 +8,7 @@ import { AccountSettingsStack } from '@presentation/navigation/AccountSettingsSt
 import { SCREEN_NAMES } from '@infrastructure/utils/constants';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const Tab = createBottomTabNavigator();
@@ -27,8 +28,13 @@ function HomeStack() {
         component={MyShipmentDetailsScreen}
         options={{
           title: 'Detalles del Envío',
-          headerStyle: { backgroundColor: '#253546ff' },
-          headerTintColor: '#fff',
+          headerStyle: { 
+            backgroundColor: '#0F172A',
+            shadowColor: 'transparent', // Remove shadow on iOS
+            elevation: 0, // Remove shadow on Android
+          },
+          headerTintColor: '#FFFFFF',
+          headerTitleStyle: { fontWeight: 'bold' },
         }}
       />
       <Stack.Screen
@@ -36,8 +42,13 @@ function HomeStack() {
         component={ActiveShipmentScreen}
         options={{
           title: 'Envío Activo',
-          headerStyle: { backgroundColor: '#253546ff' },
-          headerTintColor: '#fff',
+          headerStyle: { 
+            backgroundColor: '#0F172A',
+            shadowColor: 'transparent',
+            elevation: 0,
+          },
+          headerTintColor: '#FFFFFF',
+          headerTitleStyle: { fontWeight: 'bold' },
         }}
       />
     </Stack.Navigator>
@@ -58,8 +69,13 @@ function BrowserStack() {
         component={TransShipmentDetailsScreen}
         options={{
           title: 'Detalles del Pedido',
-          headerStyle: { backgroundColor: '#253546ff' },
-          headerTintColor: '#fff',
+          headerStyle: { 
+            backgroundColor: '#0F172A',
+            shadowColor: 'transparent',
+            elevation: 0,
+          },
+          headerTintColor: '#FFFFFF',
+          headerTitleStyle: { fontWeight: 'bold' },
         }}
       />
     </Stack.Navigator>
@@ -71,20 +87,22 @@ export function TransportistNavigator() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: '#262E93',
+        tabBarActiveTintColor: '#3B82F6',
+        tabBarInactiveTintColor: '#94A3B8',
         tabBarStyle: ((route) => {
           // Ocultar la barra de tabs cuando estamos en ActiveShipment o MyShipmentDetails
-          const routeName = route.state 
-            ? route.state.routes[route.state.index].name 
-            : route.name;
+          const routeName = getFocusedRouteNameFromRoute(route) ?? "";
           
-          if (routeName === 'ActiveShipment' || routeName === 'MyShipmentDetails') {
+          if (routeName === 'ActiveShipment' || routeName === 'MyShipmentDetails' || routeName === 'TransportistShipmentDetails') {
             return { display: 'none' };
           }
           
           return {
             height: 60,
             paddingBottom: 6,
+            backgroundColor: '#1E293B',
+            borderTopColor: '#334155',
+            borderTopWidth: 1,
           };
         })(route),
       })}
