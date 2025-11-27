@@ -7,6 +7,7 @@ import {
   Platform,
   Alert,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import { Button } from '@presentation/components/common/Button';
 import { Input } from '@presentation/components/common/Input';
@@ -98,6 +99,13 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
         style={RegisterScreenStyle.keyboardView}
       >
         <View style={RegisterScreenStyle.content}>
+          <View style={{ alignSelf: 'center', marginBottom: 30, backgroundColor: '#0051D5', borderRadius: 20, padding: 10 }}>
+            <Image 
+              source={require('../../../../assets/logomovan.png')} 
+              style={{ width: 120, height: 120 }} 
+              resizeMode="contain" 
+            />
+          </View>
           <Text style={RegisterScreenStyle.title}>Crear Cuenta</Text>
           <Text style={RegisterScreenStyle.subtitle}>Únete a Movan</Text>
 
