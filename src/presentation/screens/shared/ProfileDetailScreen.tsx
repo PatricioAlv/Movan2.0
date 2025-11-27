@@ -16,6 +16,8 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { container } from '@infrastructure/di/container';
 import { TYPES } from '@infrastructure/di/types';
 import { GetUserUseCase } from '@core/usecases/user/GetUserUseCase';
+import { UserRatingDisplay } from '@presentation/components/common/UserRatingDisplay';
+import { RatingList } from '@presentation/components/common/RatingList';
 import { auth } from '@data/config/firebase.config';
 
 interface Props {
@@ -36,6 +38,10 @@ export const ProfileDetailScreen: React.FC<Props> = ({ navigation }) => {
   const [userPhone, setUserPhone] = useState('');
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [averageRating, setAverageRating] = useState<number | undefined>();
+  const [totalRatings, setTotalRatings] = useState<number | undefined>();
+  const [showRatings, setShowRatings] = useState(false);
+  const [userId, setUserId] = useState<string>('');
 
   const getUserUseCase = container.get<GetUserUseCase>(TYPES.GetUserUseCase);
 
@@ -58,10 +64,13 @@ export const ProfileDetailScreen: React.FC<Props> = ({ navigation }) => {
 
       const user = await getUserUseCase.execute(currentUser.uid);
       if (user) {
+        setUserId(currentUser.uid);
         setUserName(user.name || 'Usuario');
         setUserEmail(user.email);
         setUserPhone(user.phone || 'No configurado');
         setUserRole(getRoleLabel(user.role));
+        setAverageRating(user.averageRating);
+        setTotalRatings(user.totalRatings);
       }
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -175,7 +184,46 @@ export const ProfileDetailScreen: React.FC<Props> = ({ navigation }) => {
           </View>
           <Text style={styles.userName}>{userName}</Text>
           <Text style={styles.userRole}>{userRole}</Text>
+          
+          {/* Ratings */}
+          {totalRatings !== undefined && totalRatings > 0 && (
+            <View style={styles.ratingsContainer}>
+              <UserRatingDisplay
+                averageRating={averageRating}
+                totalRatings={totalRatings}
+                size="medium"
+                showLabel
+              />
+            </View>
+          )}
         </View>
+
+        {/* Mis Calificaciones */}
+        {totalRatings !== undefined && totalRatings > 0 && (
+          <View style={styles.section}>
+            <TouchableOpacity
+              style={styles.ratingsHeader}
+              onPress={() => setShowRatings(!showRatings)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.ratingsHeaderLeft}>
+                <FontAwesome name="star" size={18} color="#FFD700" />
+                <Text style={styles.sectionTitle}>MIS CALIFICACIONES</Text>
+              </View>
+              <FontAwesome
+                name={showRatings ? 'chevron-up' : 'chevron-down'}
+                size={16}
+                color="#9198a7"
+              />
+            </TouchableOpacity>
+            
+            {showRatings && (
+              <View style={styles.ratingsListContainer}>
+                <RatingList userId={userId} />
+              </View>
+            )}
+          </View>
+        )}
 
         {/* Información Personal */}
         <View style={styles.section}>

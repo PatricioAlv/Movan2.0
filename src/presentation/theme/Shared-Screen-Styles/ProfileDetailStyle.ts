@@ -84,6 +84,29 @@ export const styles = StyleSheet.create({
     fontSize: typography.fontSize.base,
     color: '#9CA3AF',
   },
+  
+  // Ratings
+  ratingsContainer: {
+    marginTop: spacing.md,
+    paddingTop: spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: '#2a4864',
+    alignItems: 'center',
+  },
+  ratingsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+  ratingsHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  ratingsListContainer: {
+    maxHeight: 400,
+  },
 
   // Sections
   section: {

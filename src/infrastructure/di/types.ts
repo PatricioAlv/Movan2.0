@@ -5,6 +5,7 @@ export const TYPES = {
   IStorageRepository: Symbol.for('IStorageRepository'),
   IShipmentRepository: Symbol.for('IShipmentRepository'),
   UserRepository: Symbol.for('UserRepository'),
+  RatingRepository: Symbol.for('RatingRepository'),
 
   // DataSources
   FirebaseAuthDataSource: Symbol.for('FirebaseAuthDataSource'),
@@ -29,4 +30,8 @@ export const TYPES = {
   UpdateShipmentStatusUseCase: Symbol.for('UpdateShipmentStatusUseCase'),
   GetUserUseCase: Symbol.for('GetUserUseCase'),
   UpdateUserUseCase: Symbol.for('UpdateUserUseCase'),
+  CreateRatingUseCase: Symbol.for('CreateRatingUseCase'),
+  GetUserRatingsUseCase: Symbol.for('GetUserRatingsUseCase'),
+  GetUserAverageRatingUseCase: Symbol.for('GetUserAverageRatingUseCase'),
+  HasUserRatedShipmentUseCase: Symbol.for('HasUserRatedShipmentUseCase'),
 };

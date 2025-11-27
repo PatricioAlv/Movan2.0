@@ -19,6 +19,10 @@ import { TYPES } from '@infrastructure/di/types';
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
 import { GetShipmentByIdUseCase } from '@core/usecases/shipments/GetShipmentByIdUseCase';
 import { UpdateShipmentStatusUseCase } from '@core/usecases/shipments/UpdateShipmentStatusUseCase';
+import { GetUserUseCase } from '@core/usecases/user/GetUserUseCase';
+import { RatingModal } from '@presentation/components/common/RatingModal';
+import { UserRatingDisplay } from '@presentation/components/common/UserRatingDisplay';
+import { useRating } from '@presentation/hooks/useRating';
 import { auth } from '@data/config/firebase.config';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
@@ -36,6 +40,11 @@ export const MyShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) 
   const [shipment, setShipment] = useState<Shipment | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [hasRated, setHasRated] = useState(false);
+  const [clientName, setClientName] = useState<string>('Cliente');
+
+  const { createRating, checkIfUserRated } = useRating();
 
   useEffect(() => {
     loadShipmentDetails();
@@ -51,6 +60,23 @@ export const MyShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) 
 
       if (data) {
         setShipment(data);
+        
+        // Obtener información del cliente
+        try {
+          const getUserUseCase = container.get<GetUserUseCase>(TYPES.GetUserUseCase);
+          const client = await getUserUseCase.execute(data.clientId);
+          if (client) {
+            setClientName(client.name);
+          }
+        } catch (error) {
+          console.error('Error loading client info:', error);
+        }
+        
+        // Verificar si ya calificó al cliente
+        if (data.status === ShipmentStatus.DELIVERED) {
+          const rated = await checkIfUserRated(auth.currentUser?.uid || '', data.id);
+          setHasRated(rated);
+        }
       } else {
         Alert.alert('Error', 'No se encontró el envío');
         navigation.goBack();
@@ -61,6 +87,28 @@ export const MyShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) 
       navigation.goBack();
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSubmitRating = async (rating: number, comment?: string) => {
+    try {
+      const currentUserId = auth.currentUser?.uid;
+      if (!currentUserId || !shipment?.clientId) {
+        throw new Error('No se pudo obtener la información necesaria');
+      }
+
+      await createRating(currentUserId, {
+        shipmentId: shipment.id,
+        toUserId: shipment.clientId,
+        rating,
+        comment,
+      });
+
+      Alert.alert('Éxito', 'Tu calificación ha sido enviada');
+      setHasRated(true);
+    } catch (error) {
+      console.error('Error submitting rating:', error);
+      throw error;
     }
   };
 
@@ -305,6 +353,30 @@ export const MyShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) 
           </View>
         )}
 
+        {/* Sección de Calificación (solo si está entregado) */}
+        {shipment.status === ShipmentStatus.DELIVERED && (
+          <View style={styles.card}>
+            <View style={styles.cardHeader}>
+              <FontAwesome name="star" size={18} color="#FFD700" />
+              <Text style={styles.cardTitle}>Calificar Cliente</Text>
+            </View>
+            {hasRated ? (
+              <View style={styles.ratedContainer}>
+                <FontAwesome name="check-circle" size={24} color="#10B981" />
+                <Text style={styles.ratedText}>Ya calificaste a este cliente</Text>
+              </View>
+            ) : (
+              <TouchableOpacity
+                style={styles.rateButton}
+                onPress={() => setShowRatingModal(true)}
+              >
+                <FontAwesome name="star" size={20} color="#FFFFFF" />
+                <Text style={styles.rateButtonText}>Calificar Cliente</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+
         {/* Action Buttons */}
         <View style={styles.actionsContainer}>
           {shipment.status === ShipmentStatus.ACCEPTED && (
@@ -339,6 +411,15 @@ export const MyShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) 
           )}
         </View>
       </ScrollView>
+
+      {/* Modal de Calificación */}
+      <RatingModal
+        visible={showRatingModal}
+        onClose={() => setShowRatingModal(false)}
+        onSubmit={handleSubmitRating}
+        targetUserName={clientName}
+        userType="client"
+      />
     </SafeAreaView>
   );
 };
@@ -525,5 +606,31 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 16,
     color: '#9CA3AF',
+  },
+  rateButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#10B981',
+    paddingVertical: 14,
+    borderRadius: 8,
+  },
+  rateButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
+  ratedContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 14,
+  },
+  ratedText: {
+    color: '#10B981',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
   },
 });

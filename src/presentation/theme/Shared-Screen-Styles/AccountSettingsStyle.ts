@@ -59,6 +59,10 @@ export const styles = StyleSheet.create({
     color: '#9CA3AF',
     marginBottom: spacing.md,
   },
+  ratingsContainer: {
+    marginTop: spacing.xs,
+    marginBottom: spacing.sm,
+  },
   editProfileButton: {
     backgroundColor: '#2C3E50',
     paddingHorizontal: spacing.xl,

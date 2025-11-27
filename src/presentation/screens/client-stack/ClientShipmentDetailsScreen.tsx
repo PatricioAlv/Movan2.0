@@ -15,6 +15,10 @@ import { container } from '@infrastructure/di/container';
 import { TYPES } from '@infrastructure/di/types';
 import { GetShipmentByIdUseCase } from '@core/usecases/shipments/GetShipmentByIdUseCase';
 import { CancelShipmentUseCase } from '@core/usecases/shipments/CancelShipmentUseCase';
+import { RatingModal } from '@presentation/components/common/RatingModal';
+import { UserRatingDisplay } from '@presentation/components/common/UserRatingDisplay';
+import { useRating } from '@presentation/hooks/useRating';
+import { auth } from '@data/config/firebase.config';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 interface Props {
@@ -78,6 +82,10 @@ export const ClientShipmentDetailsScreen: React.FC<Props> = ({ route, navigation
   const [shipment, setShipment] = useState<Shipment | null>(null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [hasRated, setHasRated] = useState(false);
+
+  const { createRating, checkIfUserRated } = useRating();
 
   const getShipmentUseCase = container.get<GetShipmentByIdUseCase>(TYPES.GetShipmentByIdUseCase);
   const cancelShipmentUseCase = container.get<CancelShipmentUseCase>(TYPES.CancelShipmentUseCase);
@@ -98,6 +106,12 @@ export const ClientShipmentDetailsScreen: React.FC<Props> = ({ route, navigation
       }
 
       setShipment(shipmentData);
+      
+      // Verificar si ya calificó al transportista
+      if (shipmentData.status === ShipmentStatus.DELIVERED && shipmentData.driverId) {
+        const rated = await checkIfUserRated(auth.currentUser?.uid || '', shipmentData.id);
+        setHasRated(rated);
+      }
     } catch (error: any) {
       console.error('Error loading shipment:', error);
       Alert.alert('Error', 'No se pudo cargar la información del envío');
@@ -111,6 +125,28 @@ export const ClientShipmentDetailsScreen: React.FC<Props> = ({ route, navigation
       Linking.openURL(`tel:${shipment.driverPhone}`);
     } else {
       Alert.alert('Información', 'El transportista no tiene teléfono registrado');
+    }
+  };
+
+  const handleSubmitRating = async (rating: number, comment?: string) => {
+    try {
+      const currentUserId = auth.currentUser?.uid;
+      if (!currentUserId || !shipment?.driverId) {
+        throw new Error('No se pudo obtener la información necesaria');
+      }
+
+      await createRating(currentUserId, {
+        shipmentId: shipment.id,
+        toUserId: shipment.driverId,
+        rating,
+        comment,
+      });
+
+      Alert.alert('Éxito', 'Tu calificación ha sido enviada');
+      setHasRated(true);
+    } catch (error) {
+      console.error('Error submitting rating:', error);
+      throw error;
     }
   };
 
@@ -217,6 +253,29 @@ export const ClientShipmentDetailsScreen: React.FC<Props> = ({ route, navigation
                 <TouchableOpacity style={styles.callButton} onPress={handleCallDriver}>
                   <FontAwesome name="phone" size={16} color="#FFFFFF" />
                   <Text style={styles.callButtonText}>Llamar</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        )}
+
+        {/* Sección de Calificación (solo si está entregado) */}
+        {shipment.status === ShipmentStatus.DELIVERED && shipment.driverId && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>CALIFICAR SERVICIO</Text>
+            <View style={styles.ratingCard}>
+              {hasRated ? (
+                <View style={styles.ratedContainer}>
+                  <FontAwesome name="check-circle" size={24} color="#10B981" />
+                  <Text style={styles.ratedText}>Ya calificaste este servicio</Text>
+                </View>
+              ) : (
+                <TouchableOpacity
+                  style={styles.rateButton}
+                  onPress={() => setShowRatingModal(true)}
+                >
+                  <FontAwesome name="star" size={20} color="#FFD700" />
+                  <Text style={styles.rateButtonText}>Calificar Transportista</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -358,6 +417,15 @@ export const ClientShipmentDetailsScreen: React.FC<Props> = ({ route, navigation
           </View>
         )}
       </ScrollView>
+
+      {/* Modal de Calificación */}
+      <RatingModal
+        visible={showRatingModal}
+        onClose={() => setShowRatingModal(false)}
+        onSubmit={handleSubmitRating}
+        targetUserName={shipment?.driverName || 'Transportista'}
+        userType="driver"
+      />
     </SafeAreaView>
   );
 };
@@ -601,5 +669,36 @@ const styles = StyleSheet.create({
     color: '#EF4444',
     fontSize: 16,
     fontWeight: '600',
+  },
+  ratingCard: {
+    backgroundColor: '#1E293B',
+    borderRadius: 12,
+    padding: 16,
+  },
+  rateButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#10B981',
+    paddingVertical: 14,
+    borderRadius: 8,
+  },
+  rateButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
+  ratedContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 14,
+  },
+  ratedText: {
+    color: '#10B981',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
   },
 });

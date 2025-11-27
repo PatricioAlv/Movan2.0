@@ -48,16 +48,24 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   const [showPredictions, setShowPredictions] = useState(false);
   const [typingTimeout, setTypingTimeout] =
     useState<ReturnType<typeof setTimeout> | null>(null);
+  const [typingTimeout, setTypingTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // 🔥 Limpia el timeout cuando el componente se desmonta
-  useEffect(() => {
-    return () => {
-      if (typingTimeout) clearTimeout(typingTimeout);
-    };
-  }, [typingTimeout]);
-
   const handleChangeText = (text: string) => {
+  setSearchText(text);
+
+  if (typingTimeout) {
+    clearTimeout(typingTimeout);
+  }
+
+  const timeout = setTimeout(() => {
+    searchPlaces(text);
+  }, 1800);
+
+  setTypingTimeout(timeout);
+  };
+
+  const searchPlaces = async (text: string) => {
     setSearchText(text);
 
     if (typingTimeout) {

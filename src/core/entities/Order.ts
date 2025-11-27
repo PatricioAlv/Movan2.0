@@ -41,6 +41,16 @@ export interface Shipment {
   createdAt: Date;
   updatedAt: Date;
   notes?: string;
+  clientRating?: {
+    rating: number;
+    comment?: string;
+    createdAt: Date;
+  };
+  driverRating?: {
+    rating: number;
+    comment?: string;
+    createdAt: Date;
+  };
 }
 
 export interface CreateShipmentData {

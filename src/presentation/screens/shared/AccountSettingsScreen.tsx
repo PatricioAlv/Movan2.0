@@ -15,6 +15,7 @@ import { container } from '@infrastructure/di/container';
 import { TYPES } from '@infrastructure/di/types';
 import { LogoutUseCase } from '@core/usecases/auth/LogoutUseCase';
 import { GetUserUseCase } from '@core/usecases/user/GetUserUseCase';
+import { UserRatingDisplay } from '@presentation/components/common/UserRatingDisplay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '@infrastructure/utils/constants';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -46,6 +47,8 @@ export const AccountSettingsScreen: React.FC<Props> = ({ navigation }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [averageRating, setAverageRating] = useState<number | undefined>();
+  const [totalRatings, setTotalRatings] = useState<number | undefined>();
 
   const logoutUseCase = container.get<LogoutUseCase>(TYPES.LogoutUseCase);
   const getUserUseCase = container.get<GetUserUseCase>(TYPES.GetUserUseCase);
@@ -71,6 +74,8 @@ export const AccountSettingsScreen: React.FC<Props> = ({ navigation }) => {
       if (user) {
         setUserName(user.name || 'Usuario');
         setUserRole(getRoleLabel(user.role));
+        setAverageRating(user.averageRating);
+        setTotalRatings(user.totalRatings);
       }
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -249,6 +254,18 @@ export const AccountSettingsScreen: React.FC<Props> = ({ navigation }) => {
           </View>
           <Text style={styles.userName}>{userName}</Text>
           <Text style={styles.userRole}>{userRole}</Text>
+          
+          {/* Ratings */}
+          {totalRatings !== undefined && totalRatings > 0 && (
+            <View style={styles.ratingsContainer}>
+              <UserRatingDisplay
+                averageRating={averageRating}
+                totalRatings={totalRatings}
+                size="small"
+                showLabel
+              />
+            </View>
+          )}
           
           <TouchableOpacity
             style={styles.editProfileButton}
