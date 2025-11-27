@@ -9,6 +9,8 @@ import { container } from '@infrastructure/di/container';
 import { TYPES } from '@infrastructure/di/types';
 import { GetShipmentByIdUseCase } from '@core/usecases/shipments/GetShipmentByIdUseCase';
 import { AcceptShipmentUseCase } from '@core/usecases/shipments/AcceptShipmentUseCase';
+import { GetUserUseCase } from '@core/usecases/user/GetUserUseCase';
+import { User } from '@core/entities/User';
 import { SCREEN_NAMES } from '@infrastructure/utils/constants';
 import { auth } from '@data/config/firebase.config';
 import { StyleSheet } from 'react-native';
@@ -22,6 +24,7 @@ interface Props {
 export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
   const { shipmentId } = route.params;
   const [shipment, setShipment] = useState<Shipment | null>(null);
+  const [clientData, setClientData] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [accepting, setAccepting] = useState(false);
 
@@ -32,6 +35,17 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
       );
       const data = await getShipmentUseCase.execute(shipmentId);
       setShipment(data);
+
+      // Cargar datos del cliente
+      if (data && data.clientId) {
+        try {
+          const getUserUseCase = container.get<GetUserUseCase>(TYPES.GetUserUseCase);
+          const client = await getUserUseCase.execute(data.clientId);
+          setClientData(client);
+        } catch (error) {
+          console.error('Error loading client data:', error);
+        }
+      }
     } catch (error: any) {
       console.error('Error loading shipment details:', error);
       Alert.alert('Error', 'No se pudieron cargar los detalles del pedido');
@@ -144,11 +158,7 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
 
         {/* Price Card */}
         <View style={styles.card}>
-          <Text style={styles.priceText}>${shipment.price.toLocaleString('es-ES', { minimumFractionDigits: 2 })} USD</Text>
-          <View style={styles.metaRow}>
-             <Text style={styles.metaText}>850 km</Text>
-             <Text style={styles.metaText}>10h 30m</Text>
-          </View>
+          <Text style={styles.priceText}>${shipment.price.toLocaleString('es-ES')}</Text>
         </View>
 
         {/* Points Section */}
@@ -211,19 +221,36 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
         <View style={styles.card}>
            <View style={styles.clientRow}>
               <View style={styles.clientInfo}>
-                 <Text style={styles.clientName}>{shipment.origin.contactName || 'Cliente'}</Text>
-                 <View style={styles.ratingContainer}>
-                    <FontAwesome name="star" size={12} color="#FBBF24" />
-                    <FontAwesome name="star" size={12} color="#FBBF24" />
-                    <FontAwesome name="star" size={12} color="#FBBF24" />
-                    <FontAwesome name="star" size={12} color="#FBBF24" />
-                    <FontAwesome name="star-half-full" size={12} color="#FBBF24" />
-                    <Text style={styles.ratingText}>(4.1)</Text>
-                 </View>
+                 <Text style={styles.clientName}>
+                   {clientData?.name || shipment.origin.contactName || 'Cliente'}
+                 </Text>
+                 {clientData && (
+                   <View style={styles.ratingContainer}>
+                      {[1, 2, 3, 4, 5].map((star) => {
+                        const rating = clientData.averageRating || 0;
+                        const filled = star <= Math.floor(rating);
+                        const half = !filled && star <= Math.ceil(rating);
+                        return (
+                          <FontAwesome
+                            key={star}
+                            name={filled ? 'star' : half ? 'star-half-full' : 'star-o'}
+                            size={12}
+                            color="#FBBF24"
+                          />
+                        );
+                      })}
+                      <Text style={styles.ratingText}>({clientData.averageRating?.toFixed(1) || '0.0'})</Text>
+                   </View>
+                 )}
               </View>
-              <TouchableOpacity style={styles.phoneButton}>
-                 <FontAwesome name="phone" size={18} color="#10B981" />
-              </TouchableOpacity>
+              {shipment.origin.contactPhone && (
+                <TouchableOpacity 
+                  style={styles.phoneButton}
+                  onPress={() => Linking.openURL(`tel:${shipment.origin.contactPhone}`)}
+                >
+                  <FontAwesome name="phone" size={18} color="#10B981" />
+                </TouchableOpacity>
+              )}
            </View>
         </View>
         

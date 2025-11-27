@@ -100,7 +100,14 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
 
   useEffect(() => {
     loadShipments();
-  }, []);
+    
+    // Recargar cuando la pantalla recibe el foco
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadShipments();
+    });
+    
+    return unsubscribe;
+  }, [navigation]);
 
   const handleRefresh = () => {
     setRefreshing(true);
