@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Animated, Dimensions } from 'react-native';
-import Svg, { Path, Rect, G, Circle, Line } from 'react-native-svg';
+import Svg, { Path, G, Circle, Line, Text as SvgText } from 'react-native-svg';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -11,14 +11,18 @@ export const SplashScreen: React.FC<{ onFinish: () => void }> = ({ onFinish }) =
   // Animaciones
   const rotationAnim = useRef(new Animated.Value(0)).current;
   const truckPositionAnim = useRef(new Animated.Value(0)).current;
+  const rotateInterpolate = rotationAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 360],
+  });
 
   useEffect(() => {
     // Animación de las ruedas girando
     const wheelRotation = Animated.loop(
       Animated.timing(rotationAnim, {
         toValue: 1,
-        duration: 300, // 0.3s por vuelta completa (igual que en el HTML)
-        useNativeDriver: false, // Cambiar a false para animaciones SVG
+        duration: 800, 
+        useNativeDriver: false, 
       })
     );
     
@@ -26,12 +30,19 @@ export const SplashScreen: React.FC<{ onFinish: () => void }> = ({ onFinish }) =
 
     // Después de 3 segundos, detener las ruedas y hacer que el camión salga
     const exitTimer = setTimeout(() => {
-      wheelRotation.stop();
-      
-      // Animación de salida con cubic-bezier para simular "arrancada"
+      // Acelerar las ruedas para la salida
+      Animated.loop(
+        Animated.timing(rotationAnim, {
+          toValue: 1,
+          duration: 300, 
+          useNativeDriver: false, 
+        })
+      ).start();
+
+      // Animación de salida
       Animated.timing(truckPositionAnim, {
-        toValue: SCREEN_WIDTH * 1.5, // Sale completamente de la pantalla
-        duration: 800, // 0.8s (igual que en el CSS)
+        toValue: SCREEN_WIDTH * 1.5, 
+        duration: 1000, 
         useNativeDriver: true,
       }).start(() => {
         onFinish();
@@ -44,12 +55,6 @@ export const SplashScreen: React.FC<{ onFinish: () => void }> = ({ onFinish }) =
     };
   }, []);
 
-  // Interpolación para la rotación de las ruedas
-  const wheelRotate = rotationAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
-  });
-
   return (
     <View style={styles.container}>
       <Animated.View
@@ -60,43 +65,65 @@ export const SplashScreen: React.FC<{ onFinish: () => void }> = ({ onFinish }) =
           },
         ]}
       >
-        <Svg width="250" height="120" viewBox="0 0 200 120">
-          {/* Cuerpo del camión */}
-          <Path
-            d="M10,40 L130,40 L130,10 L160,10 L190,40 L190,85 L10,85 Z"
-            fill="#E74C3C"
-          />
-          
-          {/* Ventana */}
-          <Rect x="140" y="20" width="30" height="20" fill="#ECF0F1" />
-          
-          {/* Rueda trasera */}
+        <Svg width="300" height="200" viewBox="0 0 200 150">
+          {/* Grupo del cuerpo del camión (Outline Style) */}
+          <G stroke="#FFFFFF" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
+            {/* Caja de carga */}
+            <Path d="M 20 20 H 100 A 5 5 0 0 1 105 25 V 85 A 5 5 0 0 1 100 90 H 20 A 5 5 0 0 1 15 85 V 25 A 5 5 0 0 1 20 20 Z" />
+            
+            {/* Pin de ubicación */}
+            <Path d="M 60 35 C 50 35 42 43 42 53 C 42 65 60 80 60 80 C 60 80 78 65 78 53 C 78 43 70 35 60 35 Z" />
+            <Circle cx="60" cy="53" r="5" />
+
+            {/* Cabina */}
+            <Path d="M 110 90 V 45 A 5 5 0 0 1 115 40 H 135 L 155 60 V 85 A 5 5 0 0 1 150 90 H 110" />
+            
+            {/* Ventana */}
+            <Path d="M 115 45 H 132 L 148 62 V 62 H 115 V 45 Z" />
+          </G>
+
+          {/* Rueda Trasera */}
           <G transform="translate(45, 90)">
             <AnimatedG
-              rotation={rotationAnim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 360],
-              })}
+              rotation={rotateInterpolate}
+              originX={0}
+              originY={0}
             >
-              <Circle cx="0" cy="0" r="20" fill="#34495E" stroke="#BDC3C7" strokeWidth="3" />
-              <Line x1="-15" y1="0" x2="15" y2="0" stroke="#BDC3C7" strokeWidth="2" />
-              <Line x1="0" y1="-15" x2="0" y2="15" stroke="#BDC3C7" strokeWidth="2" />
+              <Circle cx="0" cy="0" r="14" stroke="#FFFFFF" strokeWidth="2.5" fill="#2c3e50" />
+              <Circle cx="0" cy="0" r="4" fill="#FFFFFF" />
+              <Line x1="0" y1="-14" x2="0" y2="14" stroke="#FFFFFF" strokeWidth="2" />
+              <Line x1="-14" y1="0" x2="14" y2="0" stroke="#FFFFFF" strokeWidth="2" />
+            </AnimatedG>
+          </G>
+
+          {/* Rueda Delantera */}
+          <G transform="translate(130, 90)">
+            <AnimatedG
+              rotation={rotateInterpolate}
+              originX={0}
+              originY={0}
+            >
+              <Circle cx="0" cy="0" r="14" stroke="#FFFFFF" strokeWidth="2.5" fill="#2c3e50" />
+              <Circle cx="0" cy="0" r="4" fill="#FFFFFF" />
+              <Line x1="0" y1="-14" x2="0" y2="14" stroke="#FFFFFF" strokeWidth="2" />
+              <Line x1="-14" y1="0" x2="14" y2="0" stroke="#FFFFFF" strokeWidth="2" />
             </AnimatedG>
           </G>
           
-          {/* Rueda delantera */}
-          <G transform="translate(155, 90)">
-            <AnimatedG
-              rotation={rotationAnim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 360],
-              })}
-            >
-              <Circle cx="0" cy="0" r="20" fill="#34495E" stroke="#BDC3C7" strokeWidth="3" />
-              <Line x1="-15" y1="0" x2="15" y2="0" stroke="#BDC3C7" strokeWidth="2" />
-              <Line x1="0" y1="-15" x2="0" y2="15" stroke="#BDC3C7" strokeWidth="2" />
-            </AnimatedG>
-          </G>
+          {/* Texto Movan (Outline Style) */}
+          <SvgText
+            x="100"
+            y="140"
+            fontSize="45"
+            fontWeight="bold"
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth="1.5"
+            textAnchor="middle"
+            letterSpacing="2"
+          >
+            Movan
+          </SvgText>
         </Svg>
       </Animated.View>
     </View>
@@ -106,16 +133,14 @@ export const SplashScreen: React.FC<{ onFinish: () => void }> = ({ onFinish }) =
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#2c3e50', // Color de fondo igual que en el HTML
+    backgroundColor: '#2c3e50', 
     justifyContent: 'center',
     alignItems: 'center',
   },
   truckContainer: {
-    // Sombra similar al drop-shadow del HTML
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 10,
+    width: 300,
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
