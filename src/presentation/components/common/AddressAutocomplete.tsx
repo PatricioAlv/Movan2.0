@@ -32,6 +32,8 @@ interface AddressAutocompleteProps {
   placeholder?: string;
   apiKey: string;
   value?: string;
+  inputStyle?: object;
+  containerStyle?: object;
 }
 
 export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
@@ -39,6 +41,8 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   placeholder = 'Buscar dirección',
   apiKey,
   value: initialValue = '',
+  inputStyle,
+  containerStyle,
 }) => {
   const [searchText, setSearchText] = useState(initialValue);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
@@ -107,8 +111,9 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   };
 
   return (
-    <View style={styles.container}>
-      <Input style={styles.textInputArea}
+    <View style={[styles.container, containerStyle]}>
+      <Input
+        style={[styles.textInputArea, inputStyle]}
         placeholder={placeholder}
         value={searchText}
         onChangeText={searchPlaces}
@@ -124,27 +129,22 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
 
       {showPredictions && predictions.length > 0 && (
         <View style={styles.predictionsContainer}>
-          <FlatList
-            data={predictions}
-            keyExtractor={(item) => item.place_id}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.predictionItem}
-                onPress={() => selectPlace(item.place_id, item.description)}
-              >
-                <Text style={styles.predictionMainText}>
-                  {item.structured_formatting?.main_text || item.description}
+          {predictions.map((item) => (
+            <TouchableOpacity
+              key={item.place_id}
+              style={styles.predictionItem}
+              onPress={() => selectPlace(item.place_id, item.description)}
+            >
+              <Text style={styles.predictionMainText}>
+                {item.structured_formatting?.main_text || item.description}
+              </Text>
+              {item.structured_formatting?.secondary_text && (
+                <Text style={styles.predictionSecondaryText}>
+                  {item.structured_formatting.secondary_text}
                 </Text>
-                {item.structured_formatting?.secondary_text && (
-                  <Text style={styles.predictionSecondaryText}>
-                    {item.structured_formatting.secondary_text}
-                  </Text>
-                )}
-              </TouchableOpacity>
-            )}
-            style={styles.predictionsList}
-            keyboardShouldPersistTaps="handled"
-          />
+              )}
+            </TouchableOpacity>
+          ))}
         </View>
       )}
     </View>
@@ -154,7 +154,8 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginBottom: spacing.md,
-    zIndex: 1000,
+    zIndex: 1,
+    position: 'relative',
   },
   textInputArea: {
     color: '#242424ff',
@@ -166,37 +167,34 @@ const styles = StyleSheet.create({
   },
   predictionsContainer: {
     position: 'absolute',
-    top: 60,
+    top: '100%',
     left: 0,
     right: 0,
-    backgroundColor: colors.background,
+    backgroundColor: '#1E293B', // Dark theme background
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: colors.border,
-    maxHeight: 200,
-    zIndex: 1000,
-    elevation: 5,
+    borderColor: '#334155',
+    zIndex: 9999,
+    elevation: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  predictionsList: {
-    maxHeight: 200,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    marginTop: 4,
   },
   predictionItem: {
     padding: spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: '#334155',
   },
   predictionMainText: {
     fontSize: typography.fontSize.sm,
-    color: colors.textPrimary,
+    color: '#FFFFFF',
     fontWeight: typography.fontWeight.medium,
   },
   predictionSecondaryText: {
     fontSize: typography.fontSize.xs,
-    color: colors.textSecondary,
+    color: '#94A3B8',
     marginTop: spacing.xs / 2,
   },
 });

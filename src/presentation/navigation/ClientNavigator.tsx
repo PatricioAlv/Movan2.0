@@ -6,6 +6,7 @@ import { AccountSettingsStack } from '@presentation/navigation/AccountSettingsSt
 import { SCREEN_NAMES } from '@infrastructure/utils/constants';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const Tab = createBottomTabNavigator();
@@ -14,14 +15,25 @@ const Stack = createStackNavigator();
 // Stack para Home con detalles
 function HomeStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator>
       <Stack.Screen
         name="ClientHomeMain"
         component={ClientHomeScreen}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ClientShipmentDetails"
         component={ClientShipmentDetailsScreen}
+        options={{
+          title: 'Detalles del Envío',
+          headerStyle: { 
+            backgroundColor: '#0F172A',
+            shadowColor: 'transparent',
+            elevation: 0,
+          },
+          headerTintColor: '#FFFFFF',
+          headerTitleStyle: { fontWeight: 'bold' },
+        }}
       />
     </Stack.Navigator>
   );
@@ -30,14 +42,26 @@ function HomeStack() {
 export function ClientNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={{
+      screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: '#262E93',
-        tabBarStyle: {
-          height: 60,
-          paddingBottom: 6,
-        },
-      }}
+        tabBarActiveTintColor: '#3B82F6',
+        tabBarInactiveTintColor: '#94A3B8',
+        tabBarStyle: ((route) => {
+          const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+          
+          if (routeName === 'ClientShipmentDetails') {
+            return { display: 'none' };
+          }
+          
+          return {
+            height: 60,
+            paddingBottom: 6,
+            backgroundColor: '#1E293B',
+            borderTopColor: '#334155',
+            borderTopWidth: 1,
+          };
+        })(route),
+      })}
     >
       <Tab.Screen
         name={SCREEN_NAMES.CLIENT_HOME}
