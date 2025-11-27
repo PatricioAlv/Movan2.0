@@ -73,7 +73,7 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
 
     const timeout = setTimeout(() => {
       searchPlaces(text);
-    }, 2000); // ← 2 segundos
+    }, 1000); 
 
     setTypingTimeout(timeout);
   };
