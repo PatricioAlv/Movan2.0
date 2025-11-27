@@ -6,9 +6,11 @@ import { TYPES } from './types';
 import { IAuthRepository } from '@core/repositories/IAuthRepository';
 import { IShipmentRepository } from '@core/repositories/IShipmentRepository';
 import { IUserRepository } from '@core/repositories/IUserRepository';
+import { IRatingRepository } from '@core/repositories/IRatingRepository';
 import { FirebaseAuthRepository } from '@data/repositories/FirebaseAuthRepository';
 import { FirebaseShipmentRepository } from '@data/repositories/FirebaseShipmentRepository';
 import { FirebaseUserRepository } from '@data/repositories/FirebaseUserRepository';
+import { FirebaseRatingRepository } from '@data/repositories/FirebaseRatingRepository';
 
 // DataSources
 import { FirebaseAuthDataSource } from '@data/datasources/remote/FirebaseAuthDataSource';
@@ -31,6 +33,10 @@ import { AcceptShipmentUseCase } from '@core/usecases/shipments/AcceptShipmentUs
 import { UpdateShipmentStatusUseCase } from '@core/usecases/shipments/UpdateShipmentStatusUseCase';
 import { GetUserUseCase } from '@core/usecases/user/GetUserUseCase';
 import { UpdateUserUseCase } from '@core/usecases/user/UpdateUserUseCase';
+import { CreateRatingUseCase } from '@core/usecases/ratings/CreateRatingUseCase';
+import { GetUserRatingsUseCase } from '@core/usecases/ratings/GetUserRatingsUseCase';
+import { GetUserAverageRatingUseCase } from '@core/usecases/ratings/GetUserAverageRatingUseCase';
+import { HasUserRatedShipmentUseCase } from '@core/usecases/ratings/HasUserRatedShipmentUseCase';
 
 const container = new Container({ defaultScope: 'Singleton' });
 
@@ -65,6 +71,8 @@ console.log('Creating FirebaseAuthRepository instance...');
 const firebaseAuthRepository = new FirebaseAuthRepository(firebaseAuthDataSource, firebaseRealtimeDataSource);
 console.log('Creating FirebaseUserRepository instance...');
 const firebaseUserRepository = new FirebaseUserRepository(firebaseRealtimeDataSource);
+console.log('Creating FirebaseRatingRepository instance...');
+const firebaseRatingRepository = new FirebaseRatingRepository(firebaseRealtimeDataSource, firebaseUserRepository);
 console.log('Creating FirebaseProductRepository instance...');
 
 // Bind Repositories como constantes
@@ -74,6 +82,8 @@ console.log('Binding FirebaseAuthRepository...');
 container.bind<IAuthRepository>(TYPES.IAuthRepository).toConstantValue(firebaseAuthRepository);
 console.log('Binding FirebaseUserRepository...');
 container.bind<IUserRepository>(TYPES.UserRepository).toConstantValue(firebaseUserRepository);
+console.log('Binding FirebaseRatingRepository...');
+container.bind<IRatingRepository>(TYPES.RatingRepository).toConstantValue(firebaseRatingRepository);
 
 // Crear instancias de Use Cases manualmente
 console.log('Creating CreateShipmentUseCase instance...');
@@ -98,6 +108,14 @@ console.log('Creating GetUserUseCase instance...');
 const getUserUseCase = new GetUserUseCase(firebaseUserRepository);
 console.log('Creating UpdateUserUseCase instance...');
 const updateUserUseCase = new UpdateUserUseCase(firebaseUserRepository);
+console.log('Creating CreateRatingUseCase instance...');
+const createRatingUseCase = new CreateRatingUseCase(firebaseRatingRepository);
+console.log('Creating GetUserRatingsUseCase instance...');
+const getUserRatingsUseCase = new GetUserRatingsUseCase(firebaseRatingRepository);
+console.log('Creating GetUserAverageRatingUseCase instance...');
+const getUserAverageRatingUseCase = new GetUserAverageRatingUseCase(firebaseRatingRepository);
+console.log('Creating HasUserRatedShipmentUseCase instance...');
+const hasUserRatedShipmentUseCase = new HasUserRatedShipmentUseCase(firebaseRatingRepository);
 
 // Bind Use Cases como constantes
 console.log('Binding LoginUseCase...');
@@ -126,6 +144,14 @@ console.log('Binding GetUserUseCase...');
 container.bind<GetUserUseCase>(TYPES.GetUserUseCase).toConstantValue(getUserUseCase);
 console.log('Binding UpdateUserUseCase...');
 container.bind<UpdateUserUseCase>(TYPES.UpdateUserUseCase).toConstantValue(updateUserUseCase);
+console.log('Binding CreateRatingUseCase...');
+container.bind<CreateRatingUseCase>(TYPES.CreateRatingUseCase).toConstantValue(createRatingUseCase);
+console.log('Binding GetUserRatingsUseCase...');
+container.bind<GetUserRatingsUseCase>(TYPES.GetUserRatingsUseCase).toConstantValue(getUserRatingsUseCase);
+console.log('Binding GetUserAverageRatingUseCase...');
+container.bind<GetUserAverageRatingUseCase>(TYPES.GetUserAverageRatingUseCase).toConstantValue(getUserAverageRatingUseCase);
+console.log('Binding HasUserRatedShipmentUseCase...');
+container.bind<HasUserRatedShipmentUseCase>(TYPES.HasUserRatedShipmentUseCase).toConstantValue(hasUserRatedShipmentUseCase);
 
 console.log('Container initialized successfully!');
 

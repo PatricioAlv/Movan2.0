@@ -7,6 +7,9 @@ import {
   remove,
   onValue,
   off,
+  query,
+  orderByChild,
+  equalTo,
   DatabaseReference,
   DataSnapshot,
 } from 'firebase/database';
@@ -25,9 +28,37 @@ export class FirebaseRealtimeDataSource {
     return newRef.key!;
   }
 
+  async push<T>(path: string, data: T): Promise<string> {
+    return this.create(path, data);
+  }
+
+  async set(path: string, data: any): Promise<void> {
+    await set(this.getRef(path), data);
+  }
+
   async get<T>(path: string): Promise<T | null> {
     const snapshot = await get(this.getRef(path));
     return snapshot.exists() ? snapshot.val() : null;
+  }
+
+  async query<T>(path: string, orderBy: string, equalToValue: any): Promise<T[]> {
+    const dbRef = this.getRef(path);
+    const q = query(dbRef, orderByChild(orderBy), equalTo(equalToValue));
+    const snapshot = await get(q);
+    
+    if (!snapshot.exists()) {
+      return [];
+    }
+
+    const results: T[] = [];
+    snapshot.forEach((childSnapshot) => {
+      results.push({
+        id: childSnapshot.key,
+        ...childSnapshot.val(),
+      } as T);
+    });
+
+    return results;
   }
 
   async update(path: string, data: any): Promise<void> {

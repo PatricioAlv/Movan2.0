@@ -16,6 +16,7 @@ export const colors = {
   warning: '#FF9500',
   error: '#FF3B30',
   info: '#5AC8FA',
+  rating: '#FFD700',
 
   // Neutral
   black: '#000000',
@@ -38,6 +39,7 @@ export const colors = {
   surface: '#FFFFFF',
 
   // Text
+  text: '#ffffffff',
   textPrimary: '#ffffffff',
   textTextArea:'#242424ff',
   textSecondary: '#9198a7ff',

@@ -7,6 +7,10 @@ export class UserMapper {
       id: model.id,
       email: model.email,
       name: model.name,
+      role: model.role,
+      phone: model.phone,
+      averageRating: model.averageRating,
+      totalRatings: model.totalRatings,
       createdAt: new Date(model.createdAt),
       updatedAt: new Date(model.updatedAt),
     };
@@ -17,6 +21,10 @@ export class UserMapper {
       id: entity.id,
       email: entity.email,
       name: entity.name,
+      role: entity.role,
+      phone: entity.phone,
+      averageRating: entity.averageRating,
+      totalRatings: entity.totalRatings,
       createdAt: entity.createdAt.getTime(),
       updatedAt: entity.updatedAt.getTime(),
     };

@@ -1,21 +1,16 @@
 
 {
   "rules": {
+    ".read": true,
+    ".write": true,
     "users": {
-      "$uid": {
-        ".read": "$uid === auth.uid",
-        ".write": "$uid === auth.uid"
-      }
+      ".indexOn": ["email", "role"]
     },
-    "products": {
-      ".read": "auth != null",
-      ".write": "auth != null"
+    "shipments": {
+      ".indexOn": ["clientId", "driverId", "status"]
     },
-    "orders": {
-      "$uid": {
-        ".read": "$uid === auth.uid",
-        ".write": "$uid === auth.uid"
-      }
+    "ratings": {
+      ".indexOn": ["shipmentId", "fromUserId", "toUserId"]
     }
   }
 }
