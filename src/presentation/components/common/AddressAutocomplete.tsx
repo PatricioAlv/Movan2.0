@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
   ActivityIndicator,
 } from 'react-native';
 import { Input } from './Input';
@@ -47,7 +46,22 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   const [searchText, setSearchText] = useState(initialValue);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [showPredictions, setShowPredictions] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const handleChangeText = (text: string) => {
+  setSearchText(text);
+
+  if (typingTimeout) {
+    clearTimeout(typingTimeout);
+  }
+
+  const timeout = setTimeout(() => {
+    searchPlaces(text);
+  }, 1800);
+
+  setTypingTimeout(timeout);
+  };
 
   const searchPlaces = async (text: string) => {
     setSearchText(text);
@@ -116,7 +130,7 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         style={[styles.textInputArea, inputStyle]}
         placeholder={placeholder}
         value={searchText}
-        onChangeText={searchPlaces}
+        onChangeText={handleChangeText}
         onFocus={() => predictions.length > 0 && setShowPredictions(true)}
         editable={!loading}
       />
