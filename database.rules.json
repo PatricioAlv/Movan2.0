@@ -1,16 +1,23 @@
 
 {
   "rules": {
-    ".read": true,
-    ".write": true,
     "users": {
-      ".indexOn": ["email", "role"]
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || auth.token.role === 'admin')",
+        ".write": "auth != null && auth.uid === $uid"
+      }
     },
     "shipments": {
-      ".indexOn": ["clientId", "driverId", "status"]
+      "$shipmentId": {
+        ".read": "auth != null",
+        ".write": false
+      }
     },
     "ratings": {
-      ".indexOn": ["shipmentId", "fromUserId", "toUserId"]
+      "$ratingId": {
+        ".read": "auth != null",
+        ".write": false
+      }
     }
   }
 }
