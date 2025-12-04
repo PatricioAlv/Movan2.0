@@ -11,9 +11,6 @@ import {
 } from 'react-native';
 import { Button } from '@presentation/components/common/Button';
 import { Input } from '@presentation/components/common/Input';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { ref, set } from 'firebase/database';
-import { auth, database } from '@data/config/firebase.config';
 import { SCREEN_NAMES } from '@infrastructure/utils/constants';
 import RegisterScreenStyle from '@presentation/theme/Auth-Screen-Styles/RegisterScreenStyle';
 
@@ -31,17 +28,14 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
         Alert.alert('Error', 'Todos los campos son requeridos');
         return;
       }
-
       if (!role) {
         Alert.alert('Error', 'Debes seleccionar un rol para usar Movan');
         return;
       }
-
       if (name.length < 2) {
         Alert.alert('Error', 'El nombre debe tener al menos 2 caracteres');
         return;
       }
-
       if (password.length < 6) {
         Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres');
         return;
@@ -49,36 +43,23 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
 
       setLoading(true);
 
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      const now = Date.now();
-
-      await set(ref(database, `users/${user.uid}`), {
-        id: user.uid,
-        email,
-        name,
-        role,
-        createdAt: now,
-        updatedAt: now,
+      const response = await fetch('http://localhost:5001/<tu-proyecto>/us-central1/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, role }),
       });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al crear cuenta');
+      }
 
       Alert.alert('Éxito', 'Cuenta creada exitosamente');
       navigation?.navigate(SCREEN_NAMES.LOGIN);
 
     } catch (error: any) {
-      console.error('Register error:', error);
-
-      let errorMessage = 'Error al crear cuenta';
-
-      if (error.code === 'auth/email-already-in-use') {
-        errorMessage = 'El email ya está registrado';
-      } else if (error.code === 'auth/invalid-email') {
-        errorMessage = 'Email inválido';
-      } else if (error.code === 'auth/weak-password') {
-        errorMessage = 'La contraseña es muy débil';
-      }
-
-      Alert.alert('Error', errorMessage);
+      Alert.alert('Error', error.message || 'Error al crear cuenta');
     } finally {
       setLoading(false);
     }

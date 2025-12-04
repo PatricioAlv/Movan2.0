@@ -38,4 +38,3 @@ export class CloudFunctionsDataSource {
     return this.callFunction('createRating', { shipmentId, rating, comment });
   }
 }
-z

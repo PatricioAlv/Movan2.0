@@ -13,7 +13,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
 @injectable()
 export class FirebaseAuthRepository implements IAuthRepository {
   constructor(
-    @inject(TYPES.FirebaseAuthDataSource) private authDataSource: FirebaseAuthDataSource,
+    @inject(TYPES.FirebaseRealtimeDataSource) private authDataSource: FirebaseAuthDataSource,
     @inject(TYPES.FirebaseRealtimeDataSource) private realtimeDataSource: FirebaseRealtimeDataSource
   ) {}
 

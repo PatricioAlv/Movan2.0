@@ -23,19 +23,35 @@ export const AppNavigator: React.FC = () => {
   const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
 
   useEffect(() => {
-    const authRepository = container.get<IAuthRepository>(TYPES.IAuthRepository);
+    let authRepository;
+    try {
+      authRepository = container.get<IAuthRepository>(TYPES.IAuthRepository);
+      console.log('authRepository:', authRepository);
+    } catch (e) {
+      console.error('Error obteniendo IAuthRepository del container:', e);
+      setIsLoading(false);
+      return;
+    }
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      console.log('firebaseUser:', firebaseUser);
       if (!firebaseUser) {
         setUserRole(null);
         setIsLoading(false);
         return;
       }
 
-      const user = await authRepository.getCurrentUser();
+      let user;
+      try {
+        user = await authRepository.getCurrentUser();
+        console.log('user:', user);
+      } catch (e) {
+        console.error('Error en getCurrentUser:', e);
+        setIsLoading(false);
+        return;
+      }
       setUserRole(user?.role ?? null);
-      setHasSeenWelcome(true); // Si ya está autenticado, ya vio el welcome
-
+      setHasSeenWelcome(true);
       setIsLoading(false);
     });
 
