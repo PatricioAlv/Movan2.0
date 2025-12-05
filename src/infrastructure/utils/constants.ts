@@ -5,10 +5,17 @@ export const STORAGE_KEYS = {
   LANGUAGE: '@movan/language',
 };
 
+// Lee la URL base desde las variables de entorno
+export const API_BASE_URL = process.env.API_BASE_URL || 'https://us-central1-movan-857e9.cloudfunctions.net/api';
+
 export const API_ENDPOINTS = {
   AUTH: '/auth',
   PRODUCTS: '/products',
   ORDERS: '/orders',
+  // Transportist endpoints
+  GET_DRIVER_SHIPMENTS: '/getDriverShipments',
+  GET_SHIPMENT_DETAILS: '/getShipmentDetails',
+  ACCEPT_SHIPMENT: '/acceptShipment',
 };
 
 export const FIREBASE_COLLECTIONS = {

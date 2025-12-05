@@ -3,9 +3,7 @@ import { View, Text, FlatList, SafeAreaView, ActivityIndicator, Alert, Touchable
 import { colors } from '@presentation/theme/colors';
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
 import { auth } from '@data/config/firebase.config';
-import { container } from '@infrastructure/di/container';
-import { TYPES } from '@infrastructure/di/types';
-import { GetDriverShipmentsUseCase } from '@core/usecases/shipments/GetDriverShipmentsUseCase';
+import { API_BASE_URL, API_ENDPOINTS } from '@infrastructure/utils/constants';
 import { useFocusEffect } from '@react-navigation/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
@@ -83,12 +81,19 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
         return;
       }
 
-      const getShipmentsUseCase = container.get<GetDriverShipmentsUseCase>(
-        Symbol.for('GetDriverShipmentsUseCase')
-      );
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.GET_DRIVER_SHIPMENTS}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ driverId: userId }),
+      });
 
-      const assignedShipments = await getShipmentsUseCase.execute(userId);
-      setShipments(assignedShipments);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al cargar los envíos');
+      }
+
+      setShipments(data.shipments);
 
     } catch (error: any) {
       console.error('Error loading shipments:', error);

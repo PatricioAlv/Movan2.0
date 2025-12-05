@@ -5,13 +5,8 @@ import { Button } from '@presentation/components/common/Button';
 import { colors } from '@presentation/theme/colors';
 import { spacing } from '@presentation/theme/spacing';
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
-import { container } from '@infrastructure/di/container';
-import { TYPES } from '@infrastructure/di/types';
-import { GetShipmentByIdUseCase } from '@core/usecases/shipments/GetShipmentByIdUseCase';
-import { AcceptShipmentUseCase } from '@core/usecases/shipments/AcceptShipmentUseCase';
-import { GetUserUseCase } from '@core/usecases/user/GetUserUseCase';
 import { User } from '@core/entities/User';
-import { SCREEN_NAMES } from '@infrastructure/utils/constants';
+import { API_BASE_URL, API_ENDPOINTS } from '@infrastructure/utils/constants';
 import { auth } from '@data/config/firebase.config';
 import { StyleSheet } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -30,25 +25,27 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
 
   const loadShipmentDetails = async () => {
     try {
-      const getShipmentUseCase = container.get<GetShipmentByIdUseCase>(
-        TYPES.GetShipmentByIdUseCase
-      );
-      const data = await getShipmentUseCase.execute(shipmentId);
-      setShipment(data);
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.GET_SHIPMENT_DETAILS}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shipmentId }),
+      });
 
-      // Cargar datos del cliente
-      if (data && data.clientId) {
-        try {
-          const getUserUseCase = container.get<GetUserUseCase>(TYPES.GetUserUseCase);
-          const client = await getUserUseCase.execute(data.clientId);
-          setClientData(client);
-        } catch (error) {
-          console.error('Error loading client data:', error);
-        }
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al cargar los detalles');
+      }
+
+      setShipment(data.shipment);
+      
+      // Los datos del cliente vienen incluidos en la respuesta
+      if (data.shipment?.client) {
+        setClientData(data.shipment.client);
       }
     } catch (error: any) {
       console.error('Error loading shipment details:', error);
-      Alert.alert('Error', 'No se pudieron cargar los detalles del pedido');
+      Alert.alert('Error', error.message || 'No se pudieron cargar los detalles del pedido');
     } finally {
       setLoading(false);
     }
@@ -90,16 +87,23 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
           onPress: async () => {
             try {
               setAccepting(true);
-              const acceptShipmentUseCase = container.get<AcceptShipmentUseCase>(
-                TYPES.AcceptShipmentUseCase
-              );
-              await acceptShipmentUseCase.execute(shipmentId, userId);
               
+              const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.ACCEPT_SHIPMENT}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ shipmentId, driverId: userId }),
+              });
+
+              const data = await response.json();
+
+              if (!response.ok) {
+                throw new Error(data.error || 'Error al aceptar el pedido');
+              }
+
               Alert.alert('Éxito', 'Pedido aceptado correctamente', [
                 {
                   text: 'OK',
                   onPress: () => {
-                    // Volver atrás dos veces: de detalles a buscador, de buscador a home
                     navigation.goBack();
                     setTimeout(() => {
                       navigation.getParent()?.navigate('TransHome');
@@ -143,7 +147,7 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
       <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContent}>
         {/* Map Placeholder */}
         <View style={styles.mapCard}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.mapPlaceholder}
             onPress={() => openGoogleMaps(
               shipment.origin.latitude,
@@ -167,15 +171,15 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
           {/* Origin */}
           <View style={styles.pointRow}>
             <View style={styles.iconContainer}>
-               <FontAwesome name="arrow-up" size={14} color="#10B981" />
+              <FontAwesome name="arrow-up" size={14} color="#10B981" />
             </View>
             <View style={styles.pointDetails}>
-               <Text style={styles.pointAddress} numberOfLines={2}>{shipment.origin.address}</Text>
-               <Text style={styles.pointDate}>
-                 {new Date(shipment.pickupDate).toLocaleDateString('es-ES', { 
-                    day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' 
-                 })}
-               </Text>
+              <Text style={styles.pointAddress} numberOfLines={2}>{shipment.origin.address}</Text>
+              <Text style={styles.pointDate}>
+                {new Date(shipment.pickupDate).toLocaleDateString('es-ES', {
+                  day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+                })}
+              </Text>
             </View>
           </View>
 
@@ -184,17 +188,17 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
           {/* Destination */}
           <View style={styles.pointRow}>
             <View style={styles.iconContainer}>
-               <FontAwesome name="arrow-down" size={14} color="#10B981" />
+              <FontAwesome name="arrow-down" size={14} color="#10B981" />
             </View>
             <View style={styles.pointDetails}>
-               <Text style={styles.pointAddress} numberOfLines={2}>{shipment.destination.address}</Text>
-               <Text style={styles.pointDate}>
-                 {shipment.deliveryDate 
-                   ? new Date(shipment.deliveryDate).toLocaleDateString('es-ES', { 
-                        day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' 
-                     })
-                   : 'Fecha por definir'}
-               </Text>
+              <Text style={styles.pointAddress} numberOfLines={2}>{shipment.destination.address}</Text>
+              <Text style={styles.pointDate}>
+                {shipment.deliveryDate
+                  ? new Date(shipment.deliveryDate).toLocaleDateString('es-ES', {
+                    day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+                  })
+                  : 'Fecha por definir'}
+              </Text>
             </View>
           </View>
         </View>
@@ -202,84 +206,84 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
         {/* Cargo Details */}
         <Text style={styles.sectionTitle}>Detalles de la Carga</Text>
         <View style={styles.card}>
-           <View style={styles.detailItem}>
-              <FontAwesome name="cube" size={16} color="#10B981" style={styles.detailIcon} />
-              <Text style={styles.detailText}>{shipment.cargoType}</Text>
-           </View>
-           <View style={styles.detailItem}>
-              <FontAwesome name="balance-scale" size={16} color="#10B981" style={styles.detailIcon} />
-              <Text style={styles.detailText}>{shipment.weight} kg</Text>
-           </View>
-           <View style={styles.detailItem}>
-              <FontAwesome name="arrows-alt" size={16} color="#10B981" style={styles.detailIcon} />
-              <Text style={styles.detailText}>4.5m x 2.5m x 3.0m</Text>
-           </View>
+          <View style={styles.detailItem}>
+            <FontAwesome name="cube" size={16} color="#10B981" style={styles.detailIcon} />
+            <Text style={styles.detailText}>{shipment.cargoType}</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <FontAwesome name="balance-scale" size={16} color="#10B981" style={styles.detailIcon} />
+            <Text style={styles.detailText}>{shipment.weight} kg</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <FontAwesome name="arrows-alt" size={16} color="#10B981" style={styles.detailIcon} />
+            <Text style={styles.detailText}>4.5m x 2.5m x 3.0m</Text>
+          </View>
         </View>
 
         {/* Client Info */}
         <Text style={styles.sectionTitle}>Información del Cliente</Text>
         <View style={styles.card}>
-           <View style={styles.clientRow}>
-              <View style={styles.clientInfo}>
-                 <Text style={styles.clientName}>
-                   {clientData?.name || shipment.origin.contactName || 'Cliente'}
-                 </Text>
-                 {clientData && (
-                   <View style={styles.ratingContainer}>
-                      {[1, 2, 3, 4, 5].map((star) => {
-                        const rating = clientData.averageRating || 0;
-                        const filled = star <= Math.floor(rating);
-                        const half = !filled && star <= Math.ceil(rating);
-                        return (
-                          <FontAwesome
-                            key={star}
-                            name={filled ? 'star' : half ? 'star-half-full' : 'star-o'}
-                            size={12}
-                            color="#FBBF24"
-                          />
-                        );
-                      })}
-                      <Text style={styles.ratingText}>({clientData.averageRating?.toFixed(1) || '0.0'})</Text>
-                   </View>
-                 )}
-              </View>
-              {shipment.origin.contactPhone && (
-                <TouchableOpacity 
-                  style={styles.phoneButton}
-                  onPress={() => Linking.openURL(`tel:${shipment.origin.contactPhone}`)}
-                >
-                  <FontAwesome name="phone" size={18} color="#10B981" />
-                </TouchableOpacity>
+          <View style={styles.clientRow}>
+            <View style={styles.clientInfo}>
+              <Text style={styles.clientName}>
+                {clientData?.name || shipment.origin.contactName || 'Cliente'}
+              </Text>
+              {clientData && (
+                <View style={styles.ratingContainer}>
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const rating = clientData.averageRating || 0;
+                    const filled = star <= Math.floor(rating);
+                    const half = !filled && star <= Math.ceil(rating);
+                    return (
+                      <FontAwesome
+                        key={star}
+                        name={filled ? 'star' : half ? 'star-half-full' : 'star-o'}
+                        size={12}
+                        color="#FBBF24"
+                      />
+                    );
+                  })}
+                  <Text style={styles.ratingText}>({clientData.averageRating?.toFixed(1) || '0.0'})</Text>
+                </View>
               )}
-           </View>
+            </View>
+            {shipment.origin.contactPhone && (
+              <TouchableOpacity
+                style={styles.phoneButton}
+                onPress={() => Linking.openURL(`tel:${shipment.origin.contactPhone}`)}
+              >
+                <FontAwesome name="phone" size={18} color="#10B981" />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
-        
-        <View style={{ height: 100 }} /> 
+
+        <View style={{ height: 100 }} />
       </ScrollView>
 
       {/* Bottom Action Bar */}
       <View style={styles.bottomBar}>
-         <TouchableOpacity style={styles.rejectButton} onPress={() => navigation.goBack()}>
-            <Text style={styles.rejectButtonText}>Rechazar</Text>
-         </TouchableOpacity>
-         
-         {canAccept ? (
-            <TouchableOpacity 
-              style={[styles.acceptButton, accepting && styles.disabledButton]} 
-              onPress={handleAcceptShipment}
-              disabled={accepting}
-            >
-               {accepting ? (
-                 <ActivityIndicator color="#FFF" />
-               ) : (
-                 <Text style={styles.acceptButtonText}>Aceptar Carga</Text>
-               )}
-            </TouchableOpacity>
-         ) : (
-            <View style={[styles.acceptButton, styles.disabledButton]}>
-               <Text style={styles.acceptButtonText}>No Disponible</Text>
-            </View>
-         )}
+        <TouchableOpacity style={styles.rejectButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.rejectButtonText}>Rechazar</Text>
+        </TouchableOpacity>
+
+        {canAccept ? (
+          <TouchableOpacity
+            style={[styles.acceptButton, accepting && styles.disabledButton]}
+            onPress={handleAcceptShipment}
+            disabled={accepting}
+          >
+            {accepting ? (
+              <ActivityIndicator color="#FFF" />
+            ) : (
+              <Text style={styles.acceptButtonText}>Aceptar Carga</Text>
+            )}
+          </TouchableOpacity>
+        ) : (
+          <View style={[styles.acceptButton, styles.disabledButton]}>
+            <Text style={styles.acceptButtonText}>No Disponible</Text>
+          </View>
+        )}
       </View>
     </View>
   );
