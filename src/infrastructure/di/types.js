@@ -4,5 +4,7 @@ export const TYPES = {
   FirebaseAuthDataSource: Symbol.for('FirebaseAuthDataSource'),
   IAuthRepository: Symbol.for('IAuthRepository'),
   UserRepository: Symbol.for('UserRepository'),
+  GetClientShipmentsUseCase: Symbol.for('GetClientShipmentsUseCase'),
+
   // ... resto
 };
