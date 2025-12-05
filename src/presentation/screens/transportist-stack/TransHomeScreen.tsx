@@ -3,9 +3,11 @@ import { View, Text, FlatList, SafeAreaView, ActivityIndicator, Alert, Touchable
 import { colors } from '@presentation/theme/colors';
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
 import { auth } from '@data/config/firebase.config';
-import { API_BASE_URL, API_ENDPOINTS } from '@infrastructure/utils/constants';
+import { API_ENDPOINTS } from '@infrastructure/utils/constants';
 import { useFocusEffect } from '@react-navigation/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+
+const API_BASE_URL = `${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 const getStatusColor = (status: ShipmentStatus): string => {
   switch (status) {

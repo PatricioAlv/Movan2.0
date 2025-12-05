@@ -11,15 +11,14 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { styles } from '@presentation/theme/Shared-Screen-Styles/AccountSettingsStyle';
-import { container } from '@infrastructure/di/container';
-import { TYPES } from '@infrastructure/di/types';
-import { LogoutUseCase } from '@core/usecases/auth/LogoutUseCase';
-import { GetUserUseCase } from '@core/usecases/user/GetUserUseCase';
 import { UserRatingDisplay } from '@presentation/components/common/UserRatingDisplay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '@infrastructure/utils/constants';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { auth } from '@data/config/firebase.config';
+import { signOut } from 'firebase/auth';
+
+const API_BASE_URL = `${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 interface Props {
   navigation: any;
@@ -50,9 +49,6 @@ export const AccountSettingsScreen: React.FC<Props> = ({ navigation }) => {
   const [averageRating, setAverageRating] = useState<number | undefined>();
   const [totalRatings, setTotalRatings] = useState<number | undefined>();
 
-  const logoutUseCase = container.get<LogoutUseCase>(TYPES.LogoutUseCase);
-  const getUserUseCase = container.get<GetUserUseCase>(TYPES.GetUserUseCase);
-
   useEffect(() => {
     loadUserData();
     const unsubscribe = navigation.addListener('focus', () => {
@@ -67,10 +63,22 @@ export const AccountSettingsScreen: React.FC<Props> = ({ navigation }) => {
       const currentUser = auth.currentUser;
       if (!currentUser) {
         console.error('No user authenticated');
+        setLoading(false);
         return;
       }
 
-      const user = await getUserUseCase.execute(currentUser.uid);
+      console.log('Fetching user:', currentUser.uid);
+      console.log('API URL:', `${API_BASE_URL}/users/${currentUser.uid}`);
+      
+      const response = await fetch(`${API_BASE_URL}/users/${currentUser.uid}`);
+      const user = await response.json();
+      
+      console.log('User response:', user);
+      
+      if (!response.ok) {
+        throw new Error(user.error || 'Error al cargar usuario');
+      }
+      
       if (user) {
         setUserName(user.name || 'Usuario');
         setUserRole(getRoleLabel(user.role));
@@ -79,7 +87,7 @@ export const AccountSettingsScreen: React.FC<Props> = ({ navigation }) => {
       }
     } catch (error) {
       console.error('Error loading user data:', error);
-      Alert.alert('Error', 'No se pudo cargar la información del usuario');
+      // No mostrar alert para no bloquear la UI
     } finally {
       setLoading(false);
     }
@@ -108,8 +116,14 @@ export const AccountSettingsScreen: React.FC<Props> = ({ navigation }) => {
           style: 'destructive',
           onPress: async () => {
             try {
-              const logoutUseCase = container.get<LogoutUseCase>(TYPES.LogoutUseCase);
-              await logoutUseCase.execute();
+              // Cerrar sesión en Firebase
+              await signOut(auth);
+              
+              // Limpiar datos del usuario en AsyncStorage
+              await AsyncStorage.multiRemove([
+                STORAGE_KEYS.USER_DATA,
+                STORAGE_KEYS.USER_TOKEN,
+              ]);
               // La navegación será manejada por el flujo de autenticación
             } catch (error) {
               console.error('Error during logout:', error);

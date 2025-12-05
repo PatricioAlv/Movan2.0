@@ -7,11 +7,12 @@ WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
 WARNING: sun.misc.Unsafe::objectFieldOffset has been called by akka.util.Unsafe (file:/home/gerchokv/.cache/firebase/emulators/firebase-database-emulator-v4.11.2.jar)
 WARNING: Please consider reporting this to the maintainers of class akka.util.Unsafe
 WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
-11:17:44.833 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
-11:17:44.986 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000
-11:17:55.517 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO com.firebase.core.namespace.NamespaceActor - movan-857e9-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 113ms, init: 0ms
-11:17:55.592 [NamespaceSystem-blocking-namespace-operation-dispatcher-7] INFO com.firebase.core.namespace.StateManager - Namespace movan-857e9-default-rtdb status Active to Active
-11:18:33.962 [Thread-0] INFO com.firebase.server.forge.App$ - Attempting graceful shutdown.
-11:18:33.967 [NamespaceSystem-akka.actor.default-dispatcher-6] INFO com.firebase.core.namespace.Terminator$Terminator - 1 actors left to terminate: movan-857e9-default-rtdb
-11:18:33.974 [NamespaceSystem-akka.actor.default-dispatcher-10] INFO com.firebase.core.namespace.NamespaceActor - stopped namespace actor for movan-857e9-default-rtdb
-11:18:33.979 [Thread-0] INFO com.firebase.server.forge.App$ - Graceful shutdown complete.
+16:14:44.223 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+16:14:44.350 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000
+16:14:54.168 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO com.firebase.core.namespace.NamespaceActor - movan-857e9-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 98ms, init: 0ms
+16:14:54.253 [NamespaceSystem-blocking-namespace-operation-dispatcher-6] INFO com.firebase.core.namespace.StateManager - Namespace movan-857e9-default-rtdb status Active to Active
+16:21:56.589 [FirebaseWorkerPool-1-1] WARN com.firebase.core.persistence.backend.dummy.EmulatorMetadataPersistence - Multiple projectIds are not recommended in single project mode. Requested 
+namespace movan-857e9, but the emulator is configured for movan-857e9-default-rtdb. To 
+opt-out of single project mode add/set the singleProjectMode: false property in 
+the firebase.json emulators config. 
+16:21:56.618 [NamespaceSystem-akka.actor.default-dispatcher-12] INFO com.firebase.core.namespace.NamespaceActor - movan-857e9 successfully activated FBKV (SurveyIdle(0)) wait: 13ms, init: 0ms

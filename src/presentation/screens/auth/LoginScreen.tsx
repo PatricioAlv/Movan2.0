@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import { Button } from '@presentation/components/common/Button';
 import { Input } from '@presentation/components/common/Input';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@data/config/firebase.config';
 import { SCREEN_NAMES } from '@infrastructure/utils/constants';
 import LoginScreenStyle from '../../theme/Auth-Screen-Styles/LoginScreenStyle';
 
@@ -22,29 +24,32 @@ export const LoginScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
   const handleLogin = async () => {
     try {
       if (!email || !password) {
-        Alert.alert('Error ', 'Por favor ingresa email y contrasña');
+        Alert.alert('Error', 'Por favor ingresa email y contraseña');
         return;
       }
 
       setLoading(true);
       
-      const response = await fetch(`${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password}),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok){
-        throw new Error(data.error || 'Error al iniciar sesion');
-      }
-
-      Alert.alert('Exito', 'Inicio de sesion exitoso');
-      navigation?.navigate(SCREEN_NAMES.HOME); //revisar if ok
+      // Usar Firebase Auth SDK del cliente (patrón recomendado)
+      await signInWithEmailAndPassword(auth, email, password);
+      
+      // La navegación será manejada por el auth state listener en AppNavigator
 
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Error al iniciar sesión');
+      console.error('Login error:', error);
+      let errorMessage = 'Error al iniciar sesión';
+
+      if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Email inválido';
+      } else if (error.code === 'auth/user-not-found') {
+        errorMessage = 'Usuario no encontrado';
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = 'Contraseña incorrecta';
+      } else if (error.code === 'auth/invalid-credential') {
+        errorMessage = 'Credenciales inválidas';
+      }
+
+      Alert.alert('Error', errorMessage);
     } finally {
       setLoading(false);
     }

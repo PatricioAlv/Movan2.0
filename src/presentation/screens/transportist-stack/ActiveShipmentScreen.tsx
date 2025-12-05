@@ -4,12 +4,9 @@ import { Button } from '@presentation/components/common/Button';
 import { colors } from '@presentation/theme/colors';
 import { spacing } from '@presentation/theme/spacing';
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
-import { container } from '@infrastructure/di/container';
-import { TYPES } from '@infrastructure/di/types';
-import { GetShipmentByIdUseCase } from '@core/usecases/shipments/GetShipmentByIdUseCase';
-import { UpdateShipmentStatusUseCase } from '@core/usecases/shipments/UpdateShipmentStatusUseCase';
-import { auth } from '@data/config/firebase.config';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+
+const API_BASE_URL = `${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 interface Props {
   route: any;
@@ -27,10 +24,13 @@ export const ActiveShipmentScreen: React.FC<Props> = ({ route, navigation }) => 
 
   const loadShipmentDetails = async () => {
     try {
-      const getShipmentUseCase = container.get<GetShipmentByIdUseCase>(
-        TYPES.GetShipmentByIdUseCase
-      );
-      const data = await getShipmentUseCase.execute(shipmentId);
+      const response = await fetch(`${API_BASE_URL}/shipments/${shipmentId}`);
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al cargar el envío');
+      }
+      
       setShipment(data);
       
       // Determinar la fase según el estado
@@ -76,13 +76,20 @@ export const ActiveShipmentScreen: React.FC<Props> = ({ route, navigation }) => 
 
     try {
       setUpdating(true);
-      const updateUseCase = container.get<UpdateShipmentStatusUseCase>(
-        TYPES.UpdateShipmentStatusUseCase
-      );
       
-      await updateUseCase.execute(shipmentId, ShipmentStatus.IN_TRANSIT);
+      const response = await fetch(`${API_BASE_URL}/shipments/startPickup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shipmentId, driverId: shipment.driverId }),
+      });
       
-      Alert.alert('Éxito', 'Viaje iniciado. Dirígete a recoger el pedido.');
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'No se pudo iniciar el viaje');
+      }
+      
+      Alert.alert('Éxito', data.message || 'Viaje iniciado. Dirígete a recoger el pedido.');
       await loadShipmentDetails();
     } catch (error: any) {
       console.error('Error starting pickup:', error);
@@ -131,13 +138,20 @@ export const ActiveShipmentScreen: React.FC<Props> = ({ route, navigation }) => 
           onPress: async () => {
             try {
               setUpdating(true);
-              const updateUseCase = container.get<UpdateShipmentStatusUseCase>(
-                TYPES.UpdateShipmentStatusUseCase
-              );
               
-              await updateUseCase.execute(shipmentId, ShipmentStatus.DELIVERED);
+              const response = await fetch(`${API_BASE_URL}/shipments/confirmDelivery`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ shipmentId, driverId: shipment.driverId }),
+              });
               
-              Alert.alert('Éxito', 'Envío marcado como entregado', [
+              const data = await response.json();
+              
+              if (!response.ok) {
+                throw new Error(data.error || 'No se pudo marcar como entregado');
+              }
+              
+              Alert.alert('Éxito', data.message || 'Envío marcado como entregado', [
                 {
                   text: 'OK',
                   onPress: () => {
@@ -150,7 +164,7 @@ export const ActiveShipmentScreen: React.FC<Props> = ({ route, navigation }) => 
               console.error('Error marking as delivered:', error);
               Alert.alert('Error', error.message || 'No se pudo marcar como entregado');
             } finally {
-              setUpdating(false);
+              setUpdating(true);
             }
           },
         },
