@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, SafeAreaView, ActivityIndicator, TouchableOpacity, Alert, StyleSheet } from 'react-native';
-import { Card } from '@presentation/components/common/Card';
 import { Button } from '@presentation/components/common/Button';
-import { colors } from '@presentation/theme/colors';
 import { container } from '@infrastructure/di/init';
 import { TYPES } from '@infrastructure/di/types';
 import { GetClientShipmentsUseCase } from '@core/usecases/shipments/GetClientShipmentsUseCase';
-import { CancelShipmentUseCase } from '@core/usecases/shipments/CancelShipmentUseCase';
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
 import { auth } from '@data/config/firebase.config';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -157,10 +154,15 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
           style: 'destructive',
           onPress: async () => {
             try {
-              const cancelShipmentUseCase = container.get<CancelShipmentUseCase>(
-                TYPES.CancelShipmentUseCase
-              );
-              await cancelShipmentUseCase.execute(shipmentId);
+              const response = await fetch(`${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api/cancelShipment`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ shipmentId }),
+              });
+              const data = await response.json();
+              if (!response.ok) {
+                throw new Error(data.error || 'No se pudo cancelar el envío');
+              }
               Alert.alert('Éxito', 'Envío cancelado correctamente');
               loadShipments();
             } catch (error: any) {

@@ -1,7 +1,7 @@
 
 import { Request, Response } from 'express';
-import { registerUser } from '../usecases/registerUser';
-import { loginUser } from '../usecases/loginUser';
+import { registerUser } from '../usecases/authUseCases/registerUser';
+import { loginUser } from '../usecases/authUseCases/loginUser';
 
 export async function register(req: Request, res: Response) {
   try {
