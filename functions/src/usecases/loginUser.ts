@@ -1,4 +1,3 @@
-import * as admin from 'firebase-admin';
 
 export async function loginUser({ email, password }: { email: string, password: string }) {
   if (!email || !password) {

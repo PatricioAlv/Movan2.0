@@ -1,7 +1,9 @@
+
+import { Request, Response } from 'express';
 import { registerUser } from '../usecases/registerUser';
 import { loginUser } from '../usecases/loginUser';
 
-export async function register(req, res) {
+export async function register(req: Request, res: Response) {
   try {
     const { name, email, password, role } = req.body;
     const result = await registerUser({ name, email, password, role });
@@ -11,7 +13,7 @@ export async function register(req, res) {
   }
 }
 
-export async function login(req ,res) {
+export async function login(req: Request, res: Response) {
     try {
         const { email, password } = req.body;
         const result = await loginUser({email, password});
