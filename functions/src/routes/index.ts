@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import { register, login } from '../controllers/authController'; 
 import { cancelShipmentController } from '../controllers/shipmentsController';
+import { getDriverShipmentsController } from '../controllers/transHomeController';
 
 admin.initializeApp();
 const app = express();
@@ -19,6 +20,9 @@ app.post('/login', login);
 
 // - shipment routes
 app.post('/cancelShipment', cancelShipmentController);
+
+// - transportist routes
+app.post('/getDriverShipments', getDriverShipmentsController);
 
 
 export const api = functions.https.onRequest(app);
