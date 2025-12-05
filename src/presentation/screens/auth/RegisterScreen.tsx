@@ -43,7 +43,7 @@ export const RegisterScreen: React.FC<{ navigation?: any }> = ({ navigation }) =
 
       setLoading(true);
 
-      const response = await fetch('http://localhost:5001/<tu-proyecto>/us-central1/api/register', {
+      const response = await fetch('http://192.168.0.6:5001/movan-857e9/us-central1/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password, role }),

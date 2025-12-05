@@ -1,7 +1,7 @@
 export const TYPES = {
-  // DataSources
   CloudFunctionsDataSource: Symbol.for('CloudFunctionsDataSource'),
   FirebaseRealtimeDataSource: Symbol.for('FirebaseRealtimeDataSource'),
+  FirebaseAuthDataSource: Symbol.for('FirebaseAuthDataSource'),
   IAuthRepository: Symbol.for('IAuthRepository'),
   UserRepository: Symbol.for('UserRepository'),
   // ... resto

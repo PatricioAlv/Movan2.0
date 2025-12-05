@@ -21,7 +21,7 @@
     "rules": "database.rules.json"
   },
   "emulators": {
-    "functions": { "port": 5001 },
+    "functions": { "port": 5001, "host": "0.0.0.0" },
     "firestore": { "port": 8080 },
     "auth": { "port": 9099 },
     "ui": { "enabled": true, "port": 4000 }
