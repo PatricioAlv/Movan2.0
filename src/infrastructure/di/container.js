@@ -18,11 +18,11 @@ container.bind(TYPES.CloudFunctionsDataSource).to(CloudFunctionsDataSource);
 // Registrar Realtime DataSource
 container.bind(TYPES.FirebaseRealtimeDataSource).to(FirebaseRealtimeDataSource);
 
+// Firebase Auth DataSource (debe estar antes de IAuthRepository)
+container.bind(TYPES.FirebaseAuthDataSource).to(FirebaseAuthDataSource);
+
 // IAuthRepository
 container.bind(TYPES.IAuthRepository).to(FirebaseAuthRepository);
-
-// Firebase Auth DataSource
-container.bind(TYPES.FirebaseAuthDataSource).to(FirebaseAuthDataSource);
 
 // ... resto de registros
 

@@ -1,0 +1,244 @@
+[debug] [2025-12-05T19:14:40.571Z] ----------------------------------------------------------------------
+[debug] [2025-12-05T19:14:40.573Z] Command:       /home/gerchokv/.nvm/versions/node/v25.2.0/bin/node /home/gerchokv/.nvm/versions/node/v25.2.0/bin/firebase emulators:start
+[debug] [2025-12-05T19:14:40.573Z] CLI Version:   14.26.0
+[debug] [2025-12-05T19:14:40.573Z] Platform:      linux
+[debug] [2025-12-05T19:14:40.574Z] Node Version:  v25.2.0
+[debug] [2025-12-05T19:14:40.574Z] Time:          Fri Dec 05 2025 16:14:40 GMT-0300 (Argentina Standard Time)
+[debug] [2025-12-05T19:14:40.574Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-12-05T19:14:40.732Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-12-05T19:14:40.732Z] > authorizing via signed-in user (germankuszmirukvispo@gmail.com)
+[debug] [2025-12-05T19:14:40.750Z] openjdk version "25.0.1" 2025-09-16
+
+[debug] [2025-12-05T19:14:40.751Z] OpenJDK Runtime Environment (build 25.0.1)
+OpenJDK 64-Bit Server VM (build 25.0.1, mixed mode, sharing)
+
+[debug] [2025-12-05T19:14:40.754Z] Parsed Java major version: 25
+[info] i  emulators: Starting emulators: auth, functions, firestore, database, extensions {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, functions, firestore, database, extensions"}}
+[debug] [2025-12-05T19:14:40.755Z] Checked if tokens are valid: true, expires at: 1764963004023
+[debug] [2025-12-05T19:14:40.756Z] Checked if tokens are valid: true, expires at: 1764963004023
+[debug] [2025-12-05T19:14:40.756Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/movan-857e9 [none]
+[debug] [2025-12-05T19:14:41.834Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/movan-857e9 200
+[debug] [2025-12-05T19:14:41.835Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/movan-857e9 {"projectNumber":"719398366977","projectId":"movan-857e9","lifecycleState":"ACTIVE","name":"Movan","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-05-15T23:16:49.918634Z"}
+[debug] [2025-12-05T19:14:41.839Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-05T19:14:41.839Z] [auth] Authentication Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-05T19:14:41.839Z] [firestore] Firestore Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-05T19:14:41.839Z] [firestore.websocket] websocket server for firestore only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-05T19:14:41.839Z] [database] Database Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-05T19:14:41.839Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"database":[{"address":"127.0.0.1","family":"IPv4","port":9000}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2025-12-05T19:14:41.843Z] Emulator locator file path: /tmp/hub-movan-857e9.json
+[warn] ⚠  emulators: It seems that you are running multiple instances of the emulator suite for project movan-857e9. This may result in unexpected behavior. 
+[debug] [2025-12-05T19:14:41.844Z] [hub] writing locator at /tmp/hub-movan-857e9.json
+[debug] [2025-12-05T19:14:41.847Z] [Extensions] Started Extensions emulator, this is a noop.
+[debug] [2025-12-05T19:14:41.848Z] [eventarc] Eventarc Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-05T19:14:41.848Z] [tasks] Cloud Tasks Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-12-05T19:14:41.848Z] late-assigned ports for functions and eventarc emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"database":[{"address":"127.0.0.1","family":"IPv4","port":9000}],"functions":[{"address":"0.0.0.0","family":"IPv4","port":5001}],"eventarc":[{"address":"127.0.0.1","family":"IPv4","port":9299}],"tasks":[{"address":"127.0.0.1","family":"IPv4","port":9499}]},"metadata":{"message":"late-assigned ports for functions and eventarc emulators"}}
+[warn] ⚠  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: apphosting, hosting, pubsub, storage, dataconnect {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mapphosting, hosting, pubsub, storage, dataconnect\u001b[22m"}}
+[debug] [2025-12-05T19:14:41.902Z] defaultcredentials: writing to file /home/gerchokv/.config/firebase/germankuszmirukvispo_gmail_com_application_default_credentials.json
+[debug] [2025-12-05T19:14:41.903Z] Setting GAC to /home/gerchokv/.config/firebase/germankuszmirukvispo_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to /home/gerchokv/.config/firebase/germankuszmirukvispo_gmail_com_application_default_credentials.json"}}
+[debug] [2025-12-05T19:14:41.903Z] Checked if tokens are valid: true, expires at: 1764963004023
+[debug] [2025-12-05T19:14:41.903Z] Checked if tokens are valid: true, expires at: 1764963004023
+[debug] [2025-12-05T19:14:41.903Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/movan-857e9/adminSdkConfig [none]
+[debug] [2025-12-05T19:14:42.333Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/movan-857e9/adminSdkConfig 200
+[debug] [2025-12-05T19:14:42.333Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/movan-857e9/adminSdkConfig {"projectId":"movan-857e9","databaseURL":"https://movan-857e9-default-rtdb.firebaseio.com","storageBucket":"movan-857e9.firebasestorage.app"}
+[warn] ⚠  firestore: Cloud Firestore Emulator does not support multiple databases yet. {"metadata":{"emulator":{"name":"firestore"},"message":"Cloud Firestore Emulator does not support multiple databases yet."}}
+[warn] ⚠  firestore: Did not find a Cloud Firestore rules file specified in a firebase.json config file. {"metadata":{"emulator":{"name":"firestore"},"message":"Did not find a Cloud Firestore rules file specified in a firebase.json config file."}}
+[warn] ⚠  firestore: The emulator will default to allowing all reads and writes. Learn more about this option: https://firebase.google.com/docs/emulator-suite/install_and_configure#security_rules_configuration. {"metadata":{"emulator":{"name":"firestore"},"message":"The emulator will default to allowing all reads and writes. Learn more about this option: https://firebase.google.com/docs/emulator-suite/install_and_configure#security_rules_configuration."}}
+[debug] [2025-12-05T19:14:42.347Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2025-12-05T19:14:42.347Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
+[debug] [2025-12-05T19:14:42.347Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/home/gerchokv/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.8.jar","--host","127.0.0.1","--port",8080,"--websocket_port",9150,"--project_id","movan-857e9","--single_project_mode",true,"--functions_emulator","127.0.0.1:5001"],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false,"port":8080} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/home/gerchokv/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.8.jar\",\"--host\",\"127.0.0.1\",\"--port\",8080,\"--websocket_port\",9150,\"--project_id\",\"movan-857e9\",\"--single_project_mode\",true,\"--functions_emulator\",\"127.0.0.1:5001\"],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":8080}"}}
+[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to \u001b[1mfirestore-debug.log\u001b[22m"}}
+[debug] [2025-12-05T19:14:42.553Z] WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by io.netty.util.internal.PlatformDependent0$4 (file:/home/gerchokv/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.8.jar)
+WARNING: Please consider reporting this to the maintainers of class io.netty.util.internal.PlatformDependent0$4
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+ {"metadata":{"emulator":{"name":"firestore"},"message":"WARNING: A terminally deprecated method in sun.misc.Unsafe has been called\nWARNING: sun.misc.Unsafe::objectFieldOffset has been called by io.netty.util.internal.PlatformDependent0$4 (file:/home/gerchokv/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.8.jar)\nWARNING: Please consider reporting this to the maintainers of class io.netty.util.internal.PlatformDependent0$4\nWARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release\n"}}
+[debug] [2025-12-05T19:14:42.721Z] WARNING: A restricted method in  {"metadata":{"emulator":{"name":"firestore"},"message":"WARNING: A restricted method in "}}
+[debug] [2025-12-05T19:14:42.722Z] java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by io.netty.util.internal.NativeLibraryUtil in an unnamed module (file:/home/gerchokv/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.8.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+ {"metadata":{"emulator":{"name":"firestore"},"message":"java.lang.System has been called\nWARNING: java.lang.System::loadLibrary has been called by io.netty.util.internal.NativeLibraryUtil in an unnamed module (file:/home/gerchokv/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.8.jar)\nWARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module\nWARNING: Restricted methods will be blocked in a future release unless native access is enabled\n\n"}}
+[debug] [2025-12-05T19:14:43.081Z] Dec 05, 2025 4:14:43 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
+INFO: Started WebSocket server on ws://127.0.0.1:9150
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Dec 05, 2025 4:14:43 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://127.0.0.1:9150\n"}}
+[debug] [2025-12-05T19:14:43.119Z] API endpoint: http:// {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://"}}
+[debug] [2025-12-05T19:14:43.119Z] 127.0.0.1:8080
+If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
+
+   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8080
+
+If you are running a Firestore in Datastore Mode project, run:
+
+   export DATASTORE_EMULATOR_HOST=127.0.0.1:8080
+
+Note: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.
+Dev App Server is now running.
+
+ {"metadata":{"emulator":{"name":"firestore"},"message":"127.0.0.1:8080\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8080\n\nIf you are running a Firestore in Datastore Mode project, run:\n\n   export DATASTORE_EMULATOR_HOST=127.0.0.1:8080\n\nNote: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.\nDev App Server is now running.\n\n"}}
+[debug] [2025-12-05T19:14:43.130Z] Dec 05, 2025 4:14:43 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
+INFO: Connected to new websocket client
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Dec 05, 2025 4:14:43 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
+[info] ✔  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
+[debug] [2025-12-05T19:14:43.153Z] Checked if tokens are valid: true, expires at: 1764963004023
+[debug] [2025-12-05T19:14:43.153Z] Checked if tokens are valid: true, expires at: 1764963004023
+[debug] [2025-12-05T19:14:43.154Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/movan-857e9 [none]
+[debug] [2025-12-05T19:14:43.187Z] Dec 05, 2025 4:14:43 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
+INFO: Connected to new websocket client
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Dec 05, 2025 4:14:43 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
+[debug] [2025-12-05T19:14:43.466Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/movan-857e9 200
+[debug] [2025-12-05T19:14:43.466Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/movan-857e9 {"projectId":"movan-857e9","projectNumber":"719398366977","displayName":"Movan","name":"projects/movan-857e9","resources":{"hostingSite":"movan-857e9","realtimeDatabaseInstance":"movan-857e9-default-rtdb"},"state":"ACTIVE","etag":"1_8cee11a9-b50e-45af-b3b2-1b5b92e89f14"}
+[debug] [2025-12-05T19:14:43.467Z] database rules config:  [{"instance":"movan-857e9-default-rtdb","rules":"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/database.rules.json"}]
+[debug] [2025-12-05T19:14:43.469Z] Ignoring unsupported arg: projectId {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: projectId"}}
+[debug] [2025-12-05T19:14:43.469Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2025-12-05T19:14:43.469Z] Ignoring unsupported arg: rules {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: rules"}}
+[debug] [2025-12-05T19:14:43.469Z] Starting Database Emulator with command {"binary":"java","args":["-Duser.language=en","-jar","/home/gerchokv/.cache/firebase/emulators/firebase-database-emulator-v4.11.2.jar","--host","127.0.0.1","--port",9000,"--single_project_mode","Warning","--functions_emulator_host","127.0.0.1","--functions_emulator_port",5001],"optionalArgs":["port","host","functions_emulator_port","functions_emulator_host","single_project_mode"],"joinArgs":false,"shell":false,"port":9000} {"metadata":{"emulator":{"name":"database"},"message":"Starting Database Emulator with command {\"binary\":\"java\",\"args\":[\"-Duser.language=en\",\"-jar\",\"/home/gerchokv/.cache/firebase/emulators/firebase-database-emulator-v4.11.2.jar\",\"--host\",\"127.0.0.1\",\"--port\",9000,\"--single_project_mode\",\"Warning\",\"--functions_emulator_host\",\"127.0.0.1\",\"--functions_emulator_port\",5001],\"optionalArgs\":[\"port\",\"host\",\"functions_emulator_port\",\"functions_emulator_host\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":9000}"}}
+[info] i  database: Database Emulator logging to database-debug.log {"metadata":{"emulator":{"name":"database"},"message":"Database Emulator logging to \u001b[1mdatabase-debug.log\u001b[22m"}}
+[debug] [2025-12-05T19:14:43.783Z] WARNING: A restricted method in  {"metadata":{"emulator":{"name":"database"},"message":"WARNING: A restricted method in "}}
+[debug] [2025-12-05T19:14:43.783Z] java.lang.System has been called
+WARNING: java.lang.System::load has been called by io.netty.util.internal.NativeLibraryUtil in an unnamed module (file:/home/gerchokv/.cache/firebase/emulators/firebase-database-emulator-v4.11.2.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+ {"metadata":{"emulator":{"name":"database"},"message":"java.lang.System has been called\nWARNING: java.lang.System::load has been called by io.netty.util.internal.NativeLibraryUtil in an unnamed module (file:/home/gerchokv/.cache/firebase/emulators/firebase-database-emulator-v4.11.2.jar)\nWARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module\nWARNING: Restricted methods will be blocked in a future release unless native access is enabled\n\n"}}
+[debug] [2025-12-05T19:14:44.124Z] WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by akka.util.Unsafe (file:/home/gerchokv/.cache/firebase/emulators/firebase-database-emulator-v4.11.2.jar)
+WARNING: Please consider reporting this to the maintainers of class akka.util.Unsafe
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+ {"metadata":{"emulator":{"name":"database"},"message":"WARNING: A terminally deprecated method in sun.misc.Unsafe has been called\nWARNING: sun.misc.Unsafe::objectFieldOffset has been called by akka.util.Unsafe (file:/home/gerchokv/.cache/firebase/emulators/firebase-database-emulator-v4.11.2.jar)\nWARNING: Please consider reporting this to the maintainers of class akka.util.Unsafe\nWARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release\n"}}
+[debug] [2025-12-05T19:14:44.224Z] 16:14:44.223 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+ {"metadata":{"emulator":{"name":"database"},"message":"16:14:44.223 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started\n"}}
+[debug] [2025-12-05T19:14:44.351Z] 16:14:44.350 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000
+ {"metadata":{"emulator":{"name":"database"},"message":"16:14:44.350 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000\n"}}
+[debug] [2025-12-05T19:14:49.095Z] [Extensions] Connecting Extensions emulator, this is a noop.
+[info] i  functions: Watching "/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions\" for Cloud Functions..."}}
+[debug] [2025-12-05T19:14:49.102Z] Validating nodejs source
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[debug] [2025-12-05T19:14:49.590Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts .",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "firebase-admin": "^13.6.0",
+    "firebase-functions": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
+    "eslint": "^8.9.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-import": "^2.25.4",
+    "firebase-functions-test": "^3.4.1",
+    "typescript": "^5.7.3"
+  },
+  "private": true
+}
+[debug] [2025-12-05T19:14:49.590Z] Building nodejs source
+[debug] [2025-12-05T19:14:49.590Z] Failed to find version of module node: reached end of search path /home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules
+[warn] ⚠  functions: Your requested "node" version "20" doesn't match your global version "25". Using node@25 from host. 
+[debug] [2025-12-05T19:14:49.593Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-12-05T19:14:49.596Z] Found firebase-functions binary at '/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8840
+
+[debug] [2025-12-05T19:14:49.940Z] Got response from /__/functions.yaml {"endpoints":{"api":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"httpsTrigger":{},"entryPoint":"api"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[debug] [2025-12-05T19:14:53.957Z] defaultcredentials: writing to file /home/gerchokv/.config/firebase/germankuszmirukvispo_gmail_com_application_default_credentials.json
+[debug] [2025-12-05T19:14:53.957Z] Setting GAC to /home/gerchokv/.config/firebase/germankuszmirukvispo_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to /home/gerchokv/.config/firebase/germankuszmirukvispo_gmail_com_application_default_credentials.json"}}
+[info] ✔  functions: Loaded functions definitions from source: api. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api."}}
+[info] ✔  functions[us-central1-api]: http function initialized (http://127.0.0.1:5001/movan-857e9/us-central1/api). {"metadata":{"emulator":{"name":"functions"},"message":"\u001b[1mhttp\u001b[22m function initialized (http://127.0.0.1:5001/movan-857e9/us-central1/api)."}}
+[debug] [2025-12-05T19:14:53.960Z] >>> [apiv2][query] PUT http://127.0.0.1:9000/.settings/rules.json ns=movan-857e9-default-rtdb
+[debug] [2025-12-05T19:14:53.961Z] >>> [apiv2][body] PUT http://127.0.0.1:9000/.settings/rules.json "\n{\n  \"rules\": {\n    \"users\": {\n      \"$uid\": {\n        \".read\": \"auth != null && (auth.uid === $uid || auth.token.role === 'admin')\",\n        \".write\": \"auth != null && auth.uid === $uid\"\n      }\n    },\n    \"shipments\": {\n      \"$shipmentId\": {\n        \".read\": \"auth != null\",\n        \".write\": false\n      }\n    },\n    \"ratings\": {\n      \"$ratingId\": {\n        \".read\": \"auth != null\",\n        \".write\": false\n      }\n    }\n  }\n}"
+[debug] [2025-12-05T19:14:54.168Z] 16:14:54.168 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO com.firebase.core.namespace.NamespaceActor - movan-857e9-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 98ms, init: 0ms
+ {"metadata":{"emulator":{"name":"database"},"message":"16:14:54.168 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO com.firebase.core.namespace.NamespaceActor - movan-857e9-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 98ms, init: 0ms\n"}}
+[debug] [2025-12-05T19:14:54.253Z] 16:14:54.253 [NamespaceSystem-blocking-namespace-operation-dispatcher-6] INFO com.firebase.core.namespace.StateManager - Namespace movan-857e9-default-rtdb status Active to Active
+ {"metadata":{"emulator":{"name":"database"},"message":"16:14:54.253 [NamespaceSystem-blocking-namespace-operation-dispatcher-6] INFO com.firebase.core.namespace.StateManager - Namespace movan-857e9-default-rtdb status Active to Active\n"}}
+[debug] [2025-12-05T19:14:54.280Z] <<< [apiv2][status] PUT http://127.0.0.1:9000/.settings/rules.json 200
+[debug] [2025-12-05T19:14:54.280Z] <<< [apiv2][body] PUT http://127.0.0.1:9000/.settings/rules.json {"status":"ok"}
+[debug] [2025-12-05T19:14:54.283Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://127.0.0.1:4000/               │
+└─────────────────────────────────────────────────────────────┘
+
+┌────────────────┬────────────────┬──────────────────────────────────┐
+│ Emulator       │ Host:Port      │ View in Emulator UI              │
+├────────────────┼────────────────┼──────────────────────────────────┤
+│ Authentication │ 127.0.0.1:9099 │ http://127.0.0.1:4000/auth       │
+├────────────────┼────────────────┼──────────────────────────────────┤
+│ Functions      │ 0.0.0.0:5001   │ http://127.0.0.1:4000/functions  │
+├────────────────┼────────────────┼──────────────────────────────────┤
+│ Firestore      │ 127.0.0.1:8080 │ http://127.0.0.1:4000/firestore  │
+├────────────────┼────────────────┼──────────────────────────────────┤
+│ Database       │ 127.0.0.1:9000 │ http://127.0.0.1:4000/database   │
+├────────────────┼────────────────┼──────────────────────────────────┤
+│ Extensions     │ 0.0.0.0:5001   │ http://127.0.0.1:4000/extensions │
+└────────────────┴────────────────┴──────────────────────────────────┘
+  Emulator Hub host: 127.0.0.1 port: 4400
+  Other reserved ports: 4500, 9150
+┌─────────────────────────┬───────────────┬─────────────────────┐
+│ Extension Instance Name │ Extension Ref │ View in Emulator UI │
+└─────────────────────────┴───────────────┴─────────────────────┘
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
+[debug] [2025-12-05T19:17:17.906Z] [work-queue] {"queuedWork":["/movan-857e9/us-central1/api/register-2025-12-05T19:17:17.906Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2025-12-05T19:17:17.906Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/movan-857e9/us-central1/api/register-2025-12-05T19:17:17.906Z"],"workRunningCount":1}
+[debug] [2025-12-05T19:17:17.906Z] Accepted request POST /movan-857e9/us-central1/api/register --> us-central1-api
+[debug] [2025-12-05T19:17:17.908Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2025-12-05T19:17:17.908Z] [functions] Got req.url=/movan-857e9/us-central1/api/register, mapping to path=/register {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/movan-857e9/us-central1/api/register, mapping to path=/register"}}
+[debug] [2025-12-05T19:17:17.913Z] [worker-pool] addWorker(us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] addWorker(us-central1-api)"}}
+[debug] [2025-12-05T19:17:17.913Z] [worker-pool] Adding worker with key us-central1-api, total=1 {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] Adding worker with key us-central1-api, total=1"}}
+[debug] [2025-12-05T19:17:18.424Z] [runtime-status] [105432] Resolved module firebase-admin {"declared":true,"installed":true,"version":"13.6.0","resolution":"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules/firebase-admin/lib/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [105432] Resolved module firebase-admin {\"declared\":true,\"installed\":true,\"version\":\"13.6.0\",\"resolution\":\"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules/firebase-admin/lib/index.js\"}"}}
+[debug] [2025-12-05T19:17:18.424Z] [runtime-status] [105432] Resolved module firebase-functions {"declared":true,"installed":true,"version":"7.0.0","resolution":"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules/firebase-functions/lib/v2/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [105432] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"7.0.0\",\"resolution\":\"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules/firebase-functions/lib/v2/index.js\"}"}}
+[debug] [2025-12-05T19:17:18.424Z] [runtime-status] [105432] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}] {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [105432] Outgoing network have been stubbed. [{\"name\":\"http\",\"status\":\"mocked\"},{\"name\":\"http\",\"status\":\"mocked\"},{\"name\":\"https\",\"status\":\"mocked\"},{\"name\":\"https\",\"status\":\"mocked\"},{\"name\":\"net\",\"status\":\"mocked\"}]"}}
+[debug] [2025-12-05T19:17:18.425Z] [runtime-status] [105432] Resolved module firebase-functions {"declared":true,"installed":true,"version":"7.0.0","resolution":"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules/firebase-functions/lib/v2/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [105432] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"7.0.0\",\"resolution\":\"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules/firebase-functions/lib/v2/index.js\"}"}}
+[debug] [2025-12-05T19:17:18.425Z] [runtime-status] [105432] Detected firebase-functions v7+, skipping config helper. {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [105432] Detected firebase-functions v7+, skipping config helper."}}
+[debug] [2025-12-05T19:17:18.426Z] [runtime-status] [105432] Resolved module firebase-functions {"declared":true,"installed":true,"version":"7.0.0","resolution":"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules/firebase-functions/lib/v2/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [105432] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"7.0.0\",\"resolution\":\"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules/firebase-functions/lib/v2/index.js\"}"}}
+[debug] [2025-12-05T19:17:18.426Z] [runtime-status] [105432] Detected firebase-functions v7+, skipping legacy stubs. {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [105432] Detected firebase-functions v7+, skipping legacy stubs."}}
+[debug] [2025-12-05T19:17:18.426Z] [runtime-status] [105432] Resolved module firebase-admin {"declared":true,"installed":true,"version":"13.6.0","resolution":"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules/firebase-admin/lib/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [105432] Resolved module firebase-admin {\"declared\":true,\"installed\":true,\"version\":\"13.6.0\",\"resolution\":\"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules/firebase-admin/lib/index.js\"}"}}
+[debug] [2025-12-05T19:17:18.454Z] [runtime-status] [105432] Resolved module firebase-functions {"declared":true,"installed":true,"version":"7.0.0","resolution":"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules/firebase-functions/lib/v2/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [105432] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"7.0.0\",\"resolution\":\"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules/firebase-functions/lib/v2/index.js\"}"}}
+[debug] [2025-12-05T19:17:18.560Z] [runtime-status] [105432] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"13.6.0","resolution":"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules/firebase-admin/lib/index.js"}} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [105432] firebase-admin has been stubbed. {\"adminResolution\":{\"declared\":true,\"installed\":true,\"version\":\"13.6.0\",\"resolution\":\"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions/node_modules/firebase-admin/lib/index.js\"}}"}}
+[debug] [2025-12-05T19:17:18.615Z] [runtime-status] [105432] initializeApp(DEFAULT) {"storageBucket":"movan-857e9.firebasestorage.app","databaseURL":"http://127.0.0.1:9000/?ns=movan-857e9-default-rtdb","projectId":"movan-857e9"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [105432] initializeApp(DEFAULT) {\"storageBucket\":\"movan-857e9.firebasestorage.app\",\"databaseURL\":\"http://127.0.0.1:9000/?ns=movan-857e9-default-rtdb\",\"projectId\":\"movan-857e9\"}"}}
+[debug] [2025-12-05T19:17:18.622Z] [runtime-status] [105432] Functions runtime initialized. {"cwd":"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions","node_version":"25.2.0"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [105432] Functions runtime initialized. {\"cwd\":\"/home/gerchokv/Desktop/mApache-workspace/Movan2.0/functions\",\"node_version\":\"25.2.0\"}"}}
+[debug] [2025-12-05T19:17:18.623Z] [runtime-status] [105432] Listening to port: /tmp/fire_emu_b2afafe688877239.sock {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [105432] Listening to port: /tmp/fire_emu_b2afafe688877239.sock"}}
+[debug] [2025-12-05T19:17:18.721Z] [worker-us-central1-api-5dc0c7a5-0b4d-48fa-aead-c1965e6dbadd]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-5dc0c7a5-0b4d-48fa-aead-c1965e6dbadd]: IDLE"}}
+[debug] [2025-12-05T19:17:18.721Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2025-12-05T19:17:18.722Z] [worker-us-central1-api-5dc0c7a5-0b4d-48fa-aead-c1965e6dbadd]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-5dc0c7a5-0b4d-48fa-aead-c1965e6dbadd]: BUSY"}}
+[debug] [2025-12-05T19:17:18.757Z] >>> [apiv2][query] POST http://127.0.0.1:5001/functions/projects/movan-857e9/trigger_multicast [none]
+[debug] [2025-12-05T19:17:18.757Z] >>> [apiv2][body] POST http://127.0.0.1:5001/functions/projects/movan-857e9/trigger_multicast {"eventId":"4d37697a-3eae-4550-88e1-ffb245f0b8ab","eventType":"providers/firebase.auth/eventTypes/user.create","resource":{"name":"projects/movan-857e9","service":"firebaseauth.googleapis.com"},"params":{},"timestamp":"2025-12-05T19:17:18.757Z","data":{"uid":"dvoH6gsebU2ZCiOzTdg1yPAE7w65","email":"gerchopola@gmail.com","emailVerified":false,"displayName":"Gerchopola","metadata":{"creationTime":"2025-12-05T19:17:18.756Z","lastSignInTime":"2025-12-05T19:17:18.756Z"},"customClaims":{},"providerData":[{"rawId":"gerchopola@gmail.com","providerId":"password","displayName":"Gerchopola","email":"gerchopola@gmail.com","federatedId":"gerchopola@gmail.com"}]}}
+[debug] [2025-12-05T19:17:18.768Z] <<< [apiv2][status] POST http://127.0.0.1:5001/functions/projects/movan-857e9/trigger_multicast 200
+[debug] [2025-12-05T19:17:18.768Z] <<< [apiv2][body] POST http://127.0.0.1:5001/functions/projects/movan-857e9/trigger_multicast {"status":"multicast_acknowledged"}
+[debug] [2025-12-05T19:17:18.998Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 275.634871ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 275.634871ms"}}
+[debug] [2025-12-05T19:17:18.998Z] [worker-us-central1-api-5dc0c7a5-0b4d-48fa-aead-c1965e6dbadd]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-5dc0c7a5-0b4d-48fa-aead-c1965e6dbadd]: IDLE"}}
+[debug] [2025-12-05T19:17:18.998Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2025-12-05T19:17:18.998Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2025-12-05T19:17:18.998Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2025-12-05T19:21:56.589Z] Dec 05, 2025 4:21:56 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
+INFO: Connected to new websocket client
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Dec 05, 2025 4:21:56 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
+[debug] [2025-12-05T19:21:56.590Z] 16:21:56.589 [FirebaseWorkerPool-1-1] WARN com.firebase.core.persistence.backend.dummy.EmulatorMetadataPersistence - Multiple projectIds are not recommended in single project mode. Requested 
+namespace movan-857e9, but the emulator is configured for movan-857e9-default-rtdb. To 
+opt-out of single project mode add/set the singleProjectMode: false property in 
+the firebase.json emulators config. 
+ {"metadata":{"emulator":{"name":"database"},"message":"16:21:56.589 [FirebaseWorkerPool-1-1] WARN com.firebase.core.persistence.backend.dummy.EmulatorMetadataPersistence - Multiple projectIds are not recommended in single project mode. Requested \nnamespace movan-857e9, but the emulator is configured for movan-857e9-default-rtdb. To \nopt-out of single project mode add/set the singleProjectMode: false property in \nthe firebase.json emulators config. \n"}}
+[debug] [2025-12-05T19:21:56.619Z] 16:21:56.618 [NamespaceSystem-akka.actor.default-dispatcher-12] INFO com.firebase.core.namespace.NamespaceActor - movan-857e9 successfully activated FBKV (SurveyIdle(0)) wait: 13ms, init: 0ms
+ {"metadata":{"emulator":{"name":"database"},"message":"16:21:56.618 [NamespaceSystem-akka.actor.default-dispatcher-12] INFO com.firebase.core.namespace.NamespaceActor - movan-857e9 successfully activated FBKV (SurveyIdle(0)) wait: 13ms, init: 0ms\n"}}
