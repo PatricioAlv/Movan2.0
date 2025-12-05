@@ -11,15 +11,12 @@ import {
   StyleSheet,
 } from 'react-native';
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
-import { container } from '@infrastructure/di/container';
-import { TYPES } from '@infrastructure/di/types';
-import { GetShipmentByIdUseCase } from '@core/usecases/shipments/GetShipmentByIdUseCase';
-import { CancelShipmentUseCase } from '@core/usecases/shipments/CancelShipmentUseCase';
 import { RatingModal } from '@presentation/components/common/RatingModal';
 import { UserRatingDisplay } from '@presentation/components/common/UserRatingDisplay';
-import { useRating } from '@presentation/hooks/useRating';
 import { auth } from '@data/config/firebase.config';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+
+const API_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 interface Props {
   route: any;
@@ -85,11 +82,6 @@ export const ClientShipmentDetailsScreen: React.FC<Props> = ({ route, navigation
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [hasRated, setHasRated] = useState(false);
 
-  const { createRating, checkIfUserRated } = useRating();
-
-  const getShipmentUseCase = container.get<GetShipmentByIdUseCase>(TYPES.GetShipmentByIdUseCase);
-  const cancelShipmentUseCase = container.get<CancelShipmentUseCase>(TYPES.CancelShipmentUseCase);
-
   useEffect(() => {
     loadShipmentDetails();
   }, []);
@@ -97,8 +89,14 @@ export const ClientShipmentDetailsScreen: React.FC<Props> = ({ route, navigation
   const loadShipmentDetails = async () => {
     try {
       setLoading(true);
-      const shipmentData = await getShipmentUseCase.execute(shipmentId);
       
+      // Obtener detalles del envío
+      const response = await fetch(`${API_URL}/shipments/${shipmentId}`);
+      if (!response.ok) {
+        throw new Error('No se encontró el envío');
+      }
+      const shipmentData = await response.json();
+
       if (!shipmentData) {
         Alert.alert('Error', 'No se encontró el envío');
         navigation.goBack();
@@ -109,8 +107,16 @@ export const ClientShipmentDetailsScreen: React.FC<Props> = ({ route, navigation
       
       // Verificar si ya calificó al transportista
       if (shipmentData.status === ShipmentStatus.DELIVERED && shipmentData.driverId) {
-        const rated = await checkIfUserRated(auth.currentUser?.uid || '', shipmentData.id);
-        setHasRated(rated);
+        const currentUserId = auth.currentUser?.uid;
+        if (currentUserId) {
+          const ratedResponse = await fetch(
+            `${API_URL}/ratings/check/${shipmentData.id}/${currentUserId}`
+          );
+          if (ratedResponse.ok) {
+            const { hasRated: rated } = await ratedResponse.json();
+            setHasRated(rated);
+          }
+        }
       }
     } catch (error: any) {
       console.error('Error loading shipment:', error);
@@ -135,12 +141,22 @@ export const ClientShipmentDetailsScreen: React.FC<Props> = ({ route, navigation
         throw new Error('No se pudo obtener la información necesaria');
       }
 
-      await createRating(currentUserId, {
-        shipmentId: shipment.id,
-        toUserId: shipment.driverId,
-        rating,
-        comment,
+      const response = await fetch(`${API_URL}/ratings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fromUserId: currentUserId,
+          shipmentId: shipment.id,
+          toUserId: shipment.driverId,
+          rating,
+          comment,
+        }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al enviar calificación');
+      }
 
       Alert.alert('Éxito', 'Tu calificación ha sido enviada');
       setHasRated(true);
@@ -162,7 +178,17 @@ export const ClientShipmentDetailsScreen: React.FC<Props> = ({ route, navigation
           onPress: async () => {
             try {
               setCancelling(true);
-              await cancelShipmentUseCase.execute(shipmentId);
+              const response = await fetch(`${API_URL}/shipments/cancel`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ shipmentId }),
+              });
+              
+              if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'No se pudo cancelar el envío');
+              }
+              
               Alert.alert('Éxito', 'Envío cancelado correctamente', [
                 { text: 'OK', onPress: () => navigation.goBack() }
               ]);

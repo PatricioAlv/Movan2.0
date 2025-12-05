@@ -4,9 +4,8 @@ import { StarRating } from './StarRating';
 import { colors } from '../../theme/colors';
 import { spacing } from '../../theme/spacing';
 import { Rating } from '../../../core/entities/Rating';
-import { container } from '../../../infrastructure/di/container';
-import { TYPES } from '../../../infrastructure/di/types';
-import { GetUserRatingsUseCase } from '../../../core/usecases/ratings/GetUserRatingsUseCase';
+
+const API_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 interface RatingListProps {
   userId: string;
@@ -22,11 +21,17 @@ export const RatingList: React.FC<RatingListProps> = ({ userId }) => {
 
   const loadRatings = async () => {
     try {
-      const getUserRatingsUseCase = container.get<GetUserRatingsUseCase>(
-        TYPES.GetUserRatingsUseCase
-      );
-      const userRatings = await getUserRatingsUseCase.execute(userId);
-      setRatings(userRatings);
+      const response = await fetch(`${API_URL}/ratings/user/${userId}`);
+      if (!response.ok) {
+        throw new Error('Error al cargar calificaciones');
+      }
+      const userRatings = await response.json();
+      // Convertir fechas de string a Date
+      const ratingsWithDates = userRatings.map((r: any) => ({
+        ...r,
+        createdAt: new Date(r.createdAt),
+      }));
+      setRatings(ratingsWithDates);
     } catch (error) {
       console.error('Error loading ratings:', error);
     } finally {

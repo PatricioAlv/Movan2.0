@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, SafeAreaView, ActivityIndicator, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { Button } from '@presentation/components/common/Button';
-import { container } from '@infrastructure/di/init';
-import { TYPES } from '@infrastructure/di/types';
-import { GetClientShipmentsUseCase } from '@core/usecases/shipments/GetClientShipmentsUseCase';
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
 import { auth } from '@data/config/firebase.config';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+
+const API_BASE_URL = `${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 const getStatusColor = (status: ShipmentStatus): string => {
   switch (status) {
@@ -80,12 +79,14 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
         return;
       }
 
-      const getClientShipmentsUseCase = container.get<GetClientShipmentsUseCase>(
-        TYPES.GetClientShipmentsUseCase
-      );
+      const response = await fetch(`${API_BASE_URL}/shipments/client/${userId}`);
+      const data = await response.json();
 
-      const userShipments = await getClientShipmentsUseCase.execute(userId);
-      setShipments(userShipments);
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al cargar envíos');
+      }
+
+      setShipments(data);
     } catch (error: any) {
       console.error('Error loading shipments:', error);
       Alert.alert('Error', error.message || 'No se pudieron cargar los envíos');

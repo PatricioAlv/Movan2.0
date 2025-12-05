@@ -8,11 +8,10 @@ import { auth } from '@data/config/firebase.config';
 import { onAuthStateChanged } from 'firebase/auth';
 import { View, ActivityIndicator } from 'react-native';
 import { colors } from '@presentation/theme/colors';
-import { container } from '@infrastructure/di/container';
-import { IAuthRepository } from '@core/repositories/IAuthRepository';
-import { TYPES } from '@infrastructure/di/types';
 import { SplashScreen } from '@presentation/screens/SplashScreen';
 import { WelcomeScreen } from '@presentation/screens/WelcomeScreen';
+
+const API_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 const Stack = createNativeStackNavigator();
 
@@ -23,16 +22,6 @@ export const AppNavigator: React.FC = () => {
   const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
 
   useEffect(() => {
-    let authRepository;
-    try {
-      authRepository = container.get<IAuthRepository>(TYPES.IAuthRepository);
-      console.log('authRepository:', authRepository);
-    } catch (e) {
-      console.error('Error obteniendo IAuthRepository del container:', e);
-      setIsLoading(false);
-      return;
-    }
-
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       console.log('firebaseUser:', firebaseUser);
       if (!firebaseUser) {
@@ -41,17 +30,21 @@ export const AppNavigator: React.FC = () => {
         return;
       }
 
-      let user;
       try {
-        user = await authRepository.getCurrentUser();
-        console.log('user:', user);
+        const response = await fetch(`${API_URL}/users/${firebaseUser.uid}`);
+        if (response.ok) {
+          const user = await response.json();
+          console.log('user:', user);
+          setUserRole(user?.role ?? null);
+          setHasSeenWelcome(true);
+        } else {
+          console.error('Error obteniendo usuario');
+          setUserRole(null);
+        }
       } catch (e) {
         console.error('Error en getCurrentUser:', e);
-        setIsLoading(false);
-        return;
+        setUserRole(null);
       }
-      setUserRole(user?.role ?? null);
-      setHasSeenWelcome(true);
       setIsLoading(false);
     });
 

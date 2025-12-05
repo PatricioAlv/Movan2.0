@@ -13,12 +13,11 @@ import { styles } from '@presentation/theme/Shared-Screen-Styles/ProfileDetailSt
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '@infrastructure/utils/constants';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { container } from '@infrastructure/di/container';
-import { TYPES } from '@infrastructure/di/types';
-import { GetUserUseCase } from '@core/usecases/user/GetUserUseCase';
 import { UserRatingDisplay } from '@presentation/components/common/UserRatingDisplay';
 import { RatingList } from '@presentation/components/common/RatingList';
 import { auth } from '@data/config/firebase.config';
+
+const API_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 interface Props {
   navigation: any;
@@ -43,8 +42,6 @@ export const ProfileDetailScreen: React.FC<Props> = ({ navigation }) => {
   const [showRatings, setShowRatings] = useState(false);
   const [userId, setUserId] = useState<string>('');
 
-  const getUserUseCase = container.get<GetUserUseCase>(TYPES.GetUserUseCase);
-
   useEffect(() => {
     loadUserData();
     const unsubscribe = navigation.addListener('focus', () => {
@@ -62,7 +59,12 @@ export const ProfileDetailScreen: React.FC<Props> = ({ navigation }) => {
         return;
       }
 
-      const user = await getUserUseCase.execute(currentUser.uid);
+      const response = await fetch(`${API_URL}/users/${currentUser.uid}`);
+      if (!response.ok) {
+        throw new Error('No se pudo obtener la información del usuario');
+      }
+      
+      const user = await response.json();
       if (user) {
         setUserId(currentUser.uid);
         setUserName(user.name || 'Usuario');

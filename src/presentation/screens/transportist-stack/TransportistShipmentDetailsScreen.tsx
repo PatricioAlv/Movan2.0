@@ -4,12 +4,11 @@ import { Card } from '@presentation/components/common/Card';
 import { Button } from '@presentation/components/common/Button';
 import { colors } from '@presentation/theme/colors';
 import { spacing } from '@presentation/theme/spacing';
-import { container } from '@infrastructure/di/container';
-import { TYPES } from '@infrastructure/di/types';
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
-import { GetShipmentByIdUseCase } from '@core/usecases/shipments/GetShipmentByIdUseCase';
-import { AcceptShipmentUseCase } from '@core/usecases/shipments/AcceptShipmentUseCase';
 import { styles } from '@presentation/theme/Trans-Screen-Styles/TransportistShipmentDetailsStyle';
+import { auth } from '@data/config/firebase.config';
+
+const API_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 interface Props {
   navigation: any;
@@ -33,10 +32,13 @@ export const TransportistShipmentDetailsScreen: React.FC<Props> = ({ navigation,
   const loadShipmentDetails = async () => {
     try {
       setLoading(true);
-      const getShipmentByIdUseCase = container.get<GetShipmentByIdUseCase>(
-        TYPES.GetShipmentByIdUseCase
-      );
-      const data = await getShipmentByIdUseCase.execute(shipmentId);
+      const response = await fetch(`${API_URL}/shipments/${shipmentId}`);
+      
+      if (!response.ok) {
+        throw new Error('No se encontró el pedido');
+      }
+      
+      const data = await response.json();
 
       if (data) {
         setShipment(data);
@@ -56,9 +58,13 @@ export const TransportistShipmentDetailsScreen: React.FC<Props> = ({ navigation,
   const handleAcceptShipment = async () => {
     if (!shipment) return;
 
-    // TODO: Obtener el ID del transportista del usuario autenticado
-    // Por ahora usamos un ID temporal
-    const driverId = 'temp-driver-id';
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      Alert.alert('Error', 'No hay usuario autenticado');
+      return;
+    }
+    
+    const driverId = currentUser.uid;
 
     Alert.alert(
       'Confirmar',
@@ -73,10 +79,16 @@ export const TransportistShipmentDetailsScreen: React.FC<Props> = ({ navigation,
           onPress: async () => {
             try {
               setAccepting(true);
-              const acceptShipmentUseCase = container.get<AcceptShipmentUseCase>(
-                TYPES.AcceptShipmentUseCase
-              );
-              await acceptShipmentUseCase.execute(shipmentId, driverId);
+              const response = await fetch(`${API_URL}/shipments/accept`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ shipmentId, driverId }),
+              });
+
+              if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'No se pudo aceptar el pedido');
+              }
 
               Alert.alert('Éxito', 'Has aceptado el pedido exitosamente', [
                 {

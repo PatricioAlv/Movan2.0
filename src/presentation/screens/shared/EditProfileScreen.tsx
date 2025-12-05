@@ -12,11 +12,9 @@ import { styles } from '@presentation/theme/Shared-Screen-Styles/EditProfileStyl
 import { Input } from '@presentation/components/common/Input';
 import { Button } from '@presentation/components/common/Button';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { container } from '@infrastructure/di/container';
-import { TYPES } from '@infrastructure/di/types';
-import { GetUserUseCase } from '@core/usecases/user/GetUserUseCase';
-import { UpdateUserUseCase } from '@core/usecases/user/UpdateUserUseCase';
 import { auth } from '@data/config/firebase.config';
+
+const API_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 interface Props {
   navigation: any;
@@ -28,9 +26,6 @@ export const EditProfileScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
-  const getUserUseCase = container.get<GetUserUseCase>(TYPES.GetUserUseCase);
-  const updateUserUseCase = container.get<UpdateUserUseCase>(TYPES.UpdateUserUseCase);
 
   useEffect(() => {
     loadUserData();
@@ -45,7 +40,12 @@ export const EditProfileScreen: React.FC<Props> = ({ navigation }) => {
         return;
       }
 
-      const user = await getUserUseCase.execute(currentUser.uid);
+      const response = await fetch(`${API_URL}/users/${currentUser.uid}`);
+      if (!response.ok) {
+        throw new Error('No se pudo obtener la información del usuario');
+      }
+      
+      const user = await response.json();
       if (user) {
         setName(user.name);
         setPhone(user.phone || '');
@@ -72,10 +72,19 @@ export const EditProfileScreen: React.FC<Props> = ({ navigation }) => {
         throw new Error('No hay usuario autenticado');
       }
 
-      await updateUserUseCase.execute(currentUser.uid, {
-        name: name.trim(),
-        phone: phone.trim() || undefined,
+      const response = await fetch(`${API_URL}/users/${currentUser.uid}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          phone: phone.trim() || undefined,
+        }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'No se pudo actualizar el perfil');
+      }
 
       Alert.alert('Éxito', 'Perfil actualizado correctamente', [
         {

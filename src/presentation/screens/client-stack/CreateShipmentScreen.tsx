@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, SafeAreaView, Alert, TouchableOpacity, TextInput as RNTextInput, StyleSheet } from 'react-native';
 import { AddressAutocomplete } from '@presentation/components/common/AddressAutocomplete';
 import { LocationPicker } from '@presentation/components/common/LocationPicker';
-import { container } from '@infrastructure/di/init';
-import { TYPES } from '@infrastructure/di/types';
-import { CreateShipmentUseCase } from '@core/usecases/shipments/CreateShipmentUseCase';
 import { CargoType } from '@core/entities/Order';
 import { auth } from '@data/config/firebase.config';
 import { GOOGLE_MAPS_CONFIG } from '@infrastructure/utils/googleMaps.config';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+
+const API_BASE_URL = `${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 interface CreateShipmentScreenProps {
   navigation: any;
@@ -85,32 +84,39 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
         return;
       }
 
-      const createShipmentUseCase = container.get<CreateShipmentUseCase>(
-        TYPES.CreateShipmentUseCase
-      );
-
-      await createShipmentUseCase.execute(userId, {
-        origin: {
-          address: originLocation!.address,
-          latitude: originLocation!.latitude,
-          longitude: originLocation!.longitude,
-          contactName: originContactName.trim() || undefined,
-          contactPhone: originContactPhone.trim() || undefined,
-        },
-        destination: {
-          address: destinationLocation!.address,
-          latitude: destinationLocation!.latitude,
-          longitude: destinationLocation!.longitude,
-          contactName: destinationContactName.trim() || undefined,
-          contactPhone: destinationContactPhone.trim() || undefined,
-        },
-        cargoType,
-        cargoDescription: cargoDescription.trim(),
-        weight: parseFloat(weight),
-        price: parseFloat(price),
-        pickupDate: new Date(),
-        notes: notes.trim() || undefined,
+      const response = await fetch(`${API_BASE_URL}/shipments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clientId: userId,
+          origin: {
+            address: originLocation!.address,
+            latitude: originLocation!.latitude,
+            longitude: originLocation!.longitude,
+            contactName: originContactName.trim() || undefined,
+            contactPhone: originContactPhone.trim() || undefined,
+          },
+          destination: {
+            address: destinationLocation!.address,
+            latitude: destinationLocation!.latitude,
+            longitude: destinationLocation!.longitude,
+            contactName: destinationContactName.trim() || undefined,
+            contactPhone: destinationContactPhone.trim() || undefined,
+          },
+          cargoType,
+          cargoDescription: cargoDescription.trim(),
+          weight: parseFloat(weight),
+          price: parseFloat(price),
+          pickupDate: new Date().toISOString(),
+          notes: notes.trim() || undefined,
+        }),
       });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'No se pudo crear el envío');
+      }
 
       Alert.alert(
         'Éxito',

@@ -14,17 +14,14 @@ import {
 import { Button } from '@presentation/components/common/Button';
 import { colors } from '@presentation/theme/colors';
 import { spacing } from '@presentation/theme/spacing';
-import { container } from '@infrastructure/di/container';
-import { TYPES } from '@infrastructure/di/types';
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
-import { GetShipmentByIdUseCase } from '@core/usecases/shipments/GetShipmentByIdUseCase';
-import { UpdateShipmentStatusUseCase } from '@core/usecases/shipments/UpdateShipmentStatusUseCase';
-import { GetUserUseCase } from '@core/usecases/user/GetUserUseCase';
 import { RatingModal } from '@presentation/components/common/RatingModal';
 import { UserRatingDisplay } from '@presentation/components/common/UserRatingDisplay';
 import { useRating } from '@presentation/hooks/useRating';
 import { auth } from '@data/config/firebase.config';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+
+const API_BASE_URL = `${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 interface Props {
   navigation: any;
@@ -53,19 +50,22 @@ export const MyShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) 
   const loadShipmentDetails = async () => {
     try {
       setLoading(true);
-      const getShipmentUseCase = container.get<GetShipmentByIdUseCase>(
-        TYPES.GetShipmentByIdUseCase
-      );
-      const data = await getShipmentUseCase.execute(shipmentId);
+      
+      const response = await fetch(`${API_BASE_URL}/shipments/${shipmentId}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al cargar envío');
+      }
 
       if (data) {
         setShipment(data);
         
         // Obtener información del cliente
         try {
-          const getUserUseCase = container.get<GetUserUseCase>(TYPES.GetUserUseCase);
-          const client = await getUserUseCase.execute(data.clientId);
-          if (client) {
+          const userResponse = await fetch(`${API_BASE_URL}/users/${data.clientId}`);
+          const client = await userResponse.json();
+          if (userResponse.ok && client) {
             setClientName(client.name);
           }
         } catch (error) {
@@ -142,12 +142,23 @@ export const MyShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) 
           onPress: async () => {
             try {
               setUpdating(true);
-              const updateUseCase = container.get<UpdateShipmentStatusUseCase>(
-                TYPES.UpdateShipmentStatusUseCase
-              );
               const userId = auth.currentUser?.uid;
 
-              await updateUseCase.execute(shipmentId, ShipmentStatus.DELIVERED, userId);
+              const response = await fetch(`${API_BASE_URL}/shipments/updateStatus`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  shipmentId,
+                  status: ShipmentStatus.DELIVERED,
+                  driverId: userId,
+                }),
+              });
+
+              const data = await response.json();
+
+              if (!response.ok) {
+                throw new Error(data.error || 'No se pudo actualizar el estado');
+              }
 
               Alert.alert('Éxito', 'Envío marcado como entregado', [
                 {
