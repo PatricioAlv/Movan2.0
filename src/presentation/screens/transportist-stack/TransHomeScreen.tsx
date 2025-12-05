@@ -84,7 +84,7 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
       }
 
       const getShipmentsUseCase = container.get<GetDriverShipmentsUseCase>(
-        TYPES.GetDriverShipmentsUseCase
+        Symbol.for('GetDriverShipmentsUseCase')
       );
 
       const assignedShipments = await getShipmentsUseCase.execute(userId);
