@@ -5,11 +5,10 @@ import { Button } from '@presentation/components/common/Button';
 import { colors } from '@presentation/theme/colors';
 import { spacing } from '@presentation/theme/spacing';
 import TransShipmentBrowser from '@presentation/theme/Trans-Screen-Styles/TransShipmentBrowser';
-import { container } from '@infrastructure/di/container';
-import { TYPES } from '@infrastructure/di/types';
 import { Shipment } from '@core/entities/Order';
-import { GetAvailableShipmentsUseCase } from '@core/usecases/shipments/GetAvailableShipmentsUseCase';
 import { useFocusEffect } from '@react-navigation/native';
+
+const API_BASE_URL = `${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 interface Props {
   navigation: any;
@@ -26,10 +25,12 @@ export const TransportistBrowserScreen: React.FC<Props> = ({ navigation }) => {
     try {
       setLoading(true);
 
-      const getAvailableShipmentsUseCase = container.get<GetAvailableShipmentsUseCase>(
-        TYPES.GetAvailableShipmentsUseCase
-      );
-      const data = await getAvailableShipmentsUseCase.execute();
+      const response = await fetch(`${API_BASE_URL}/shipments/available`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al cargar envíos');
+      }
 
       setAllShipments(data);
       filterShipments(data, query);

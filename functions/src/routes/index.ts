@@ -8,7 +8,10 @@ import {
   getShipmentByIdController,
   startPickupController,
   confirmDeliveryController,
+  getDriverShipmentsController,
+  getAvailableShipmentsController,
 } from "../controllers/shipmentsController";
+import {getUserByIdController} from "../controllers/userController";
 
 admin.initializeApp();
 const app = express();
@@ -23,9 +26,14 @@ app.use(express.json());
 app.post("/register", register);
 app.post("/login", login);
 
+// - user routes
+app.get("/users/:userId", getUserByIdController);
+
 // - shipment routes
 app.post("/cancelShipment", cancelShipmentController);
+app.get("/shipments/available", getAvailableShipmentsController);
 app.get("/shipments/:shipmentId", getShipmentByIdController);
+app.get("/shipments/driver/:driverId", getDriverShipmentsController);
 app.post("/shipments/startPickup", startPickupController);
 app.post("/shipments/confirmDelivery", confirmDeliveryController);
 
