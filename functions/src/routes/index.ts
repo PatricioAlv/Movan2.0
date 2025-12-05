@@ -3,7 +3,12 @@ import * as admin from 'firebase-admin';
 import express from 'express';
 import cors from 'cors';
 import { register, login } from '../controllers/authController'; 
-import { cancelShipmentController } from '../controllers/shipmentsController';
+import { 
+  cancelShipmentController, 
+  getShipmentByIdController,
+  startPickupController, 
+  confirmDeliveryController 
+} from '../controllers/shipmentsController';
 
 admin.initializeApp();
 const app = express();
@@ -19,6 +24,10 @@ app.post('/login', login);
 
 // - shipment routes
 app.post('/cancelShipment', cancelShipmentController);
+app.get('/shipments/:shipmentId', getShipmentByIdController);
+app.post('/shipments/startPickup', startPickupController);
+app.post('/shipments/confirmDelivery', confirmDeliveryController);
+
 
 
 export const api = functions.https.onRequest(app);
