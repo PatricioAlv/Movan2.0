@@ -3,9 +3,8 @@ import { View, Text, SafeAreaView, ActivityIndicator, Alert, ScrollView } from '
 import { Card } from '@presentation/components/common/Card';
 import { Button } from '@presentation/components/common/Button';
 import { colors } from '@presentation/theme/colors';
-import { spacing } from '@presentation/theme/spacing';
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
-import { styles } from '@presentation/theme/Trans-Screen-Styles/TransportistShipmentDetailsStyle';
+import TransShipmentDetailsScreenStyles from '@presentation/theme/Trans-Screen-Styles/TransShipmentDetailsScreenStyles';
 import { auth } from '@data/config/firebase.config';
 
 const API_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
@@ -19,7 +18,7 @@ interface Props {
   };
 }
 
-export const TransportistShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
+export const TransShipmentDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
   const { shipmentId } = route.params;
   const [shipment, setShipment] = useState<Shipment | null>(null);
   const [loading, setLoading] = useState(true);
@@ -110,7 +109,7 @@ export const TransportistShipmentDetailsScreen: React.FC<Props> = ({ navigation,
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={TransShipmentDetailsScreenStyles.centerContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
@@ -118,8 +117,8 @@ export const TransportistShipmentDetailsScreen: React.FC<Props> = ({ navigation,
 
   if (!shipment) {
     return (
-      <View style={styles.centerContainer}>
-        <Text style={styles.errorText}>No se encontró el pedido</Text>
+      <View style={TransShipmentDetailsScreenStyles.centerContainer}>
+        <Text style={TransShipmentDetailsScreenStyles.errorText}>No se encontró el pedido</Text>
       </View>
     );
   }
@@ -127,79 +126,79 @@ export const TransportistShipmentDetailsScreen: React.FC<Props> = ({ navigation,
   const isAvailable = shipment.status === ShipmentStatus.PENDING && !shipment.driverId;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={TransShipmentDetailsScreenStyles.container}>
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Card style={styles.card}>
-          <Text style={styles.title}>Detalles del Pedido</Text>
-          <Text style={styles.shipmentId}>#{shipment.id.slice(0, 8)}</Text>
+      <ScrollView contentContainerStyle={TransShipmentDetailsScreenStyles.scrollContent}>
+        <Card style={TransShipmentDetailsScreenStyles.card}>
+          <Text style={TransShipmentDetailsScreenStyles.title}>Detalles del Pedido</Text>
+          <Text style={TransShipmentDetailsScreenStyles.shipmentId}>#{shipment.id.slice(0, 8)}</Text>
 
-          <View style={styles.statusContainer}>
+          <View style={TransShipmentDetailsScreenStyles.statusContainer}>
             <Text style={[
-              styles.statusBadge,
-              isAvailable ? styles.statusAvailable : styles.statusUnavailable
+              TransShipmentDetailsScreenStyles.statusBadge,
+              isAvailable ? TransShipmentDetailsScreenStyles.statusAvailable : TransShipmentDetailsScreenStyles.statusUnavailable
             ]}>
               {isAvailable ? 'Disponible' : 'No Disponible'}
             </Text>
           </View>
         </Card>
 
-        <Card style={styles.card}>
-          <Text style={styles.sectionTitle}>📍 Ubicaciones</Text>
+        <Card style={TransShipmentDetailsScreenStyles.card}>
+          <Text style={TransShipmentDetailsScreenStyles.sectionTitle}>📍 Ubicaciones</Text>
 
-          <View style={styles.locationSection}>
-            <Text style={styles.locationLabel}>Origen</Text>
-            <Text style={styles.locationAddress}>{shipment.origin.address}</Text>
+          <View style={TransShipmentDetailsScreenStyles.locationSection}>
+            <Text style={TransShipmentDetailsScreenStyles.locationLabel}>Origen</Text>
+            <Text style={TransShipmentDetailsScreenStyles.locationAddress}>{shipment.origin.address}</Text>
             {shipment.origin.contactName && (
-              <Text style={styles.contactInfo}>
+              <Text style={TransShipmentDetailsScreenStyles.contactInfo}>
                 Contacto: {shipment.origin.contactName}
               </Text>
             )}
             {shipment.origin.contactPhone && (
-              <Text style={styles.contactInfo}>
+              <Text style={TransShipmentDetailsScreenStyles.contactInfo}>
                 Tel: {shipment.origin.contactPhone}
               </Text>
             )}
           </View>
 
-          <View style={styles.divider} />
+          <View style={TransShipmentDetailsScreenStyles.divider} />
 
-          <View style={styles.locationSection}>
-            <Text style={styles.locationLabel}>Destino</Text>
-            <Text style={styles.locationAddress}>{shipment.destination.address}</Text>
+          <View style={TransShipmentDetailsScreenStyles.locationSection}>
+            <Text style={TransShipmentDetailsScreenStyles.locationLabel}>Destino</Text>
+            <Text style={TransShipmentDetailsScreenStyles.locationAddress}>{shipment.destination.address}</Text>
             {shipment.destination.contactName && (
-              <Text style={styles.contactInfo}>
+              <Text style={TransShipmentDetailsScreenStyles.contactInfo}>
                 Contacto: {shipment.destination.contactName}
               </Text>
             )}
             {shipment.destination.contactPhone && (
-              <Text style={styles.contactInfo}>
+              <Text style={TransShipmentDetailsScreenStyles.contactInfo}>
                 Tel: {shipment.destination.contactPhone}
               </Text>
             )}
           </View>
         </Card>
 
-        <Card style={styles.card}>
-          <Text style={styles.sectionTitle}>📦 Información de la Carga</Text>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Tipo de carga:</Text>
-            <Text style={styles.detailValue}>{shipment.cargoType}</Text>
+        <Card style={TransShipmentDetailsScreenStyles.card}>
+          <Text style={TransShipmentDetailsScreenStyles.sectionTitle}>📦 Información de la Carga</Text>
+          <View style={TransShipmentDetailsScreenStyles.detailRow}>
+            <Text style={TransShipmentDetailsScreenStyles.detailLabel}>Tipo de carga:</Text>
+            <Text style={TransShipmentDetailsScreenStyles.detailValue}>{shipment.cargoType}</Text>
           </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Descripción:</Text>
-            <Text style={styles.detailValue}>{shipment.cargoDescription}</Text>
+          <View style={TransShipmentDetailsScreenStyles.detailRow}>
+            <Text style={TransShipmentDetailsScreenStyles.detailLabel}>Descripción:</Text>
+            <Text style={TransShipmentDetailsScreenStyles.detailValue}>{shipment.cargoDescription}</Text>
           </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Peso:</Text>
-            <Text style={styles.detailValue}>{shipment.weight} kg</Text>
+          <View style={TransShipmentDetailsScreenStyles.detailRow}>
+            <Text style={TransShipmentDetailsScreenStyles.detailLabel}>Peso:</Text>
+            <Text style={TransShipmentDetailsScreenStyles.detailValue}>{shipment.weight} kg</Text>
           </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Fecha de recogida:</Text>
-            <Text style={styles.detailValue}>
+          <View style={TransShipmentDetailsScreenStyles.detailRow}>
+            <Text style={TransShipmentDetailsScreenStyles.detailLabel}>Fecha de recogida:</Text>
+            <Text style={TransShipmentDetailsScreenStyles.detailValue}>
               {new Date(shipment.pickupDate).toLocaleDateString('es-ES', {
                 year: 'numeric',
                 month: 'long',
@@ -209,16 +208,16 @@ export const TransportistShipmentDetailsScreen: React.FC<Props> = ({ navigation,
           </View>
 
           {shipment.notes && (
-            <View style={styles.notesContainer}>
-              <Text style={styles.detailLabel}>Notas:</Text>
-              <Text style={styles.notesText}>{shipment.notes}</Text>
+            <View style={TransShipmentDetailsScreenStyles.notesContainer}>
+              <Text style={TransShipmentDetailsScreenStyles.detailLabel}>Notas:</Text>
+              <Text style={TransShipmentDetailsScreenStyles.notesText}>{shipment.notes}</Text>
             </View>
           )}
         </Card>
 
-        <Card style={styles.priceCard}>
-          <Text style={styles.priceLabel}>Precio del servicio</Text>
-          <Text style={styles.priceValue}>${shipment.price.toLocaleString()}</Text>
+        <Card style={TransShipmentDetailsScreenStyles.priceCard}>
+          <Text style={TransShipmentDetailsScreenStyles.priceLabel}>Precio del servicio</Text>
+          <Text style={TransShipmentDetailsScreenStyles.priceValue}>${shipment.price.toLocaleString()}</Text>
         </Card>
 
         {isAvailable && (
@@ -226,13 +225,13 @@ export const TransportistShipmentDetailsScreen: React.FC<Props> = ({ navigation,
             title={accepting ? "Aceptando..." : "Aceptar Pedido"}
             onPress={handleAcceptShipment}
             disabled={accepting}
-            style={styles.acceptButton}
+            style={TransShipmentDetailsScreenStyles.acceptButton}
           />
         )}
 
         {!isAvailable && (
-          <View style={styles.unavailableContainer}>
-            <Text style={styles.unavailableText}>
+          <View style={TransShipmentDetailsScreenStyles.unavailableContainer}>
+            <Text style={TransShipmentDetailsScreenStyles.unavailableText}>
               Este pedido ya no está disponible
             </Text>
           </View>

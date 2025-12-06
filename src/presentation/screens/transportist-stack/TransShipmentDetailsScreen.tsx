@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, ActivityIndicator, Alert, TouchableOpacity, Linking, Platform } from 'react-native';
-import { Card } from '@presentation/components/common/Card';
 import { Button } from '@presentation/components/common/Button';
 import { colors } from '@presentation/theme/colors';
-import { spacing } from '@presentation/theme/spacing';
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
 import { User } from '@core/entities/User';
-import { API_BASE_URL, API_ENDPOINTS } from '@infrastructure/utils/constants';
+import { API_ENDPOINTS } from '@infrastructure/utils/constants';
 import { auth } from '@data/config/firebase.config';
-import { StyleSheet } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import TransShipmentDetailsScreenStyles from '@presentation/theme/Trans-Screen-Styles/TransShipmentDetailsScreenStyles';
+
+const API_BASE_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 interface Props {
   route: any;
@@ -25,10 +25,10 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
 
   const loadShipmentDetails = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.GET_SHIPMENT_DETAILS}`, {
-        method: 'POST',
+      // GET /shipments/:shipmentId
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.GET_SHIPMENT_BY_ID}/${shipmentId}`, {
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ shipmentId }),
       });
 
       const data = await response.json();
@@ -37,11 +37,19 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
         throw new Error(data.error || 'Error al cargar los detalles');
       }
 
-      setShipment(data.shipment);
+      setShipment(data);
       
-      // Los datos del cliente vienen incluidos en la respuesta
-      if (data.shipment?.client) {
-        setClientData(data.shipment.client);
+      // Cargar datos del cliente si tenemos clientId
+      if (data?.clientId) {
+        try {
+          const clientResponse = await fetch(`${API_BASE_URL}/users/${data.clientId}`);
+          if (clientResponse.ok) {
+            const clientInfo = await clientResponse.json();
+            setClientData(clientInfo);
+          }
+        } catch (e) {
+          console.log('No se pudieron cargar datos del cliente');
+        }
       }
     } catch (error: any) {
       console.error('Error loading shipment details:', error);
@@ -125,7 +133,7 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={TransShipmentDetailsScreenStyles.centerContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
@@ -133,8 +141,8 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
 
   if (!shipment) {
     return (
-      <View style={styles.centerContainer}>
-        <Text style={styles.errorText}>No se encontró el pedido</Text>
+      <View style={TransShipmentDetailsScreenStyles.centerContainer}>
+        <Text style={TransShipmentDetailsScreenStyles.errorText}>No se encontró el pedido</Text>
         <Button title="Volver" onPress={() => navigation.goBack()} />
       </View>
     );
@@ -143,12 +151,12 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
   const canAccept = shipment.status === ShipmentStatus.PENDING && !shipment.driverId;
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContent}>
+    <View style={TransShipmentDetailsScreenStyles.container}>
+      <ScrollView style={TransShipmentDetailsScreenStyles.scrollContainer} contentContainerStyle={TransShipmentDetailsScreenStyles.scrollContent}>
         {/* Map Placeholder */}
-        <View style={styles.mapCard}>
+        <View style={TransShipmentDetailsScreenStyles.mapCard}>
           <TouchableOpacity
-            style={styles.mapPlaceholder}
+            style={TransShipmentDetailsScreenStyles.mapPlaceholder}
             onPress={() => openGoogleMaps(
               shipment.origin.latitude,
               shipment.origin.longitude,
@@ -156,26 +164,26 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
             )}
           >
             <FontAwesome name="map" size={40} color="#4B5563" />
-            <Text style={styles.mapPlaceholderText}>Ver Ruta en Mapa</Text>
+            <Text style={TransShipmentDetailsScreenStyles.mapPlaceholderText}>Ver Ruta en Mapa</Text>
           </TouchableOpacity>
         </View>
 
         {/* Price Card */}
-        <View style={styles.card}>
-          <Text style={styles.priceText}>${shipment.price.toLocaleString('es-ES')}</Text>
+        <View style={TransShipmentDetailsScreenStyles.card}>
+          <Text style={TransShipmentDetailsScreenStyles.priceText}>${shipment.price.toLocaleString('es-ES')}</Text>
         </View>
 
         {/* Points Section */}
-        <Text style={styles.sectionTitle}>Puntos de Recogida y Entrega</Text>
-        <View style={styles.card}>
+        <Text style={TransShipmentDetailsScreenStyles.sectionTitle}>Puntos de Recogida y Entrega</Text>
+        <View style={TransShipmentDetailsScreenStyles.card}>
           {/* Origin */}
-          <View style={styles.pointRow}>
-            <View style={styles.iconContainer}>
+          <View style={TransShipmentDetailsScreenStyles.pointRow}>
+            <View style={TransShipmentDetailsScreenStyles.iconContainer}>
               <FontAwesome name="arrow-up" size={14} color="#10B981" />
             </View>
-            <View style={styles.pointDetails}>
-              <Text style={styles.pointAddress} numberOfLines={2}>{shipment.origin.address}</Text>
-              <Text style={styles.pointDate}>
+            <View style={TransShipmentDetailsScreenStyles.pointDetails}>
+              <Text style={TransShipmentDetailsScreenStyles.pointAddress} numberOfLines={2}>{shipment.origin.address}</Text>
+              <Text style={TransShipmentDetailsScreenStyles.pointDate}>
                 {new Date(shipment.pickupDate).toLocaleDateString('es-ES', {
                   day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
                 })}
@@ -183,16 +191,16 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
             </View>
           </View>
 
-          <View style={styles.divider} />
+          <View style={TransShipmentDetailsScreenStyles.divider} />
 
           {/* Destination */}
-          <View style={styles.pointRow}>
-            <View style={styles.iconContainer}>
+          <View style={TransShipmentDetailsScreenStyles.pointRow}>
+            <View style={TransShipmentDetailsScreenStyles.iconContainer}>
               <FontAwesome name="arrow-down" size={14} color="#10B981" />
             </View>
-            <View style={styles.pointDetails}>
-              <Text style={styles.pointAddress} numberOfLines={2}>{shipment.destination.address}</Text>
-              <Text style={styles.pointDate}>
+            <View style={TransShipmentDetailsScreenStyles.pointDetails}>
+              <Text style={TransShipmentDetailsScreenStyles.pointAddress} numberOfLines={2}>{shipment.destination.address}</Text>
+              <Text style={TransShipmentDetailsScreenStyles.pointDate}>
                 {shipment.deliveryDate
                   ? new Date(shipment.deliveryDate).toLocaleDateString('es-ES', {
                     day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
@@ -204,32 +212,32 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
         </View>
 
         {/* Cargo Details */}
-        <Text style={styles.sectionTitle}>Detalles de la Carga</Text>
-        <View style={styles.card}>
-          <View style={styles.detailItem}>
-            <FontAwesome name="cube" size={16} color="#10B981" style={styles.detailIcon} />
-            <Text style={styles.detailText}>{shipment.cargoType}</Text>
+        <Text style={TransShipmentDetailsScreenStyles.sectionTitle}>Detalles de la Carga</Text>
+        <View style={TransShipmentDetailsScreenStyles.card}>
+          <View style={TransShipmentDetailsScreenStyles.detailItem}>
+            <FontAwesome name="cube" size={16} color="#10B981" style={TransShipmentDetailsScreenStyles.detailIcon} />
+            <Text style={TransShipmentDetailsScreenStyles.detailText}>{shipment.cargoType}</Text>
           </View>
-          <View style={styles.detailItem}>
-            <FontAwesome name="balance-scale" size={16} color="#10B981" style={styles.detailIcon} />
-            <Text style={styles.detailText}>{shipment.weight} kg</Text>
+          <View style={TransShipmentDetailsScreenStyles.detailItem}>
+            <FontAwesome name="balance-scale" size={16} color="#10B981" style={TransShipmentDetailsScreenStyles.detailIcon} />
+            <Text style={TransShipmentDetailsScreenStyles.detailText}>{shipment.weight} kg</Text>
           </View>
-          <View style={styles.detailItem}>
-            <FontAwesome name="arrows-alt" size={16} color="#10B981" style={styles.detailIcon} />
-            <Text style={styles.detailText}>4.5m x 2.5m x 3.0m</Text>
+          <View style={TransShipmentDetailsScreenStyles.detailItem}>
+            <FontAwesome name="arrows-alt" size={16} color="#10B981" style={TransShipmentDetailsScreenStyles.detailIcon} />
+            <Text style={TransShipmentDetailsScreenStyles.detailText}>4.5m x 2.5m x 3.0m</Text>
           </View>
         </View>
 
         {/* Client Info */}
-        <Text style={styles.sectionTitle}>Información del Cliente</Text>
-        <View style={styles.card}>
-          <View style={styles.clientRow}>
-            <View style={styles.clientInfo}>
-              <Text style={styles.clientName}>
+        <Text style={TransShipmentDetailsScreenStyles.sectionTitle}>Información del Cliente</Text>
+        <View style={TransShipmentDetailsScreenStyles.card}>
+          <View style={TransShipmentDetailsScreenStyles.clientRow}>
+            <View style={TransShipmentDetailsScreenStyles.clientInfo}>
+              <Text style={TransShipmentDetailsScreenStyles.clientName}>
                 {clientData?.name || shipment.origin.contactName || 'Cliente'}
               </Text>
               {clientData && (
-                <View style={styles.ratingContainer}>
+                <View style={TransShipmentDetailsScreenStyles.ratingContainer}>
                   {[1, 2, 3, 4, 5].map((star) => {
                     const rating = clientData.averageRating || 0;
                     const filled = star <= Math.floor(rating);
@@ -243,13 +251,13 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
                       />
                     );
                   })}
-                  <Text style={styles.ratingText}>({clientData.averageRating?.toFixed(1) || '0.0'})</Text>
+                  <Text style={TransShipmentDetailsScreenStyles.ratingText}>({clientData.averageRating?.toFixed(1) || '0.0'})</Text>
                 </View>
               )}
             </View>
             {shipment.origin.contactPhone && (
               <TouchableOpacity
-                style={styles.phoneButton}
+                style={TransShipmentDetailsScreenStyles.phoneButton}
                 onPress={() => Linking.openURL(`tel:${shipment.origin.contactPhone}`)}
               >
                 <FontAwesome name="phone" size={18} color="#10B981" />
@@ -262,235 +270,29 @@ export const TransShipmentDetailsScreen: React.FC<Props> = ({ route, navigation 
       </ScrollView>
 
       {/* Bottom Action Bar */}
-      <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.rejectButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.rejectButtonText}>Rechazar</Text>
+      <View style={TransShipmentDetailsScreenStyles.bottomBar}>
+        <TouchableOpacity style={TransShipmentDetailsScreenStyles.rejectButton} onPress={() => navigation.goBack()}>
+          <Text style={TransShipmentDetailsScreenStyles.rejectButtonText}>Rechazar</Text>
         </TouchableOpacity>
 
         {canAccept ? (
           <TouchableOpacity
-            style={[styles.acceptButton, accepting && styles.disabledButton]}
+            style={[TransShipmentDetailsScreenStyles.acceptButton, accepting && TransShipmentDetailsScreenStyles.disabledButton]}
             onPress={handleAcceptShipment}
             disabled={accepting}
           >
             {accepting ? (
               <ActivityIndicator color="#FFF" />
             ) : (
-              <Text style={styles.acceptButtonText}>Aceptar Carga</Text>
+              <Text style={TransShipmentDetailsScreenStyles.acceptButtonText}>Aceptar Carga</Text>
             )}
           </TouchableOpacity>
         ) : (
-          <View style={[styles.acceptButton, styles.disabledButton]}>
-            <Text style={styles.acceptButtonText}>No Disponible</Text>
+          <View style={[TransShipmentDetailsScreenStyles.acceptButton, TransShipmentDetailsScreenStyles.disabledButton]}>
+            <Text style={TransShipmentDetailsScreenStyles.acceptButtonText}>No Disponible</Text>
           </View>
         )}
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#111315',
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#111315',
-    padding: spacing.lg,
-  },
-  scrollContainer: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: spacing.md,
-    paddingBottom: 100,
-  },
-  mapCard: {
-    height: 180,
-    backgroundColor: '#1A1D21',
-    borderRadius: 12,
-    marginBottom: spacing.md,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#2A2D32',
-  },
-  mapPlaceholder: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#1F2937',
-  },
-  mapPlaceholderText: {
-    color: '#9CA3AF',
-    marginTop: spacing.sm,
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  card: {
-    backgroundColor: '#1A1D21',
-    borderRadius: 12,
-    padding: spacing.md,
-    marginBottom: spacing.md,
-    borderWidth: 1,
-    borderColor: '#2A2D32',
-  },
-  priceText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#10B981',
-    marginBottom: 4,
-  },
-  metaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  metaText: {
-    color: '#9CA3AF',
-    fontSize: 14,
-    marginRight: spacing.md,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    marginBottom: spacing.sm,
-    marginTop: spacing.xs,
-  },
-  pointRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    paddingVertical: spacing.xs,
-  },
-  iconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: spacing.md,
-  },
-  pointDetails: {
-    flex: 1,
-  },
-  pointAddress: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 2,
-  },
-  pointDate: {
-    color: '#9CA3AF',
-    fontSize: 12,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#2A2D32',
-    marginVertical: spacing.md,
-    marginLeft: 48,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-  },
-  detailIcon: {
-    width: 24,
-    marginRight: spacing.sm,
-    textAlign: 'center',
-  },
-  detailText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-  },
-  clientRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  clientInfo: {
-    flex: 1,
-  },
-  clientName: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  ratingText: {
-    color: '#9CA3AF',
-    fontSize: 12,
-    marginLeft: spacing.xs,
-  },
-  phoneButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  bottomBar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#1A1D21',
-    padding: spacing.md,
-    flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: '#2A2D32',
-    paddingBottom: Platform.OS === 'ios' ? 34 : spacing.md,
-  },
-  rejectButton: {
-    flex: 1,
-    backgroundColor: '#2A2D32',
-    paddingVertical: 14,
-    borderRadius: 8,
-    marginRight: spacing.sm,
-    alignItems: 'center',
-  },
-  rejectButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  acceptButton: {
-    flex: 2,
-    backgroundColor: '#10B981',
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  acceptButtonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  disabledButton: {
-    opacity: 0.6,
-  },
-  notAvailableContainer: {
-    backgroundColor: '#2B2B2B',
-    padding: spacing.md,
-    borderRadius: 8,
-    marginTop: spacing.md,
-  },
-  notAvailableText: {
-    color: '#9CA3AF',
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#9CA3AF',
-    marginBottom: spacing.md,
-  },
-});

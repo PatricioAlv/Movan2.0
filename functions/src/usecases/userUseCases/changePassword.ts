@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+import {ServerValue} from "firebase-admin/database";
 
 interface ChangePasswordData {
   newPassword: string;
@@ -40,8 +41,8 @@ export async function changePassword(
 
   // Actualizar timestamp en la base de datos
   await userRef.update({
-    passwordChangedAt: admin.database.ServerValue.TIMESTAMP,
-    updatedAt: admin.database.ServerValue.TIMESTAMP,
+    passwordChangedAt: ServerValue.TIMESTAMP,
+    updatedAt: ServerValue.TIMESTAMP,
   });
 
   return {

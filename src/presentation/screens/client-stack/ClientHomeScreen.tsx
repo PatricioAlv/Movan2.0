@@ -4,6 +4,7 @@ import { Button } from '@presentation/components/common/Button';
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
 import { auth } from '@data/config/firebase.config';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import ClientHomeScreenStyle from '@presentation/theme/Client-Screen-Styles/ClientHomeScreenStyle';
 
 const API_BASE_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
@@ -178,53 +179,53 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
 
   const renderShipmentItem = ({ item }: { item: Shipment }) => (
     <TouchableOpacity 
-      style={styles.card}
+      style={ClientHomeScreenStyle.card}
       onPress={() => navigation.navigate('ClientShipmentDetails', { shipmentId: item.id })}
       activeOpacity={0.7}
     >
-      <View style={styles.cardHeader}>
+      <View style={ClientHomeScreenStyle.cardHeader}>
         <View>
-          <Text style={styles.shipmentId}>ID: #{item.id.slice(0, 8).toUpperCase()}</Text>
-          <Text style={styles.cargoType}>{item.cargoType}</Text>
+          <Text style={ClientHomeScreenStyle.shipmentId}>ID: #{item.id.slice(0, 8).toUpperCase()}</Text>
+          <Text style={ClientHomeScreenStyle.cargoType}>{item.cargoType}</Text>
         </View>
-        <View style={[styles.statusBadge, { backgroundColor: getStatusBgColor(item.status) }]}>
-          <View style={[styles.statusDot, { backgroundColor: getStatusColor(item.status) }]} />
-          <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>
+        <View style={[ClientHomeScreenStyle.statusBadge, { backgroundColor: getStatusBgColor(item.status) }]}>
+          <View style={[ClientHomeScreenStyle.statusDot, { backgroundColor: getStatusColor(item.status) }]} />
+          <Text style={[ClientHomeScreenStyle.statusText, { color: getStatusColor(item.status) }]}>
             {getStatusText(item.status)}
           </Text>
         </View>
       </View>
 
-      <View style={styles.routeContainer}>
-        <View style={styles.locationPoint}>
+      <View style={ClientHomeScreenStyle.routeContainer}>
+        <View style={ClientHomeScreenStyle.locationPoint}>
           <FontAwesome name="map-marker" size={16} color="#94A3B8" style={{ marginRight: 8 }} />
-          <Text style={styles.locationCity} numberOfLines={1}>
+          <Text style={ClientHomeScreenStyle.locationCity} numberOfLines={1}>
             {item.origin.address.split(',')[0]}
           </Text>
         </View>
-        <FontAwesome name="long-arrow-right" size={16} color="#64748B" style={styles.routeArrow} />
-        <View style={styles.locationPoint}>
+        <FontAwesome name="long-arrow-right" size={16} color="#64748B" style={ClientHomeScreenStyle.routeArrow} />
+        <View style={ClientHomeScreenStyle.locationPoint}>
           <FontAwesome name="map-marker" size={16} color="#94A3B8" style={{ marginRight: 8 }} />
-          <Text style={styles.locationCity} numberOfLines={1}>
+          <Text style={ClientHomeScreenStyle.locationCity} numberOfLines={1}>
             {item.destination.address.split(',')[0]}
           </Text>
         </View>
       </View>
 
-      <View style={styles.infoRow}>
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Peso:</Text>
-          <Text style={styles.infoValue}>{item.weight} kg</Text>
+      <View style={ClientHomeScreenStyle.infoRow}>
+        <View style={ClientHomeScreenStyle.infoItem}>
+          <Text style={ClientHomeScreenStyle.infoLabel}>Peso:</Text>
+          <Text style={ClientHomeScreenStyle.infoValue}>{item.weight} kg</Text>
         </View>
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Precio:</Text>
-          <Text style={styles.priceValue}>${item.price.toLocaleString()}</Text>
+        <View style={ClientHomeScreenStyle.infoItem}>
+          <Text style={ClientHomeScreenStyle.infoLabel}>Precio:</Text>
+          <Text style={ClientHomeScreenStyle.priceValue}>${item.price.toLocaleString()}</Text>
         </View>
       </View>
 
       {item.driverId && (
-        <View style={styles.driverAssignedBanner}>
-          <Text style={styles.driverAssignedText}>
+        <View style={ClientHomeScreenStyle.driverAssignedBanner}>
+          <Text style={ClientHomeScreenStyle.driverAssignedText}>
             ✓ Transportista asignado
           </Text>
         </View>
@@ -232,10 +233,10 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
 
       {item.status === ShipmentStatus.PENDING && (
         <TouchableOpacity
-          style={styles.cancelButton}
+          style={ClientHomeScreenStyle.cancelButton}
           onPress={() => handleCancelShipment(item.id)}
         >
-          <Text style={styles.cancelButtonText}>✕ Cancelar Envío</Text>
+          <Text style={ClientHomeScreenStyle.cancelButtonText}>✕ Cancelar Envío</Text>
         </TouchableOpacity>
       )}
     </TouchableOpacity>
@@ -243,7 +244,7 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={ClientHomeScreenStyle.centerContainer}>
         <ActivityIndicator size="large" color="#3B82F6" />
       </View>
     );
@@ -252,23 +253,23 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
   const filteredShipments = getFilteredShipments();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Mis Envíos</Text>
-        <View style={styles.tabContainer}>
+    <SafeAreaView style={ClientHomeScreenStyle.container}>
+      <View style={ClientHomeScreenStyle.header}>
+        <Text style={ClientHomeScreenStyle.title}>Mis Envíos</Text>
+        <View style={ClientHomeScreenStyle.tabContainer}>
           <TouchableOpacity 
-            style={[styles.tabButton, activeTab === 'active' && styles.tabActive]}
+            style={[ClientHomeScreenStyle.tabButton, activeTab === 'active' && ClientHomeScreenStyle.tabActive]}
             onPress={() => setActiveTab('active')}
           >
-            <Text style={[styles.tabText, activeTab === 'active' && styles.tabTextActive]}>
+            <Text style={[ClientHomeScreenStyle.tabText, activeTab === 'active' && ClientHomeScreenStyle.tabTextActive]}>
               En Curso
             </Text>
           </TouchableOpacity>
           <TouchableOpacity 
-            style={[styles.tabButton, activeTab === 'history' && styles.tabActive]}
+            style={[ClientHomeScreenStyle.tabButton, activeTab === 'history' && ClientHomeScreenStyle.tabActive]}
             onPress={() => setActiveTab('history')}
           >
-            <Text style={[styles.tabText, activeTab === 'history' && styles.tabTextActive]}>
+            <Text style={[ClientHomeScreenStyle.tabText, activeTab === 'history' && ClientHomeScreenStyle.tabTextActive]}>
               Historial
             </Text>
           </TouchableOpacity>
@@ -276,12 +277,12 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
       </View>
 
       {filteredShipments.length === 0 ? (
-        <View style={styles.emptyContainer}>
+        <View style={ClientHomeScreenStyle.emptyContainer}>
           <FontAwesome name="dropbox" size={50} color="#2A2D32" style={{ marginBottom: 16 }} />
-          <Text style={styles.emptyTitle}>
+          <Text style={ClientHomeScreenStyle.emptyTitle}>
             {activeTab === 'active' ? 'No tienes envíos activos' : 'No hay historial'}
           </Text>
-          <Text style={styles.emptySubtext}>
+          <Text style={ClientHomeScreenStyle.emptySubtext}>
             {activeTab === 'active' 
               ? 'Crea tu primer envío para comenzar'
               : 'Tus envíos completados aparecerán aquí'
@@ -293,13 +294,13 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
           data={filteredShipments}
           keyExtractor={(item) => item.id}
           renderItem={renderShipmentItem}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={ClientHomeScreenStyle.listContent}
           refreshing={refreshing}
           onRefresh={handleRefresh}
         />
       )}
 
-      <View style={styles.buttonContainer}>
+      <View style={ClientHomeScreenStyle.buttonContainer}>
         <Button
           title="+ Crear Nuevo Envío"
           onPress={() => navigation.navigate('CreateShipment')}
@@ -308,184 +309,3 @@ export const ClientHomeScreen: React.FC<ClientHomeScreenProps> = ({ navigation }
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0F172A', // Navy Blue Background
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#0F172A',
-  },
-  header: {
-    padding: 20,
-    backgroundColor: '#0F172A',
-    paddingTop: 40,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 20,
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#334155', // Slate 700
-  },
-  tabButton: {
-    marginRight: 20,
-    paddingBottom: 10,
-  },
-  tabActive: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#3B82F6',
-  },
-  tabText: {
-    fontSize: 16,
-    color: '#94A3B8', // Slate 400
-  },
-  tabTextActive: {
-    color: '#3B82F6',
-    fontWeight: '600',
-  },
-  listContent: {
-    padding: 16,
-    paddingBottom: 100, // Space for floating button
-  },
-  card: {
-    backgroundColor: '#1E293B', // Slate 800
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 0,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-  },
-  shipmentId: {
-    fontSize: 12,
-    color: '#64748B', // Slate 500
-    marginBottom: 4,
-  },
-  cargoType: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#F1F5F9', // Slate 100
-  },
-  statusBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 20,
-  },
-  statusDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: 6,
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  routeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  locationPoint: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  locationCity: {
-    color: '#E2E8F0', // Slate 200
-    fontSize: 14,
-    flex: 1,
-  },
-  routeArrow: {
-    marginHorizontal: 10,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 8,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#334155',
-  },
-  infoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  infoLabel: {
-    fontSize: 12,
-    color: '#94A3B8',
-    marginRight: 8,
-  },
-  infoValue: {
-    fontSize: 14,
-    color: '#F1F5F9',
-    fontWeight: '500',
-  },
-  priceValue: {
-    fontSize: 14,
-    color: '#10B981', // Green for money
-    fontWeight: 'bold',
-  },
-  driverAssignedBanner: {
-    marginTop: 12,
-    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-    padding: 8,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  driverAssignedText: {
-    color: '#3B82F6',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  cancelButton: {
-    marginTop: 12,
-    padding: 8,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#EF4444',
-    borderRadius: 8,
-  },
-  cancelButtonText: {
-    color: '#EF4444',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 40,
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#F1F5F9',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  emptySubtext: {
-    fontSize: 14,
-    color: '#94A3B8',
-    textAlign: 'center',
-  },
-  buttonContainer: {
-    padding: 16,
-    backgroundColor: '#0F172A',
-  },
-});

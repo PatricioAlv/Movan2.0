@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+import {ServerValue} from "firebase-admin/database";
 
 export async function deleteUser(userId: string): Promise<{ success: boolean; message: string }> {
   const db = admin.database();
@@ -14,8 +15,8 @@ export async function deleteUser(userId: string): Promise<{ success: boolean; me
   // Soft delete: marcar como inactivo en lugar de eliminar
   await userRef.update({
     isActive: false,
-    deletedAt: admin.database.ServerValue.TIMESTAMP,
-    updatedAt: admin.database.ServerValue.TIMESTAMP,
+    deletedAt: ServerValue.TIMESTAMP,
+    updatedAt: ServerValue.TIMESTAMP,
   });
 
   // Opcional: También desactivar en Firebase Auth

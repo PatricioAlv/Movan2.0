@@ -1,4 +1,3 @@
-import { spacing } from '@presentation/theme/spacing';
 
 export const colors = {
   // Primary

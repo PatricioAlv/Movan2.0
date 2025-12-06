@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { spacing } from '@presentation/theme/spacing';
 import { typography } from '@presentation/theme/typography';
-import { colors } from '../colors';
 
 const TransShipmentBrowser = StyleSheet.create({
   container: {

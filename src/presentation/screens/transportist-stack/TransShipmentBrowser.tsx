@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, ActivityIndicator, FlatList, TextInput, Alert } from 'react-native';
-import { Card } from '@presentation/components/common/Card';
 import { Button } from '@presentation/components/common/Button';
 import { colors } from '@presentation/theme/colors';
-import { spacing } from '@presentation/theme/spacing';
 import TransShipmentBrowser from '@presentation/theme/Trans-Screen-Styles/TransShipmentBrowser';
 import { Shipment } from '@core/entities/Order';
 import { useFocusEffect } from '@react-navigation/native';

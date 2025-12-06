@@ -1,8 +1,9 @@
+import { StyleSheet } from 'react-native';
 import { colors } from '../colors';
 import { spacing } from '../spacing';
 import { typography } from '../typography';
 
-const LoginScreenStyle = {
+const LoginScreenStyle = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -62,6 +63,6 @@ const LoginScreenStyle = {
     backgroundColor: colors.bgLight,
     borderColor: colors.gray500
   },
-}
+});
 
 export default LoginScreenStyle;

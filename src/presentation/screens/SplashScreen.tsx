@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated, Dimensions } from 'react-native';
+import { View, Animated, Dimensions } from 'react-native';
 import Svg, { Path, G, Circle, Line, Text as SvgText } from 'react-native-svg';
+import SplashScreenStyles from '@presentation/theme/Splash-Styles/SplashScreenStyles';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -56,10 +57,10 @@ export const SplashScreen: React.FC<{ onFinish: () => void }> = ({ onFinish }) =
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={SplashScreenStyles.container}>
       <Animated.View
         style={[
-          styles.truckContainer,
+          SplashScreenStyles.truckContainer,
           {
             transform: [{ translateX: truckPositionAnim }],
           },
@@ -129,18 +130,3 @@ export const SplashScreen: React.FC<{ onFinish: () => void }> = ({ onFinish }) =
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#2c3e50', 
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  truckContainer: {
-    width: 300,
-    height: 200,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});

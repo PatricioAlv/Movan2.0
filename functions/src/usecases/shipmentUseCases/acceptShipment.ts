@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+import {ServerValue} from "firebase-admin/database";
 
 export async function acceptShipment(shipmentId: string, driverId: string): Promise<any> {
   const db = admin.database();
@@ -35,8 +36,8 @@ export async function acceptShipment(shipmentId: string, driverId: string): Prom
   const updates: any = {
     status: "ACCEPTED",
     driverId: driverId,
-    acceptedAt: admin.database.ServerValue.TIMESTAMP,
-    updatedAt: admin.database.ServerValue.TIMESTAMP,
+    acceptedAt: ServerValue.TIMESTAMP,
+    updatedAt: ServerValue.TIMESTAMP,
   };
 
   // Agregar información del conductor si está disponible

@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+import {ServerValue} from "firebase-admin/database";
 
 interface UpdateUserData {
   name?: string;
@@ -17,7 +18,7 @@ export async function updateUser(userId: string, data: UpdateUserData): Promise<
   }
 
   const updates: any = {
-    updatedAt: admin.database.ServerValue.TIMESTAMP,
+    updatedAt: ServerValue.TIMESTAMP,
   };
 
   if (data.name !== undefined) {

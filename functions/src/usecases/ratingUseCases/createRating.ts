@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+import {ServerValue} from "firebase-admin/database";
 
 interface CreateRatingData {
   shipmentId: string;
@@ -59,7 +60,7 @@ export async function createRating(fromUserId: string, data: CreateRatingData): 
     shipmentId: data.shipmentId,
     rating: data.rating,
     comment: data.comment || null,
-    createdAt: admin.database.ServerValue.TIMESTAMP,
+    createdAt: ServerValue.TIMESTAMP,
   };
 
   await newRatingRef.set(ratingData);

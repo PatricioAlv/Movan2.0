@@ -2,8 +2,9 @@
 import { colors } from '@presentation/theme/colors';
 import { spacing } from '@presentation/theme/spacing';
 import { typography } from '@presentation/theme/typography';
+import { StyleSheet } from 'react-native';
 
-const RegisterScreenStyle = {
+const RegisterScreenStyle = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -89,6 +90,6 @@ const RegisterScreenStyle = {
     marginBottom: spacing.sm,
     color: colors.white,
   }
-}
+});
 
 export default RegisterScreenStyle;

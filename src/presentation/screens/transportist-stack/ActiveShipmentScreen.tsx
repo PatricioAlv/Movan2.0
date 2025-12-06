@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, ActivityIndicator, Alert, TouchableOpacity, Linking, Platform, StyleSheet } from 'react-native';
 import { Button } from '@presentation/components/common/Button';
-import { colors } from '@presentation/theme/colors';
-import { spacing } from '@presentation/theme/spacing';
 import { Shipment, ShipmentStatus } from '@core/entities/Order';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import ActiveShipmentScreenStyles from '@presentation/theme/Trans-Screen-Styles/ActiveShipmentScreenStyles';
 
 const API_BASE_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
@@ -174,7 +173,7 @@ export const ActiveShipmentScreen: React.FC<Props> = ({ route, navigation }) => 
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={ActiveShipmentScreenStyles.centerContainer}>
         <ActivityIndicator size="large" color="#10B981" />
       </View>
     );
@@ -182,87 +181,87 @@ export const ActiveShipmentScreen: React.FC<Props> = ({ route, navigation }) => 
 
   if (!shipment) {
     return (
-      <View style={styles.centerContainer}>
-        <Text style={styles.errorText}>No se encontró el envío</Text>
+      <View style={ActiveShipmentScreenStyles.centerContainer}>
+        <Text style={ActiveShipmentScreenStyles.errorText}>No se encontró el envío</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={ActiveShipmentScreenStyles.container}>
       {/* Indicador de Fase */}
-      <View style={styles.phaseIndicator}>
-        <View style={[styles.phaseStep, phase === 'pickup' && styles.phaseStepActive]}>
+      <View style={ActiveShipmentScreenStyles.phaseIndicator}>
+        <View style={[ActiveShipmentScreenStyles.phaseStep, phase === 'pickup' && ActiveShipmentScreenStyles.phaseStepActive]}>
           <FontAwesome 
             name={phase === 'delivery' ? 'check-circle' : 'map-marker'} 
             size={24} 
             color={phase === 'delivery' ? '#10B981' : '#10B981'} 
           />
-          <Text style={[styles.phaseText, phase === 'pickup' && styles.phaseTextActive]}>
+          <Text style={[ActiveShipmentScreenStyles.phaseText, phase === 'pickup' && ActiveShipmentScreenStyles.phaseTextActive]}>
             Recoger
           </Text>
         </View>
         
-        <View style={styles.phaseLine} />
+        <View style={ActiveShipmentScreenStyles.phaseLine} />
         
-        <View style={[styles.phaseStep, phase === 'delivery' && styles.phaseStepActive]}>
+        <View style={[ActiveShipmentScreenStyles.phaseStep, phase === 'delivery' && ActiveShipmentScreenStyles.phaseStepActive]}>
           <FontAwesome 
             name="flag-checkered" 
             size={24} 
             color={phase === 'delivery' ? '#10B981' : '#9CA3AF'} 
           />
-          <Text style={[styles.phaseText, phase === 'delivery' && styles.phaseTextActive]}>
+          <Text style={[ActiveShipmentScreenStyles.phaseText, phase === 'delivery' && ActiveShipmentScreenStyles.phaseTextActive]}>
             Entregar
           </Text>
         </View>
       </View>
 
       {/* Información del Envío */}
-      <View style={styles.card}>
-        <Text style={styles.sectionTitle}>Información del Envío</Text>
-        <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>ID:</Text>
-          <Text style={styles.infoValue}>#{shipmentId.slice(0, 8).toUpperCase()}</Text>
+      <View style={ActiveShipmentScreenStyles.card}>
+        <Text style={ActiveShipmentScreenStyles.sectionTitle}>Información del Envío</Text>
+        <View style={ActiveShipmentScreenStyles.infoRow}>
+          <Text style={ActiveShipmentScreenStyles.infoLabel}>ID:</Text>
+          <Text style={ActiveShipmentScreenStyles.infoValue}>#{shipmentId.slice(0, 8).toUpperCase()}</Text>
         </View>
-        <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>Carga:</Text>
-          <Text style={styles.infoValue}>{shipment.cargoDescription}</Text>
+        <View style={ActiveShipmentScreenStyles.infoRow}>
+          <Text style={ActiveShipmentScreenStyles.infoLabel}>Carga:</Text>
+          <Text style={ActiveShipmentScreenStyles.infoValue}>{shipment.cargoDescription}</Text>
         </View>
-        <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>Peso:</Text>
-          <Text style={styles.infoValue}>{shipment.weight} kg</Text>
+        <View style={ActiveShipmentScreenStyles.infoRow}>
+          <Text style={ActiveShipmentScreenStyles.infoLabel}>Peso:</Text>
+          <Text style={ActiveShipmentScreenStyles.infoValue}>{shipment.weight} kg</Text>
         </View>
       </View>
 
       {/* FASE DE RECOGIDA */}
       {phase === 'pickup' && (
         <>
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
+          <View style={ActiveShipmentScreenStyles.card}>
+            <View style={ActiveShipmentScreenStyles.cardHeader}>
               <FontAwesome name="map-marker" size={20} color="#10B981" />
-              <Text style={styles.cardTitle}>Punto de Recogida</Text>
+              <Text style={ActiveShipmentScreenStyles.cardTitle}>Punto de Recogida</Text>
             </View>
             
-            <Text style={styles.address}>{shipment.origin.address}</Text>
+            <Text style={ActiveShipmentScreenStyles.address}>{shipment.origin.address}</Text>
             
             {shipment.origin.contactName && (
-              <View style={styles.contactInfo}>
-                <Text style={styles.contactLabel}>Contacto:</Text>
-                <Text style={styles.contactValue}>{shipment.origin.contactName}</Text>
+              <View style={ActiveShipmentScreenStyles.contactInfo}>
+                <Text style={ActiveShipmentScreenStyles.contactLabel}>Contacto:</Text>
+                <Text style={ActiveShipmentScreenStyles.contactValue}>{shipment.origin.contactName}</Text>
                 {shipment.origin.contactPhone && (
                   <TouchableOpacity 
                     onPress={() => Linking.openURL(`tel:${shipment.origin.contactPhone}`)}
-                    style={styles.phoneButton}
+                    style={ActiveShipmentScreenStyles.phoneButton}
                   >
                     <FontAwesome name="phone" size={16} color="#10B981" />
-                    <Text style={styles.phoneText}>{shipment.origin.contactPhone}</Text>
+                    <Text style={ActiveShipmentScreenStyles.phoneText}>{shipment.origin.contactPhone}</Text>
                   </TouchableOpacity>
                 )}
               </View>
             )}
 
             <TouchableOpacity
-              style={styles.mapsButton}
+              style={ActiveShipmentScreenStyles.mapsButton}
               onPress={() => openGoogleMaps(
                 shipment.origin.latitude,
                 shipment.origin.longitude,
@@ -270,11 +269,11 @@ export const ActiveShipmentScreen: React.FC<Props> = ({ route, navigation }) => 
               )}
             >
               <FontAwesome name="map" size={18} color="#fff" />
-              <Text style={styles.mapsButtonText}>Abrir en Google Maps</Text>
+              <Text style={ActiveShipmentScreenStyles.mapsButtonText}>Abrir en Google Maps</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.actionsContainer}>
+          <View style={ActiveShipmentScreenStyles.actionsContainer}>
             {shipment.status === ShipmentStatus.ACCEPTED ? (
               <Button
                 title="Iniciar Viaje"
@@ -295,40 +294,40 @@ export const ActiveShipmentScreen: React.FC<Props> = ({ route, navigation }) => 
       {/* FASE DE ENTREGA */}
       {phase === 'delivery' && (
         <>
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
+          <View style={ActiveShipmentScreenStyles.card}>
+            <View style={ActiveShipmentScreenStyles.cardHeader}>
               <FontAwesome name="flag-checkered" size={20} color="#10B981" />
-              <Text style={styles.cardTitle}>Punto de Entrega</Text>
+              <Text style={ActiveShipmentScreenStyles.cardTitle}>Punto de Entrega</Text>
             </View>
             
-            <Text style={styles.address}>{shipment.destination.address}</Text>
+            <Text style={ActiveShipmentScreenStyles.address}>{shipment.destination.address}</Text>
             
             {shipment.destination.contactName && (
-              <View style={styles.contactInfo}>
-                <Text style={styles.contactLabel}>Contacto:</Text>
-                <Text style={styles.contactValue}>{shipment.destination.contactName}</Text>
+              <View style={ActiveShipmentScreenStyles.contactInfo}>
+                <Text style={ActiveShipmentScreenStyles.contactLabel}>Contacto:</Text>
+                <Text style={ActiveShipmentScreenStyles.contactValue}>{shipment.destination.contactName}</Text>
                 {shipment.destination.contactPhone && (
                   <TouchableOpacity 
                     onPress={() => Linking.openURL(`tel:${shipment.destination.contactPhone}`)}
-                    style={styles.phoneButton}
+                    style={ActiveShipmentScreenStyles.phoneButton}
                   >
                     <FontAwesome name="phone" size={16} color="#10B981" />
-                    <Text style={styles.phoneText}>{shipment.destination.contactPhone}</Text>
+                    <Text style={ActiveShipmentScreenStyles.phoneText}>{shipment.destination.contactPhone}</Text>
                   </TouchableOpacity>
                 )}
               </View>
             )}
 
             <TouchableOpacity
-              style={styles.mapsButton}
+              style={ActiveShipmentScreenStyles.mapsButton}
               onPress={handleNavigateToDestination}
             >
               <FontAwesome name="map" size={18} color="#fff" />
-              <Text style={styles.mapsButtonText}>Abrir en Google Maps</Text>
+              <Text style={ActiveShipmentScreenStyles.mapsButtonText}>Abrir en Google Maps</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.actionsContainer}>
+          <View style={ActiveShipmentScreenStyles.actionsContainer}>
             <Button
               title="Marcar como Entregado"
               onPress={handleConfirmDelivery}
@@ -339,159 +338,11 @@ export const ActiveShipmentScreen: React.FC<Props> = ({ route, navigation }) => 
       )}
 
       {shipment.notes && (
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>Notas Adicionales</Text>
-          <Text style={styles.notesText}>{shipment.notes}</Text>
+        <View style={ActiveShipmentScreenStyles.card}>
+          <Text style={ActiveShipmentScreenStyles.sectionTitle}>Notas Adicionales</Text>
+          <Text style={ActiveShipmentScreenStyles.notesText}>{shipment.notes}</Text>
         </View>
       )}
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#111315',
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#111315',
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#9CA3AF',
-  },
-  phaseIndicator: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    backgroundColor: '#1A1D21',
-    padding: spacing.lg,
-    marginBottom: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: '#2A2D32',
-  },
-  phaseStep: {
-    alignItems: 'center',
-    opacity: 0.4,
-  },
-  phaseStepActive: {
-    opacity: 1,
-  },
-  phaseText: {
-    marginTop: spacing.xs,
-    fontSize: 14,
-    color: '#9CA3AF',
-  },
-  phaseTextActive: {
-    color: '#10B981',
-    fontWeight: '600',
-  },
-  phaseLine: {
-    flex: 1,
-    height: 2,
-    backgroundColor: '#2A2D32',
-    marginHorizontal: spacing.md,
-  },
-  card: {
-    backgroundColor: '#1A1D21',
-    padding: spacing.lg,
-    marginHorizontal: spacing.md,
-    marginBottom: spacing.md,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#2A2D32',
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    marginLeft: spacing.sm,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    marginBottom: spacing.md,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: '#2A2D32',
-  },
-  infoLabel: {
-    fontSize: 14,
-    color: '#9CA3AF',
-  },
-  infoValue: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#FFFFFF',
-  },
-  address: {
-    fontSize: 15,
-    color: '#FFFFFF',
-    marginBottom: spacing.md,
-    lineHeight: 22,
-  },
-  contactInfo: {
-    marginBottom: spacing.md,
-    padding: spacing.md,
-    backgroundColor: '#25282C',
-    borderRadius: 8,
-  },
-  contactLabel: {
-    fontSize: 12,
-    color: '#9CA3AF',
-    marginBottom: spacing.xs,
-  },
-  contactValue: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#FFFFFF',
-    marginBottom: spacing.xs,
-  },
-  phoneButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: spacing.xs,
-  },
-  phoneText: {
-    fontSize: 14,
-    color: '#10B981',
-    marginLeft: spacing.xs,
-    textDecorationLine: 'underline',
-  },
-  mapsButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#10B981',
-    padding: spacing.md,
-    borderRadius: 8,
-    marginTop: spacing.sm,
-  },
-  mapsButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: spacing.sm,
-  },
-  actionsContainer: {
-    padding: spacing.md,
-  },
-  notesText: {
-    fontSize: 14,
-    color: '#FFFFFF',
-    lineHeight: 20,
-  },
-});
