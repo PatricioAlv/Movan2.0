@@ -12,6 +12,7 @@ import { SplashScreen } from '@presentation/screens/SplashScreen';
 import { WelcomeScreen } from '@presentation/screens/WelcomeScreen';
 
 const API_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
+console.log('API_URL:', API_URL);
 
 const Stack = createNativeStackNavigator();
 

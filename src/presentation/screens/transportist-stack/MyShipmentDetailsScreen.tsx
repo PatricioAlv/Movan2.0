@@ -21,7 +21,7 @@ import { useRating } from '@presentation/hooks/useRating';
 import { auth } from '@data/config/firebase.config';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-const API_BASE_URL = `${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
+const API_BASE_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 interface Props {
   navigation: any;

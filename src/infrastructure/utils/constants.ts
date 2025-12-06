@@ -12,10 +12,29 @@ export const API_ENDPOINTS = {
   AUTH: '/auth',
   PRODUCTS: '/products',
   ORDERS: '/orders',
-  // Transportist endpoints
-  GET_DRIVER_SHIPMENTS: '/getDriverShipments',
-  GET_SHIPMENT_DETAILS: '/getShipmentDetails',
-  ACCEPT_SHIPMENT: '/acceptShipment',
+  // Shipment endpoints
+  CREATE_SHIPMENT: '/shipments',
+  GET_AVAILABLE_SHIPMENTS: '/shipments/available',
+  GET_CLIENT_SHIPMENTS: '/shipments/client', // + /:clientId
+  GET_DRIVER_SHIPMENTS: '/shipments/driver', // + /:driverId
+  GET_SHIPMENT_BY_ID: '/shipments', // + /:shipmentId
+  CANCEL_SHIPMENT: '/shipments/cancel',
+  UPDATE_SHIPMENT_STATUS: '/shipments/updateStatus',
+  START_PICKUP: '/shipments/startPickup',
+  CONFIRM_DELIVERY: '/shipments/confirmDelivery',
+  ACCEPT_SHIPMENT: '/shipments/accept',
+  // User endpoints
+  GET_USER: '/users', // + /:userId
+  UPDATE_USER: '/users', // + /:userId
+  DELETE_USER: '/users', // + /:userId
+  CHANGE_PASSWORD: '/users', // + /:userId/password
+  // Rating endpoints
+  CREATE_RATING: '/ratings',
+  GET_USER_RATINGS: '/ratings/user', // + /:userId
+  GET_AVERAGE_RATING: '/ratings/average', // + /:userId
+  CHECK_USER_RATED: '/ratings/check', // + /:shipmentId/:userId
+  GET_SHIPMENT_RATINGS: '/ratings/shipment', // + /:shipmentId
+  DELETE_RATING: '/ratings', // + /:ratingId
 };
 
 export const FIREBASE_COLLECTIONS = {

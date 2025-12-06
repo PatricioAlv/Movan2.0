@@ -8,12 +8,14 @@
       }
     },
     "shipments": {
+      ".indexOn": ["clientId", "driverId", "status"],
       "$shipmentId": {
         ".read": "auth != null",
         ".write": false
       }
     },
     "ratings": {
+      ".indexOn": ["shipmentId", "ratedUserId", "raterUserId"],
       "$ratingId": {
         ".read": "auth != null",
         ".write": false

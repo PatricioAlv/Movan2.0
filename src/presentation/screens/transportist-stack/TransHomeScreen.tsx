@@ -7,7 +7,7 @@ import { API_ENDPOINTS } from '@infrastructure/utils/constants';
 import { useFocusEffect } from '@react-navigation/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-const API_BASE_URL = `${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
+const API_BASE_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 const getStatusColor = (status: ShipmentStatus): string => {
   switch (status) {
@@ -83,10 +83,9 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.GET_DRIVER_SHIPMENTS}`, {
-        method: 'POST',
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.GET_DRIVER_SHIPMENTS}/${userId}`, {
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ driverId: userId }),
       });
 
       const data = await response.json();
@@ -95,7 +94,8 @@ export const TransHomeScreen: React.FC<TransHomeProps> = ({ navigation }) => {
         throw new Error(data.error || 'Error al cargar los envíos');
       }
 
-      setShipments(data.shipments);
+      // La API devuelve un array directo de shipments
+      setShipments(Array.isArray(data) ? data : []);
 
     } catch (error: any) {
       console.error('Error loading shipments:', error);

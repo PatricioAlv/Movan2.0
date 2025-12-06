@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
-import { getDatabase } from 'firebase/database';
+import { initializeAuth, getReactNativePersistence, connectAuthEmulator } from 'firebase/auth';
+import { getDatabase, connectDatabaseEmulator } from 'firebase/database';
 import { getAnalytics, Analytics, isSupported } from 'firebase/analytics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -13,6 +13,10 @@ import {
   FIREBASE_APP_ID,
   FIREBASE_MEASUREMENT_ID
 } from '@env';
+
+// Cambiar a true para usar emuladores, false para producción
+const USE_EMULATORS = true;
+const EMULATOR_HOST = '192.168.0.6'; // Tu IP local
 
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
@@ -33,16 +37,27 @@ const auth = initializeAuth(app, {
 });
 
 const database = getDatabase(app);
+
+// Conectar a emuladores si está habilitado
+if (USE_EMULATORS) {
+  console.log('🔧 Conectando a emuladores de Firebase...');
+  connectAuthEmulator(auth, `http://${EMULATOR_HOST}:9099`, { disableWarnings: true });
+  connectDatabaseEmulator(database, EMULATOR_HOST, 9000);
+  console.log('✅ Conectado a emuladores de Firebase');
+}
+
 let analytics: Analytics | null = null;
 
-// Inicializar Analytics solo si está soportado
-isSupported().then((supported) => {
-  if (supported) {
-    analytics = getAnalytics(app);
-  }
-}).catch(() => {
-  console.log('Firebase Analytics no está disponible en este entorno');
-});
+// Inicializar Analytics solo si está soportado (no en emuladores)
+if (!USE_EMULATORS) {
+  isSupported().then((supported) => {
+    if (supported) {
+      analytics = getAnalytics(app);
+    }
+  }).catch(() => {
+    console.log('Firebase Analytics no está disponible en este entorno');
+  });
+}
 
 export { auth, database, analytics };
 export default app;

@@ -8,7 +8,7 @@ import TransShipmentBrowser from '@presentation/theme/Trans-Screen-Styles/TransS
 import { Shipment } from '@core/entities/Order';
 import { useFocusEffect } from '@react-navigation/native';
 
-const API_BASE_URL = `${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
+const API_BASE_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 interface Props {
   navigation: any;

@@ -18,7 +18,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { auth } from '@data/config/firebase.config';
 import { signOut } from 'firebase/auth';
 
-const API_BASE_URL = `${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
+const API_BASE_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
 
 interface Props {
   navigation: any;
