@@ -15,12 +15,20 @@ import {
   confirmDeliveryController,
   acceptShipmentController,
 } from "../controllers/shipmentsController";
-import {getUserByIdController, updateUserController} from "../controllers/userController";
+import {
+  getUserByIdController,
+  updateUserController,
+  deleteUserController,
+  getUsersByRoleController,
+  changePasswordController,
+} from "../controllers/userController";
 import {
   createRatingController,
   getUserRatingsController,
   checkUserRatedController,
   getUserAverageRatingController,
+  getRatingsByShipmentController,
+  deleteRatingController,
 } from "../controllers/ratingsController";
 
 admin.initializeApp();
@@ -38,6 +46,9 @@ app.post("/login", login);
 // - user routes
 app.get("/users/:userId", getUserByIdController);
 app.put("/users/:userId", updateUserController);
+app.delete("/users/:userId", deleteUserController);
+app.get("/users/role/:role", getUsersByRoleController);
+app.put("/users/:userId/password", changePasswordController);
 
 // - shipment routes
 app.post("/shipments", createShipmentController);
@@ -56,6 +67,8 @@ app.post("/ratings", createRatingController);
 app.get("/ratings/user/:userId", getUserRatingsController);
 app.get("/ratings/average/:userId", getUserAverageRatingController);
 app.get("/ratings/check/:shipmentId/:userId", checkUserRatedController);
+app.get("/ratings/shipment/:shipmentId", getRatingsByShipmentController);
+app.delete("/ratings/:ratingId", deleteRatingController);
 
 
 export const api = functions.https.onRequest(app);

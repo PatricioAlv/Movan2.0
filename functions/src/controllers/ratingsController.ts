@@ -2,6 +2,8 @@ import {createRating} from "../usecases/ratingUseCases/createRating";
 import {getUserRatings} from "../usecases/ratingUseCases/getUserRatings";
 import {checkUserRated} from "../usecases/ratingUseCases/checkUserRated";
 import {getUserAverageRating} from "../usecases/ratingUseCases/getUserAverageRating";
+import {getRatingsByShipment} from "../usecases/ratingUseCases/getRatingsByShipment";
+import {deleteRating} from "../usecases/ratingUseCases/deleteRating";
 import {Request, Response} from "express";
 
 export async function createRatingController(req: Request, res: Response) {
@@ -81,5 +83,42 @@ export async function getUserAverageRatingController(req: Request, res: Response
     return res.json(result);
   } catch (error: any) {
     return res.status(400).json({error: error.message, code: error.code});
+  }
+}
+
+export async function getRatingsByShipmentController(req: Request, res: Response) {
+  try {
+    const {shipmentId} = req.params;
+
+    if (!shipmentId) {
+      return res.status(400).json({
+        error: "Se requiere shipmentId",
+        code: "missing-shipmentId",
+      });
+    }
+
+    const result = await getRatingsByShipment(shipmentId);
+    return res.json(result);
+  } catch (error: any) {
+    return res.status(400).json({error: error.message, code: error.code});
+  }
+}
+
+export async function deleteRatingController(req: Request, res: Response) {
+  try {
+    const {ratingId} = req.params;
+
+    if (!ratingId) {
+      return res.status(400).json({
+        error: "Se requiere ratingId",
+        code: "missing-ratingId",
+      });
+    }
+
+    const result = await deleteRating(ratingId);
+    return res.json(result);
+  } catch (error: any) {
+    const statusCode = error.code === "not-found" ? 404 : 400;
+    return res.status(statusCode).json({error: error.message, code: error.code});
   }
 }
