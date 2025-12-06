@@ -184,38 +184,24 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
             <Text style={styles.sectionTitle}>Origen</Text>
           </View>
           
-          {GOOGLE_MAPS_CONFIG.apiKey !== 'YOUR_GOOGLE_MAPS_API_KEY' ? (
-            <>
-              <View style={[styles.autocompleteContainer, { zIndex: 2000 }]}>
-                <AddressAutocomplete 
-                  onSelectAddress={setOriginLocation}
-                  placeholder="Buscar dirección de origen"
-                  apiKey={GOOGLE_MAPS_CONFIG.apiKey}
-                  value={originLocation?.address || ''}
-                  inputStyle={styles.input}
-                />
-              </View>
-              
-              <TouchableOpacity
-                style={styles.mapButton}
-                onPress={() => setShowOriginMap(true)}
-              >
-                <FontAwesome name="map" size={16} color="#FFFFFF" style={{ marginRight: 8 }} />
-                <Text style={styles.mapButtonText}>
-                  {originLocation ? 'Cambiar ubicación en el mapa' : 'Seleccionar en el mapa'}
-                </Text>
-              </TouchableOpacity>
-            </>
-          ) : (
-            <View style={styles.warningBox}>
-              <Text style={styles.warningText}>
-                ⚠️ Configura tu Google Maps API Key en:
-              </Text>
-              <Text style={styles.warningPath}>
-                src/infrastructure/utils/googleMaps.config.ts
-              </Text>
-            </View>
-          )}
+          <View style={[styles.autocompleteContainer, { zIndex: 2000 }]}>
+            <AddressAutocomplete 
+              onSelectAddress={setOriginLocation}
+              placeholder="Buscar dirección de origen"
+              value={originLocation?.address || ''}
+              inputStyle={styles.input}
+            />
+          </View>
+          
+          <TouchableOpacity
+            style={styles.mapButton}
+            onPress={() => setShowOriginMap(true)}
+          >
+            <FontAwesome name="map" size={16} color="#FFFFFF" style={{ marginRight: 8 }} />
+            <Text style={styles.mapButtonText}>
+              {originLocation ? 'Cambiar ubicación en el mapa' : 'Seleccionar en el mapa'}
+            </Text>
+          </TouchableOpacity>
 
           {originLocation && (
             <View style={styles.selectedLocation}>
@@ -257,35 +243,24 @@ export const CreateShipmentScreen: React.FC<CreateShipmentScreenProps> = ({ navi
             <Text style={styles.sectionTitle}>Destino</Text>
           </View>
           
-          {GOOGLE_MAPS_CONFIG.apiKey !== 'YOUR_GOOGLE_MAPS_API_KEY' ? (
-            <>
-              <View style={[styles.autocompleteContainer, { zIndex: 1000 }]}>
-                <AddressAutocomplete
-                  onSelectAddress={setDestinationLocation}
-                  placeholder="Buscar dirección de destino"
-                  apiKey={GOOGLE_MAPS_CONFIG.apiKey}
-                  value={destinationLocation?.address || ''}
-                  inputStyle={styles.input}
-                />
-              </View>
-              
-              <TouchableOpacity
-                style={styles.mapButton}
-                onPress={() => setShowDestinationMap(true)}
-              >
-                <FontAwesome name="map" size={16} color="#FFFFFF" style={{ marginRight: 8 }} />
-                <Text style={styles.mapButtonText}>
-                  {destinationLocation ? 'Cambiar ubicación en el mapa' : 'Seleccionar en el mapa'}
-                </Text>
-              </TouchableOpacity>
-            </>
-          ) : (
-            <View style={styles.warningBox}>
-              <Text style={styles.warningText}>
-                Configura tu Google Maps API Key
-              </Text>
-            </View>
-          )}
+          <View style={[styles.autocompleteContainer, { zIndex: 1000 }]}>
+            <AddressAutocomplete
+              onSelectAddress={setDestinationLocation}
+              placeholder="Buscar dirección de destino"
+              value={destinationLocation?.address || ''}
+              inputStyle={styles.input}
+            />
+          </View>
+          
+          <TouchableOpacity
+            style={styles.mapButton}
+            onPress={() => setShowDestinationMap(true)}
+          >
+            <FontAwesome name="map" size={16} color="#FFFFFF" style={{ marginRight: 8 }} />
+            <Text style={styles.mapButtonText}>
+              {destinationLocation ? 'Cambiar ubicación en el mapa' : 'Seleccionar en el mapa'}
+            </Text>
+          </TouchableOpacity>
 
           {destinationLocation && (
             <View style={styles.selectedLocation}>

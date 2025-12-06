@@ -30,6 +30,10 @@ import {
   getRatingsByShipmentController,
   deleteRatingController,
 } from "../controllers/ratingsController";
+import {
+  searchPlacesController,
+  getPlaceDetailsController,
+} from "../controllers/mapsController";
 
 admin.initializeApp();
 const app = express();
@@ -69,6 +73,10 @@ app.get("/ratings/average/:userId", getUserAverageRatingController);
 app.get("/ratings/check/:shipmentId/:userId", checkUserRatedController);
 app.get("/ratings/shipment/:shipmentId", getRatingsByShipmentController);
 app.delete("/ratings/:ratingId", deleteRatingController);
+
+// - maps routes
+app.post("/maps/search", searchPlacesController);
+app.post("/maps/details", getPlaceDetailsController);
 
 
 export const api = functions.https.onRequest(app);

@@ -11,6 +11,8 @@ import { colors } from '@presentation/theme/colors';
 import { spacing } from '@presentation/theme/spacing';
 import { typography } from '@presentation/theme/typography';
 
+const API_BASE_URL = `http://${process.env.LOCAL_IP}:5001/movan-857e9/us-central1/api`;
+
 interface Prediction {
   description: string;
   place_id: string;
@@ -29,7 +31,6 @@ interface Location {
 interface AddressAutocompleteProps {
   onSelectAddress: (location: Location) => void;
   placeholder?: string;
-  apiKey: string;
   value?: string;
   inputStyle?: object;
   containerStyle?: object;
@@ -38,7 +39,6 @@ interface AddressAutocompleteProps {
 export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   onSelectAddress,
   placeholder = 'Buscar dirección',
-  apiKey,
   value: initialValue = '',
   inputStyle,
   containerStyle,
@@ -85,17 +85,13 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       return;
     }
 
-    if (apiKey === 'YOUR_GOOGLE_MAPS_API_KEY') {
-      return;
-    }
-
     setLoading(true);
     try {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
-          text
-        )}&key=${apiKey}&language=es&components=country:ar`
-      );
+      const response = await fetch(`${API_BASE_URL}/maps/search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: text, country: 'ar' }),
+      });
       const data = await response.json();
 
       if (data.predictions) {
@@ -112,21 +108,21 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   const selectPlace = async (placeId: string, description: string) => {
     setLoading(true);
     try {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${apiKey}&fields=geometry,formatted_address`
-      );
+      const response = await fetch(`${API_BASE_URL}/maps/details`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ placeId }),
+      });
       const data = await response.json();
 
-      if (data.result && data.result.geometry) {
-        const { lat, lng } = data.result.geometry.location;
-
+      if (data.latitude && data.longitude) {
         onSelectAddress({
-          address: data.result.formatted_address || description,
-          latitude: lat,
-          longitude: lng,
+          address: data.address || description,
+          latitude: data.latitude,
+          longitude: data.longitude,
         });
 
-        setSearchText(data.result.formatted_address || description);
+        setSearchText(data.address || description);
         setPredictions([]);
         setShowPredictions(false);
       }

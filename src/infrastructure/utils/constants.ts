@@ -35,6 +35,9 @@ export const API_ENDPOINTS = {
   CHECK_USER_RATED: '/ratings/check', // + /:shipmentId/:userId
   GET_SHIPMENT_RATINGS: '/ratings/shipment', // + /:shipmentId
   DELETE_RATING: '/ratings', // + /:ratingId
+  // Maps endpoints
+  MAPS_SEARCH: '/maps/search',
+  MAPS_DETAILS: '/maps/details',
 };
 
 export const FIREBASE_COLLECTIONS = {
