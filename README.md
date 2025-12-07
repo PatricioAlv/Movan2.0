@@ -1,16 +1,17 @@
 # 🚚 Movan 2.0
 
-Aplicación móvil de logística y transporte construida con React Native y Expo, siguiendo Clean Architecture. Conecta clientes que necesitan envíos con transportistas disponibles.
+Aplicación móvil de logística y transporte construida con React Native y Expo, con backend en Firebase Cloud Functions. Conecta clientes que necesitan envíos con transportistas disponibles.
 
 ## ✅ Estado del Proyecto
 
 - ✅ **Arquitectura Clean implementada**
+- ✅ **Backend API REST con 22 endpoints**
 - ✅ **Sistema de autenticación completo**
 - ✅ **Gestión de envíos (shipments)**
 - ✅ **Sistema de calificaciones (ratings)**
 - ✅ **Perfiles de usuario (cliente/transportista)**
 - ✅ **Navegación dual (cliente/transportista)**
-- ✅ **Firebase configurado**
+- ✅ **Firebase Cloud Functions**
 - ✅ **Tests unitarios base**
 
 ## 🎯 Características Principales
@@ -31,12 +32,18 @@ Aplicación móvil de logística y transporte construida con React Native y Expo
 
 ## 🏗️ Arquitectura
 
-Este proyecto sigue los principios de **Clean Architecture** con 4 capas principales:
+Este proyecto está dividido en **Frontend** (React Native) y **Backend** (Firebase Cloud Functions):
 
-- **Core**: Entidades (User, Order, Rating), casos de uso e interfaces de repositorios
-- **Data**: Implementaciones de repositorios Firebase, modelos y mappers
+### Frontend (React Native + Expo)
 - **Presentation**: UI, screens, componentes, navegación y hooks
-- **Infrastructure**: Inyección de dependencias (InversifyJS), utilidades y constantes
+- **Core**: Entidades (User, Order, Rating) e interfaces
+- **Infrastructure**: Utilidades y constantes
+
+### Backend (Firebase Cloud Functions)
+- **Routes**: Definición de endpoints Express.js
+- **Controllers**: Manejo de requests/responses HTTP
+- **UseCases**: Lógica de negocio
+- **Firebase Admin**: Acceso a Realtime Database y Auth
 
 ## 🚀 Configuración Inicial
 
@@ -85,10 +92,18 @@ export const auth = getAuth(app);
 export const database = getDatabase(app);
 ```
 
-### 3. Ejecutar la aplicación
+### 3. Configurar variables de entorno
+
+Crea el archivo `.env` en la raíz del proyecto:
+
+```env
+LOCAL_IP=TU_IP_LOCAL
+```
+
+### 4. Ejecutar la aplicación
 
 ```bash
-# Iniciar servidor de desarrollo
+# Iniciar servidor de desarrollo (Frontend)
 npm start
 
 # Ejecutar en Android
@@ -98,39 +113,106 @@ npm run android
 npm run ios
 ```
 
+### 5. Ejecutar el Backend (Cloud Functions)
+
+```bash
+# Entrar a la carpeta de functions
+cd functions
+
+# Instalar dependencias
+npm install
+
+# Compilar TypeScript
+npm run build
+
+# Iniciar emulador de Firebase
+npm run serve
+```
+
+## 🔌 API REST - Endpoints (22 total)
+
+### 🔐 Auth (2)
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/register` | Registrar usuario |
+| POST | `/login` | Iniciar sesión |
+
+### 👤 Users (5)
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | `/users/:userId` | Obtener usuario por ID |
+| PUT | `/users/:userId` | Actualizar perfil |
+| DELETE | `/users/:userId` | Desactivar cuenta |
+| GET | `/users/role/:role` | Listar por rol |
+| PUT | `/users/:userId/password` | Cambiar contraseña |
+
+### 📦 Shipments (10)
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/shipments` | Crear envío |
+| GET | `/shipments/available` | Envíos disponibles |
+| GET | `/shipments/client/:clientId` | Envíos del cliente |
+| GET | `/shipments/driver/:driverId` | Envíos del transportista |
+| GET | `/shipments/:shipmentId` | Obtener envío por ID |
+| POST | `/shipments/cancel` | Cancelar envío |
+| POST | `/shipments/updateStatus` | Actualizar estado |
+| POST | `/shipments/startPickup` | Iniciar viaje |
+| POST | `/shipments/confirmDelivery` | Confirmar entrega |
+| POST | `/shipments/accept` | Aceptar envío |
+
+### ⭐ Ratings (6)
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/ratings` | Crear calificación |
+| GET | `/ratings/user/:userId` | Calificaciones de usuario |
+| GET | `/ratings/average/:userId` | Promedio de calificación |
+| GET | `/ratings/check/:shipmentId/:userId` | Verificar si calificó |
+| GET | `/ratings/shipment/:shipmentId` | Calificaciones de envío |
+| DELETE | `/ratings/:ratingId` | Eliminar calificación |
+
 ## 📱 Estructura del Proyecto
 
 ```
-src/
-├── core/                      # Lógica de negocio pura
-│   ├── entities/              # User, Order, Rating
-│   ├── repositories/          # Interfaces
-│   └── usecases/              # Casos de uso
-│       ├── auth/              # Login, Register, Logout
-│       ├── shipments/         # CRUD de envíos
-│       ├── ratings/           # Sistema de calificaciones
-│       └── user/              # Gestión de usuarios
+Movan2.0/
+├── src/                         # Frontend (React Native)
+│   ├── core/                    # Entidades e interfaces
+│   │   └── entities/            # User, Order, Rating
+│   ├── data/                    # Configuración Firebase
+│   │   └── config/              # firebase.config.ts
+│   ├── presentation/            # UI y componentes
+│   │   ├── screens/
+│   │   │   ├── auth/            # Login, Register
+│   │   │   ├── client-stack/    # Pantallas del cliente
+│   │   │   ├── transportist-stack/  # Pantallas transportista
+│   │   │   └── shared/          # Perfil, Settings
+│   │   ├── navigation/          # Navegadores
+│   │   ├── components/common/   # Componentes reutilizables
+│   │   ├── hooks/               # Custom hooks
+│   │   └── theme/               # Estilos, colores
+│   └── infrastructure/          # Utilidades
+│       └── utils/               # Validators, formatters
 │
-├── data/                      # Implementaciones
-│   ├── config/                # Firebase config
-│   ├── datasources/           # Local (AsyncStorage) y Remote (Firebase)
-│   ├── models/                # DTOs y Mappers
-│   └── repositories/          # FirebaseAuthRepository, etc.
+├── functions/                   # Backend (Cloud Functions)
+│   └── src/
+│       ├── index.ts             # Entry point
+│       ├── routes/              # Express routes
+│       │   └── index.ts         # Definición de endpoints
+│       ├── controllers/         # Request handlers
+│       │   ├── authController.ts
+│       │   ├── userController.ts
+│       │   ├── shipmentsController.ts
+│       │   └── ratingsController.ts
+│       └── usecases/            # Lógica de negocio
+│           ├── authUseCases/
+│           ├── userUseCases/
+│           ├── shipmentUseCases/
+│           └── ratingUseCases/
 │
-├── presentation/              # UI y componentes
-│   ├── screens/
-│   │   ├── auth/              # Login, Register
-│   │   ├── client-stack/      # Pantallas del cliente
-│   │   ├── transportist-stack/# Pantallas del transportista
-│   │   └── shared/            # Perfil, Settings
-│   ├── navigation/            # Navegadores
-│   ├── components/common/     # Componentes reutilizables
-│   ├── hooks/                 # useRating, etc.
-│   └── theme/                 # Estilos, colores, tipografía
-│
-└── infrastructure/            # Servicios y utilidades
-    ├── di/                    # Dependency Injection (InversifyJS)
-    └── utils/                 # Validators, formatters, constants
+├── __tests__/                   # Tests unitarios
+├── assets/                      # Recursos estáticos
+├── .env                         # Variables de entorno
+├── app.config.js                # Configuración Expo
+└── package.json                 # Dependencias frontend
 ```
 
 ## 🧪 Testing
@@ -167,17 +249,26 @@ eas build --platform ios --profile production
 
 ## 🛠️ Tecnologías Utilizadas
 
+### Frontend
 | Categoría | Tecnología | Versión |
 |-----------|-----------|---------|
 | **Framework** | React Native | 0.74.5 |
 | **Plataforma** | Expo | ~51.0.0 |
 | **Lenguaje** | TypeScript | ~5.3.3 |
-| **Backend** | Firebase | ^10.14.1 |
 | **Navegación** | React Navigation | ^6.1.9 |
-| **DI** | InversifyJS | ^6.0.2 |
 | **Storage** | AsyncStorage | 1.23.1 |
 | **Maps** | React Native Maps | 1.14.0 |
 | **Testing** | Jest | ^29.7.0 |
+
+### Backend
+| Categoría | Tecnología | Versión |
+|-----------|-----------|---------|
+| **Runtime** | Node.js | 20 |
+| **Framework** | Express.js | ^4.18.2 |
+| **Cloud** | Firebase Functions | ^4.3.1 |
+| **Database** | Firebase Realtime DB | - |
+| **Auth** | Firebase Admin | ^11.8.0 |
+| **Lenguaje** | TypeScript | ~5.3.3 |
 
 ## 📖 Documentación Adicional
 
